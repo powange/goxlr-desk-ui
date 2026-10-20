@@ -70,8 +70,10 @@ export default {
         @dragstart="draggable && $emit('item-dragstart', $event, option.id)"
         @dragend="draggable && $emit('item-dragend')"
         @dblclick="$emit('item-dblclick', option.id)">
-        <template v-if="this.menu !== undefined" #right>
-          <button :aria-label="`${option.label} Options`" :id="getButtonId(option.id)" aria-haspopup="menu"
+        <template v-if="this.menu !== undefined || this.$slots['item-actions'] !== undefined" #right>
+          <!-- Extra per item buttons, shown before the menu button -->
+          <slot name="item-actions" :option="option"></slot>
+          <button v-if="this.menu !== undefined" :aria-label="`${option.label} Options`" :id="getButtonId(option.id)" aria-haspopup="menu"
             :aria-controls="this.menu_id" @click.prevent.stop="menuOpened($event, getButtonId(option.id), option.id)">
             <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
           </button>

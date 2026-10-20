@@ -46,7 +46,15 @@
           @item-dragstart="onSampleDragStart"
           @item-dragend="onSampleDragEnd"
           @item-dblclick="onSampleDoubleClick"
-      />
+      >
+        <template v-if="manage" #item-actions="{ option }">
+          <button class="itemPlay" @click.prevent.stop="togglePreview(option.id)" @dblclick.stop"
+                  :aria-label="$t(isPreviewing(option.id) ? 'message.sampleManager.stopPreview' : 'message.sampleManager.playPreview', { name: option.label })"
+                  :title="$t(isPreviewing(option.id) ? 'message.sampleManager.stop' : 'message.sampleManager.listen')">
+            <font-awesome-icon :icon="isPreviewing(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-play'"/>
+          </button>
+        </template>
+      </RadioList>
     </div>
   </VerticalScrollingContainer>
 
@@ -88,6 +96,9 @@ export default {
 
       audio_player: undefined,
       audio_playing: false,
+
+      // The sample being listened to with its play button
+      previewing: undefined,
 
       // The sample being dragged, and the folder it's over
       dragging: undefined,
@@ -280,6 +291,23 @@ export default {
       }
     },
 
+    isPreviewing(id) {
+      return this.audio_playing && this.previewing === id.substring(this.prefix.length);
+    },
+
+    // Plays a sample from its play button (or stops it if it's the one playing).
+    togglePreview(id) {
+      let name = id.substring(this.prefix.length);
+      if (this.isPreviewing(id)) {
+        this.audio_player.pause();
+        return;
+      }
+      this.stopPlayback();
+      this.previewing = name;
+      this.audio_player.src = getBaseHTTPAddress() + "files/samples/" + encodeURIComponent(name);
+      this.audio_player.play();
+    },
+
     // Double clicking a sample opens it in the editor (only when managing files).
     onSampleDoubleClick(id) {
       if (!this.manage) {
@@ -459,6 +487,19 @@ export default {
 
 .folderRow.dropTarget {
   outline: 1px dashed #59b1b6;
+}
+
+.itemPlay {
+  background-color: transparent;
+  border: 0;
+  padding: 6px;
+  margin: 0;
+  color: inherit;
+  cursor: pointer;
+}
+
+.itemPlay:focus-visible {
+  outline: 1px solid #59b1b6;
 }
 
 .folderAction {
