@@ -3,28 +3,11 @@
     <div v-if="getDirectoryList().length > 0">
       <p class="title screenreader-only" role="heading">{{$t('message.sampler.samples.sampleSelector.directories')}}</p>
       <div class="buttons">
-        <div v-for="(directory, index) in getDirectoryList()" v-bind:key="index" class="folderRow"
-             :class="{ dropTarget: dropTarget === directory.id }"
-             @dragover="onFolderDragOver($event, directory.id)" @dragleave="onFolderDragLeave(directory.id)"
-             @drop="onFolderDrop($event, directory.id)">
-          <ButtonItem :id="directory.id" class="folderButton"
-                      text="" @on-click="selectDirectory" ref="button" :background="background">
-            <font-awesome-icon v-if="directory.icon !== undefined" :icon="directory.icon"/>
-            {{ directory.label }}
-          </ButtonItem>
-          <button v-if="manage && directory.folder !== undefined" class="folderAction"
-                  :aria-label="$t('message.sampleManager.renameFolderLabel', { name: directory.label })"
-                  :title="$t('message.sampleManager.rename')"
-                  @click="$emit('rename-folder', currentPathTo(directory.folder))">
-            <font-awesome-icon icon="fa-solid fa-pen"/>
-          </button>
-          <button v-if="manage && directory.folder !== undefined" class="folderAction"
-                  :aria-label="$t('message.sampleManager.deleteFolderLabel', { name: directory.label })"
-                  :title="$t('message.sampleManager.delete')"
-                  @click="$emit('delete-folder', currentPathTo(directory.folder), directory.label)">
-            <font-awesome-icon icon="fa-solid fa-trash"/>
-          </button>
-        </div>
+        <ButtonItem v-for="(directory, index) in getDirectoryList()" v-bind:key="index" :id="directory.id"
+                    text="" @on-click="selectDirectory" ref="button" :background="background">
+          <font-awesome-icon v-if="directory.icon !== undefined" :icon="directory.icon"/>
+          {{ directory.label }}
+        </ButtonItem>
       </div>
     </div>
 
@@ -38,23 +21,7 @@
           :options="getSampleList()"
           :selected="getSelectedSample()"
           @selection-changed="selectSample"
-          :menu="manage ? getSampleMenu() : undefined"
-          :menu_id="`${prefix}_sample_menu`"
-          :scroll-top="getMenuScrollOffset"
-          @menu-selected="sampleMenuSelected"
-          :draggable="manage"
-          @item-dragstart="onSampleDragStart"
-          @item-dragend="onSampleDragEnd"
-          @item-dblclick="onSampleDoubleClick"
-      >
-        <template v-if="manage" #item-actions="{ option }">
-          <button class="itemPlay" @click.prevent.stop="togglePreview(option.id)" @dblclick.stop"
-                  :aria-label="$t(isPreviewing(option.id) ? 'message.sampleManager.stopPreview' : 'message.sampleManager.playPreview', { name: option.label })"
-                  :title="$t(isPreviewing(option.id) ? 'message.sampleManager.stop' : 'message.sampleManager.listen')">
-            <font-awesome-icon :icon="isPreviewing(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-play'"/>
-          </button>
-        </template>
-      </RadioList>
+      />
     </div>
   </VerticalScrollingContainer>
 
@@ -74,19 +41,12 @@ export default {
   name: "SampleFileSelector",
   components: {RadioList, ButtonItem, VerticalScrollingContainer},
 
-  // Only emitted when 'manage' is set, paths are relative to the samples folder ('/' separated).
-  emits: ['rename-folder', 'rename-sample', 'move-sample', 'move-sample-request', 'edit-sample', 'delete-sample',
-    'delete-folder'],
-
   props: {
     prefix: { type: String, optional: false },
     maxHeight: {type: String, optional: true, default: "inherit"},
     padding: {type: String, required: false, default: "8px"},
     background: {type: String, required: false, default: "#3b413f"},
-    group: {type: String, required: true},
-
-    // Enables managing the files: renaming folders and samples, and moving samples into folders.
-    manage: {type: Boolean, required: false, default: false},
+    group: {type: String, required: true}
   },
 
   data() {
@@ -96,13 +56,6 @@ export default {
 
       audio_player: undefined,
       audio_playing: false,
-
-      // The sample being listened to with its play button
-      previewing: undefined,
-
-      // The sample being dragged, and the folder it's over
-      dragging: undefined,
-      dropTarget: undefined,
     }
   },
 
@@ -126,8 +79,7 @@ export default {
         samples.push({
           id: this.prefix + directory,
           icon: "fa-solid fa-folder",
-          label: directory,
-          folder: directory,
+          label: directory
         });
       }
       return samples;
@@ -238,133 +190,6 @@ export default {
       return root;
     },
 
-    // The path of a file or folder in the current folder, relative to the samples folder
-    currentPathTo(name) {
-      return [...this.current_path, name].join('/');
-    },
-
-    getCurrentFolder() {
-      return this.current_path.join('/');
-    },
-
-    // The sample menu is placed from the button's offset, which doesn't account for scrolling.
-    // Add up the scrolling of every container between the list and the element both the button
-    // and the menu are positioned against (this tab has two nested scrolling containers).
-    getMenuScrollOffset() {
-      let list = this.$refs.sampleList !== undefined ? this.$refs.sampleList.$el : undefined;
-      if (list === undefined || list === null) {
-        return 0;
-      }
-
-      let stop = list.offsetParent;
-      let offset = 0;
-      for (let element = list.parentElement; element !== null && element !== stop; element = element.parentElement) {
-        offset += element.scrollTop;
-      }
-      return offset;
-    },
-
-    getSampleMenu() {
-      return [
-        {name: this.$t('message.sampleManager.edit'), slug: "edit"},
-        {name: this.$t('message.sampleManager.rename'), slug: "rename"},
-        {name: this.$t('message.sampleManager.moveTo'), slug: "move"},
-        {name: this.$t('message.sampleManager.delete'), slug: "delete"},
-      ];
-    },
-
-    sampleMenuSelected(event) {
-      let name = event.item.substring(this.prefix.length);
-      if (event.option.slug === "rename") {
-        this.$emit('rename-sample', this.currentPathTo(name), name);
-      }
-      if (event.option.slug === "move") {
-        this.$emit('move-sample-request', this.currentPathTo(name), name);
-      }
-      if (event.option.slug === "edit") {
-        this.stopPlayback();
-        this.$emit('edit-sample', this.currentPathTo(name), name);
-      }
-      if (event.option.slug === "delete") {
-        this.stopPlayback();
-        this.$emit('delete-sample', this.currentPathTo(name), name);
-      }
-    },
-
-    isPreviewing(id) {
-      return this.audio_playing && this.previewing === id.substring(this.prefix.length);
-    },
-
-    // Plays a sample from its play button (or stops it if it's the one playing).
-    togglePreview(id) {
-      let name = id.substring(this.prefix.length);
-      if (this.isPreviewing(id)) {
-        this.audio_player.pause();
-        return;
-      }
-      this.stopPlayback();
-      this.previewing = name;
-      this.audio_player.src = getBaseHTTPAddress() + "files/samples/" + encodeURIComponent(name);
-      this.audio_player.play();
-    },
-
-    // Double clicking a sample opens it in the editor (only when managing files).
-    onSampleDoubleClick(id) {
-      if (!this.manage) {
-        return;
-      }
-      let name = id.substring(this.prefix.length);
-      this.stopPlayback();
-      this.$emit('edit-sample', this.currentPathTo(name), name);
-    },
-
-    onSampleDragStart(event, id) {
-      this.dragging = id.substring(this.prefix.length);
-      event.dataTransfer.effectAllowed = "move";
-      event.dataTransfer.setData("text/plain", this.dragging);
-    },
-
-    onSampleDragEnd() {
-      this.dragging = undefined;
-      this.dropTarget = undefined;
-    },
-
-    // The folder a directory entry stands for ('*' is the parent folder)
-    getDropFolder(directoryId) {
-      let id = directoryId.substring(this.prefix.length);
-      if (id === "*") {
-        return this.current_path.slice(0, -1).join('/');
-      }
-      return this.currentPathTo(id);
-    },
-
-    onFolderDragOver(event, directoryId) {
-      if (!this.manage || this.dragging === undefined) {
-        return;
-      }
-      event.preventDefault();
-      event.dataTransfer.dropEffect = "move";
-      this.dropTarget = directoryId;
-    },
-
-    onFolderDragLeave(directoryId) {
-      if (this.dropTarget === directoryId) {
-        this.dropTarget = undefined;
-      }
-    },
-
-    onFolderDrop(event, directoryId) {
-      if (!this.manage || this.dragging === undefined) {
-        return;
-      }
-      event.preventDefault();
-
-      let name = this.dragging;
-      let folder = this.getDropFolder(directoryId);
-      this.onSampleDragEnd();
-      this.$emit('move-sample', this.currentPathTo(name), folder.length > 0 ? `${folder}/${name}` : name);
-    },
-
     focus() {
       if (this.getDirectoryList().length > 0) {
         this.$refs.button[0].focus();
@@ -472,45 +297,5 @@ export default {
   flex-direction: column;
   flex-wrap: nowrap;
   gap: 8px;
-}
-
-.folderRow {
-  display: flex;
-  align-items: stretch;
-  gap: 4px;
-}
-
-.folderRow > .folderButton {
-  flex: 1;
-  min-width: 0;
-}
-
-.folderRow.dropTarget {
-  outline: 1px dashed #59b1b6;
-}
-
-.itemPlay {
-  background-color: transparent;
-  border: 0;
-  padding: 6px;
-  margin: 0;
-  color: inherit;
-  cursor: pointer;
-}
-
-.itemPlay:focus-visible {
-  outline: 1px solid #59b1b6;
-}
-
-.folderAction {
-  border: 0;
-  background-color: transparent;
-  color: #a5a7a6;
-  padding: 0 10px;
-  margin-right: 6px;
-}
-
-.folderAction:hover, .folderAction:focus {
-  color: #fff;
 }
 </style>

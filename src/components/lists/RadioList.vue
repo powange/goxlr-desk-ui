@@ -66,6 +66,7 @@ export default {
       <RadioItem v-for="option in options" :key="option.id" :id="getUniqueId(option.id)" :ref="getUniqueId(option.id)"
         :group="group" :text="option.label" :selected="selected === option.id" :disabled="option.disabled"
         @radio-selected="select(option.id)" :icon="option.icon" :background="background" :padding="padding"
+        :detail="option.detail" :badge="option.badge" :badge-label="option.badgeLabel"
         :draggable="draggable ? 'true' : null"
         @dragstart="draggable && $emit('item-dragstart', $event, option.id)"
         @dragend="draggable && $emit('item-dragend')"

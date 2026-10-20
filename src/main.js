@@ -18,7 +18,7 @@ import {
     faFolder, faEllipsisVertical, faPlay, faStop, faXmark, faGear, faBookOpen, faCircleInfo, faChevronLeft,
     faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic, faTurnUp, faHeadphones,
     faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload, faFolderPlus, faPen,
-    faScissors, faCropSimple, faRotateLeft
+    faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles
 } from "@fortawesome/free-solid-svg-icons";
 import {createI18n} from "vue-i18n";
 import {messages} from "@/lang/config.js";
@@ -28,7 +28,7 @@ library.add(
     faCheckCircle, faCheck, faFolder, faTrash, faPlay, faStop, faXmark, faGear, faBookOpen, faCircleInfo,
     faChevronLeft, faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic,
     faTurnUp, faHeadphones, faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload,
-    faFolderPlus, faPen, faScissors, faCropSimple, faRotateLeft
+    faFolderPlus, faPen, faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles
 );
 
 

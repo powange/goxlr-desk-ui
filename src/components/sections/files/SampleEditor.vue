@@ -34,10 +34,17 @@
           <button @click="removeSelection" :disabled="selection === undefined">
             <font-awesome-icon icon="fa-solid fa-scissors"/> {{ $t('message.sampleManager.removeSelection') }}
           </button>
+          <button @click="trimSilence" :disabled="!ready">
+            <font-awesome-icon icon="fa-solid fa-wand-magic-sparkles"/> {{ $t('message.sampleManager.trimSilence') }}
+          </button>
           <button @click="undo" :disabled="history.length === 0">
             <font-awesome-icon icon="fa-solid fa-rotate-left"/> {{ $t('message.sampleManager.undo') }}
           </button>
         </div>
+        <label class="option">
+          <input type="checkbox" v-model="normalize"/>
+          {{ $t('message.sampleManager.normalize') }}
+        </label>
 
         <fieldset class="save">
           <legend>{{ $t('message.sampleManager.saveAs') }}</legend>
@@ -60,7 +67,7 @@
         <p v-if="saveError !== ''" class="error">{{ saveError }}</p>
 
         <div class="footer">
-          <button class="primary" @click="save" :disabled="removed.length === 0 || saving">
+          <button class="primary" @click="save" :disabled="(removed.length === 0 && !normalize) || saving">
             {{ saving ? $t('message.sampleManager.saving') : $t('message.sampleManager.save') }}
           </button>
           <button @click="close">{{ $t('message.sampleManager.cancel') }}</button>
@@ -99,6 +106,7 @@ export default {
       removed: [],
       history: [],
 
+      normalize: false,
       saveMode: 'replace',
       copyName: '',
       saving: false,
@@ -114,6 +122,7 @@ export default {
       this.removed = [];
       this.history = [];
       this.selection = undefined;
+      this.normalize = false;
       this.saveMode = 'replace';
       this.copyName = this.baseName() + " " + this.$t('message.sampleManager.copySuffix');
       this.saveError = '';
@@ -244,6 +253,49 @@ export default {
       this.applyRemoved([...this.removed, [start, end]]);
     },
 
+    // Removes the near silent parts at the start and the end (below -45dB, keeping 50ms).
+    trimSilence() {
+      let buffer = this.wavesurfer.backend.buffer;
+      if (buffer === undefined || buffer === null) {
+        return;
+      }
+      let threshold = Math.pow(10, -45 / 20);
+      let channels = [];
+      for (let channel = 0; channel < buffer.numberOfChannels; channel++) {
+        channels.push(buffer.getChannelData(channel));
+      }
+      let loud = (index) => channels.some((data) => Math.abs(data[index]) > threshold);
+
+      let first = 0;
+      while (first < buffer.length && !loud(first)) {
+        first++;
+      }
+      let last = buffer.length - 1;
+      while (last > first && !loud(last)) {
+        last--;
+      }
+      if (first >= buffer.length) {
+        this.saveError = this.$t('message.sampleManager.onlySilence');
+        return;
+      }
+
+      let margin = 0.05;
+      let start = Math.max(0, first / buffer.sampleRate - margin);
+      let end = Math.min(this.duration, (last + 1) / buffer.sampleRate + margin);
+      let ranges = [...this.removed];
+      if (start > 0.01) {
+        ranges.push([0, start]);
+      }
+      if (this.duration - end > 0.01) {
+        ranges.push([end, this.duration]);
+      }
+      if (ranges.length === this.removed.length) {
+        this.saveError = this.$t('message.sampleManager.noSilence');
+        return;
+      }
+      this.applyRemoved(ranges);
+    },
+
     undo() {
       this.removed = this.history.pop();
       this.renderRemoved();
@@ -308,7 +360,8 @@ export default {
       this.saving = true;
       this.saveError = '';
       this.wavesurfer.stop();
-      websocket.send_daemon_command({EditSampleFile: [this.path, this.removed, saveAs]}).then(() => {
+      let edit = {remove: this.removed, normalize: this.normalize};
+      websocket.send_daemon_command({EditSampleFile: [this.path, edit, saveAs]}).then(() => {
         this.saving = false;
         this.close();
       }).catch((error) => {
@@ -388,6 +441,12 @@ button.primary {
   background-color: #59b1b6;
   border-color: #59b1b6;
   color: #000;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
 .save {

@@ -131,6 +131,11 @@ export const store = reactive({
         return this.status.files.sample_folders || [];
     },
 
+    // Deleted samples and folders that can be restored (older daemons don't send it).
+    getSampleTrash() {
+        return this.status.files.sample_trash || [];
+    },
+
     getIconFiles() {
         return this.status.files.icons;
     },
