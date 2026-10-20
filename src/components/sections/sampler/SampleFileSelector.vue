@@ -34,6 +34,7 @@
           @selection-changed="selectSample"
           :menu="manage ? getSampleMenu() : undefined"
           :menu_id="`${prefix}_sample_menu`"
+          :scroll-top="getMenuScrollOffset"
           @menu-selected="sampleMenuSelected"
           :draggable="manage"
           @item-dragstart="onSampleDragStart"
@@ -225,6 +226,23 @@ export default {
 
     getCurrentFolder() {
       return this.current_path.join('/');
+    },
+
+    // The sample menu is placed from the button's offset, which doesn't account for scrolling.
+    // Add up the scrolling of every container between the list and the element both the button
+    // and the menu are positioned against (this tab has two nested scrolling containers).
+    getMenuScrollOffset() {
+      let list = this.$refs.sampleList !== undefined ? this.$refs.sampleList.$el : undefined;
+      if (list === undefined || list === null) {
+        return 0;
+      }
+
+      let stop = list.offsetParent;
+      let offset = 0;
+      for (let element = list.parentElement; element !== null && element !== stop; element = element.parentElement) {
+        offset += element.scrollTop;
+      }
+      return offset;
     },
 
     getSampleMenu() {
