@@ -45,6 +45,7 @@
           :draggable="manage"
           @item-dragstart="onSampleDragStart"
           @item-dragend="onSampleDragEnd"
+          @item-dblclick="onSampleDoubleClick"
       />
     </div>
   </VerticalScrollingContainer>
@@ -277,6 +278,16 @@ export default {
         this.stopPlayback();
         this.$emit('delete-sample', this.currentPathTo(name), name);
       }
+    },
+
+    // Double clicking a sample opens it in the editor (only when managing files).
+    onSampleDoubleClick(id) {
+      if (!this.manage) {
+        return;
+      }
+      let name = id.substring(this.prefix.length);
+      this.stopPlayback();
+      this.$emit('edit-sample', this.currentPathTo(name), name);
     },
 
     onSampleDragStart(event, id) {

@@ -4,7 +4,7 @@ import DropMenu from "@/components/design/DropMenu.vue";
 
 export default {
   name: "RadioList",
-  emits: ['selection-changed', 'menu-opened', 'menu-selected', 'item-dragstart', 'item-dragend'],
+  emits: ['selection-changed', 'menu-opened', 'menu-selected', 'item-dragstart', 'item-dragend', 'item-dblclick'],
   components: { DropMenu, RadioItem },
 
   props: {
@@ -68,7 +68,8 @@ export default {
         @radio-selected="select(option.id)" :icon="option.icon" :background="background" :padding="padding"
         :draggable="draggable ? 'true' : null"
         @dragstart="draggable && $emit('item-dragstart', $event, option.id)"
-        @dragend="draggable && $emit('item-dragend')">
+        @dragend="draggable && $emit('item-dragend')"
+        @dblclick="$emit('item-dblclick', option.id)">
         <template v-if="this.menu !== undefined" #right>
           <button :aria-label="`${option.label} Options`" :id="getButtonId(option.id)" aria-haspopup="menu"
             :aria-controls="this.menu_id" @click.prevent.stop="menuOpened($event, getButtonId(option.id), option.id)">
