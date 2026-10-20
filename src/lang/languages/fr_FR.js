@@ -762,6 +762,26 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        sampleManager: {
+            newFolder: "Nouveau dossier",
+            openFolder: "Ouvrir le dossier des sons",
+            rename: "Renommer",
+            renameFolder: "Renommer le dossier",
+            renameFolderLabel: "Renommer le dossier {name}",
+            renameSample: "Renommer le son",
+            moveTo: "Déplacer vers...",
+            moveTitle: "Déplacer {name}",
+            moveDestination: "Dossier de destination",
+            rootFolder: "(Dossier des sons)",
+            move: "Déplacer",
+            namePlaceholder: "Nom",
+            extensionKept: "L'extension {extension} est conservée.",
+            invalidName: "Un nom ne peut pas contenir / ou \\.",
+            ok: "OK",
+            cancel: "Annuler",
+            errorTitle: "Impossible d'effectuer cette action",
+        },
+
         profileManager: {
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Sauvegarder profil {profileName}",

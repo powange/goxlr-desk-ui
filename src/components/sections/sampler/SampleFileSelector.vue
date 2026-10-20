@@ -3,11 +3,22 @@
     <div v-if="getDirectoryList().length > 0">
       <p class="title screenreader-only" role="heading">{{$t('message.sampler.samples.sampleSelector.directories')}}</p>
       <div class="buttons">
-        <ButtonItem v-for="(directory, index) in getDirectoryList()" v-bind:key="index" :id="directory.id"
-                    text="" @on-click="selectDirectory" ref="button" :background="background">
-          <font-awesome-icon v-if="directory.icon !== undefined" :icon="directory.icon"/>
-          {{ directory.label }}
-        </ButtonItem>
+        <div v-for="(directory, index) in getDirectoryList()" v-bind:key="index" class="folderRow"
+             :class="{ dropTarget: dropTarget === directory.id }"
+             @dragover="onFolderDragOver($event, directory.id)" @dragleave="onFolderDragLeave(directory.id)"
+             @drop="onFolderDrop($event, directory.id)">
+          <ButtonItem :id="directory.id" class="folderButton"
+                      text="" @on-click="selectDirectory" ref="button" :background="background">
+            <font-awesome-icon v-if="directory.icon !== undefined" :icon="directory.icon"/>
+            {{ directory.label }}
+          </ButtonItem>
+          <button v-if="manage && directory.folder !== undefined" class="folderAction"
+                  :aria-label="$t('message.sampleManager.renameFolderLabel', { name: directory.label })"
+                  :title="$t('message.sampleManager.rename')"
+                  @click="$emit('rename-folder', currentPathTo(directory.folder))">
+            <font-awesome-icon icon="fa-solid fa-pen"/>
+          </button>
+        </div>
       </div>
     </div>
 
@@ -21,6 +32,12 @@
           :options="getSampleList()"
           :selected="getSelectedSample()"
           @selection-changed="selectSample"
+          :menu="manage ? getSampleMenu() : undefined"
+          :menu_id="`${prefix}_sample_menu`"
+          @menu-selected="sampleMenuSelected"
+          :draggable="manage"
+          @item-dragstart="onSampleDragStart"
+          @item-dragend="onSampleDragEnd"
       />
     </div>
   </VerticalScrollingContainer>
@@ -41,12 +58,18 @@ export default {
   name: "SampleFileSelector",
   components: {RadioList, ButtonItem, VerticalScrollingContainer},
 
+  // Only emitted when 'manage' is set, paths are relative to the samples folder ('/' separated).
+  emits: ['rename-folder', 'rename-sample', 'move-sample', 'move-sample-request'],
+
   props: {
     prefix: { type: String, optional: false },
     maxHeight: {type: String, optional: true, default: "inherit"},
     padding: {type: String, required: false, default: "8px"},
     background: {type: String, required: false, default: "#3b413f"},
-    group: {type: String, required: true}
+    group: {type: String, required: true},
+
+    // Enables managing the files: renaming folders and samples, and moving samples into folders.
+    manage: {type: Boolean, required: false, default: false},
   },
 
   data() {
@@ -56,6 +79,10 @@ export default {
 
       audio_player: undefined,
       audio_playing: false,
+
+      // The sample being dragged, and the folder it's over
+      dragging: undefined,
+      dropTarget: undefined,
     }
   },
 
@@ -79,7 +106,8 @@ export default {
         samples.push({
           id: this.prefix + directory,
           icon: "fa-solid fa-folder",
-          label: directory
+          label: directory,
+          folder: directory,
         });
       }
       return samples;
@@ -153,37 +181,114 @@ export default {
     },
 
     getSamplePaths() {
-      if (store.getSampleFiles() === undefined) {
-        return {};
+      let files = store.getSampleFiles();
+      if (files === undefined) {
+        return [];
       }
 
-      return Object.keys(store.getSampleFiles()).reduce(function (acc, value) {
-        value = value.replace(/\\/g, '/');
+      // Builds a tree of nested '{ name: [...] }' objects (folders) and strings (files).
+      let root = [];
+      let descend = function (fields) {
+        let current = root;
+        for (let element of fields) {
+          let subDirectory = current.find(function (field) {
+            return typeof field == 'object' && field[element];
+          });
 
-        let fields = value.split("/");
-        let currentDirectory = acc;
-
-        fields.forEach(function (element, index) {
-          if (index !== fields.length - 1) {
-            // We're not at the end yet, look for a subdir..
-            let subDirectory = currentDirectory.filter(function (field) {
-              return typeof field == 'object' && field[element];
-            })[0];
-
-            // Couldn't find an existing SubDirectory, create it..
-            if (!subDirectory) {
-              subDirectory = Object.create(null);
-              subDirectory[element] = [];
-              currentDirectory.push(subDirectory);
-            }
-            currentDirectory = subDirectory[element];
-          } else {
-            currentDirectory.push(element);
+          // Couldn't find an existing SubDirectory, create it..
+          if (!subDirectory) {
+            subDirectory = Object.create(null);
+            subDirectory[element] = [];
+            current.push(subDirectory);
           }
-        });
+          current = subDirectory[element];
+        }
+        return current;
+      };
 
-        return acc;
-      }, []);
+      for (let value of Object.keys(files)) {
+        let fields = value.replace(/\\/g, '/').split("/");
+        descend(fields.slice(0, -1)).push(fields[fields.length - 1]);
+      }
+
+      // Folders without samples only appear in the folder list.
+      for (let folder of store.getSampleFolders()) {
+        descend(folder.replace(/\\/g, '/').split("/").filter((part) => part.length > 0));
+      }
+      return root;
+    },
+
+    // The path of a file or folder in the current folder, relative to the samples folder
+    currentPathTo(name) {
+      return [...this.current_path, name].join('/');
+    },
+
+    getCurrentFolder() {
+      return this.current_path.join('/');
+    },
+
+    getSampleMenu() {
+      return [
+        {name: this.$t('message.sampleManager.rename'), slug: "rename"},
+        {name: this.$t('message.sampleManager.moveTo'), slug: "move"},
+      ];
+    },
+
+    sampleMenuSelected(event) {
+      let name = event.item.substring(this.prefix.length);
+      if (event.option.slug === "rename") {
+        this.$emit('rename-sample', this.currentPathTo(name), name);
+      }
+      if (event.option.slug === "move") {
+        this.$emit('move-sample-request', this.currentPathTo(name), name);
+      }
+    },
+
+    onSampleDragStart(event, id) {
+      this.dragging = id.substring(this.prefix.length);
+      event.dataTransfer.effectAllowed = "move";
+      event.dataTransfer.setData("text/plain", this.dragging);
+    },
+
+    onSampleDragEnd() {
+      this.dragging = undefined;
+      this.dropTarget = undefined;
+    },
+
+    // The folder a directory entry stands for ('*' is the parent folder)
+    getDropFolder(directoryId) {
+      let id = directoryId.substring(this.prefix.length);
+      if (id === "*") {
+        return this.current_path.slice(0, -1).join('/');
+      }
+      return this.currentPathTo(id);
+    },
+
+    onFolderDragOver(event, directoryId) {
+      if (!this.manage || this.dragging === undefined) {
+        return;
+      }
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "move";
+      this.dropTarget = directoryId;
+    },
+
+    onFolderDragLeave(directoryId) {
+      if (this.dropTarget === directoryId) {
+        this.dropTarget = undefined;
+      }
+    },
+
+    onFolderDrop(event, directoryId) {
+      if (!this.manage || this.dragging === undefined) {
+        return;
+      }
+      event.preventDefault();
+
+      let name = this.dragging;
+      let folder = this.getDropFolder(directoryId);
+      this.onSampleDragEnd();
+      this.$emit('move-sample', this.currentPathTo(name), folder.length > 0 ? `${folder}/${name}` : name);
     },
 
     focus() {
@@ -293,5 +398,32 @@ export default {
   flex-direction: column;
   flex-wrap: nowrap;
   gap: 8px;
+}
+
+.folderRow {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.folderRow > .folderButton {
+  flex: 1;
+  min-width: 0;
+}
+
+.folderRow.dropTarget {
+  outline: 1px dashed #59b1b6;
+}
+
+.folderAction {
+  border: 0;
+  background-color: transparent;
+  color: #a5a7a6;
+  padding: 0 10px;
+  margin-right: 6px;
+}
+
+.folderAction:hover, .folderAction:focus {
+  color: #fff;
 }
 </style>

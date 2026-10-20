@@ -126,6 +126,11 @@ export const store = reactive({
         return this.status.files.samples;
     },
 
+    // Every folder below the samples directory, empty ones included (older daemons don't send it).
+    getSampleFolders() {
+        return this.status.files.sample_folders || [];
+    },
+
     getIconFiles() {
         return this.status.files.icons;
     },
