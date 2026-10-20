@@ -16,8 +16,30 @@
     <SampleFileSelector ref="selector" background="transparent" padding="6px" group="sample_list" prefix="list_sample_"
                         :manage="true"
                         @rename-folder="renameFolder" @rename-sample="renameSample"
-                        @move-sample="moveSample" @move-sample-request="requestMove"/>
+                        @move-sample="moveSample" @move-sample-request="requestMove"
+                        @edit-sample="editSample" @delete-sample="deleteSample" @delete-folder="deleteFolder"/>
   </div>
+
+  <SampleEditor ref="editor"/>
+
+  <!-- Delete a sample or a folder -->
+  <AccessibleModal ref="deleteModal" id="sampleDelete">
+    <template v-slot:title>{{ deleteTitle }}</template>
+    <template v-slot:default>
+      <p class="question">{{ deleteQuestion }}</p>
+      <template v-if="deleteProfiles.length > 0">
+        <p class="warning">{{ $t('message.sampleManager.usedByProfiles') }}</p>
+        <ul class="profiles">
+          <li v-for="profile in deleteProfiles" :key="profile">{{ profile }}</li>
+        </ul>
+        <p class="hint">{{ $t('message.sampleManager.usedByProfilesHint') }}</p>
+      </template>
+    </template>
+    <template v-slot:footer>
+      <ModalButton @click="confirmDelete">{{ $t('message.sampleManager.delete') }}</ModalButton>
+      <ModalButton ref="deleteCancel" @click="$refs.deleteModal.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
+    </template>
+  </AccessibleModal>
 
   <!-- New folder / rename -->
   <AccessibleModal ref="nameModal" id="sampleName">
@@ -64,10 +86,11 @@ import SampleFileSelector from "@/components/sections/sampler/SampleFileSelector
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import ModalInput from "@/components/design/modal/ModalInput.vue";
+import SampleEditor from "@/components/sections/files/SampleEditor.vue";
 
 export default {
   name: "SampleHandler",
-  components: {ModalInput, ModalButton, AccessibleModal, SampleFileSelector},
+  components: {SampleEditor, ModalInput, ModalButton, AccessibleModal, SampleFileSelector},
 
   data: function () {
     return {
@@ -82,6 +105,11 @@ export default {
       moveTarget: '',
 
       errorMessage: '',
+
+      deletePath: '',
+      deleteTitle: '',
+      deleteQuestion: '',
+      deleteProfiles: [],
     }
   },
 
@@ -173,6 +201,46 @@ export default {
       this.send({MoveSamplePath: [from, to]});
     },
 
+    editSample(path, name) {
+      this.$refs.editor.open(path, name, undefined);
+    },
+
+    deleteSample(path, name) {
+      this.askDelete(path, (usage) => {
+        this.deleteTitle = this.$t('message.sampleManager.deleteSampleTitle');
+        this.deleteQuestion = this.$t('message.sampleManager.deleteSampleQuestion', {name: name});
+        return usage;
+      });
+    },
+
+    deleteFolder(path, name) {
+      this.askDelete(path, (usage) => {
+        this.deleteTitle = this.$t('message.sampleManager.deleteFolderTitle');
+        this.deleteQuestion = usage.files > 0
+            ? this.$t('message.sampleManager.deleteFolderQuestion', {name: name, count: usage.files})
+            : this.$t('message.sampleManager.deleteEmptyFolderQuestion', {name: name});
+        return usage;
+      });
+    },
+
+    // Asks the daemon which profiles use what's about to be deleted, then asks for confirmation.
+    askDelete(path, describe) {
+      this.deletePath = path;
+      websocket.get_sample_usage(path).then((response) => {
+        let usage = describe(response.SampleUsage);
+        this.deleteProfiles = usage.profiles;
+        this.$refs.deleteModal.openModal(this.$refs.deleteCancel, undefined);
+      }).catch((error) => {
+        let message = (error !== undefined && error.Error !== undefined) ? error.Error : String(error);
+        this.showError(message);
+      });
+    },
+
+    confirmDelete() {
+      this.$refs.deleteModal.closeModal();
+      this.send({DeleteSamplePath: this.deletePath});
+    },
+
     getFolderOptions() {
       let folders = store.getSampleFolders().map((folder) => folder.replace(/\\/g, '/'));
       return ['', ...folders.sort(Intl.Collator().compare)];
@@ -213,6 +281,19 @@ export default {
   border: 1px solid #3b413f;
   padding: 5px;
   color: #fff;
+}
+
+.question {
+  margin: 0 0 10px 0;
+}
+
+.warning {
+  margin: 0;
+  font-weight: bold;
+}
+
+.profiles {
+  margin: 6px 0;
 }
 
 .hint {

@@ -57,6 +57,8 @@ export class Websocket {
                 store.patchData(message_data);
             } else if (message_data["MicLevel"] !== undefined) {
                 self.#fulfill_promise(message_id, message_data, true);
+            } else if (message_data["SampleUsage"] !== undefined) {
+                self.#fulfill_promise(message_id, message_data, true);
             } else if (message_data === "Ok") {
                 self.#fulfill_promise(message_id, message_data, true);
             } else {
@@ -119,6 +121,12 @@ export class Websocket {
         }
 
         return this.send_daemon_command(request);
+    }
+
+    // Which profiles use the sample(s) at a path (a file, or a folder's content), relative to the
+    // samples folder. Resolves with { SampleUsage: { files, profiles } }.
+    get_sample_usage(path) {
+        return this.#sendRequest({"GetSampleUsage": path});
     }
 
     send_daemon_command(command) {

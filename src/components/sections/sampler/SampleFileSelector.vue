@@ -18,6 +18,12 @@
                   @click="$emit('rename-folder', currentPathTo(directory.folder))">
             <font-awesome-icon icon="fa-solid fa-pen"/>
           </button>
+          <button v-if="manage && directory.folder !== undefined" class="folderAction"
+                  :aria-label="$t('message.sampleManager.deleteFolderLabel', { name: directory.label })"
+                  :title="$t('message.sampleManager.delete')"
+                  @click="$emit('delete-folder', currentPathTo(directory.folder), directory.label)">
+            <font-awesome-icon icon="fa-solid fa-trash"/>
+          </button>
         </div>
       </div>
     </div>
@@ -60,7 +66,8 @@ export default {
   components: {RadioList, ButtonItem, VerticalScrollingContainer},
 
   // Only emitted when 'manage' is set, paths are relative to the samples folder ('/' separated).
-  emits: ['rename-folder', 'rename-sample', 'move-sample', 'move-sample-request'],
+  emits: ['rename-folder', 'rename-sample', 'move-sample', 'move-sample-request', 'edit-sample', 'delete-sample',
+    'delete-folder'],
 
   props: {
     prefix: { type: String, optional: false },
@@ -247,8 +254,10 @@ export default {
 
     getSampleMenu() {
       return [
+        {name: this.$t('message.sampleManager.edit'), slug: "edit"},
         {name: this.$t('message.sampleManager.rename'), slug: "rename"},
         {name: this.$t('message.sampleManager.moveTo'), slug: "move"},
+        {name: this.$t('message.sampleManager.delete'), slug: "delete"},
       ];
     },
 
@@ -259,6 +268,14 @@ export default {
       }
       if (event.option.slug === "move") {
         this.$emit('move-sample-request', this.currentPathTo(name), name);
+      }
+      if (event.option.slug === "edit") {
+        this.stopPlayback();
+        this.$emit('edit-sample', this.currentPathTo(name), name);
+      }
+      if (event.option.slug === "delete") {
+        this.stopPlayback();
+        this.$emit('delete-sample', this.currentPathTo(name), name);
       }
     },
 
