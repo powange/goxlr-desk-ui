@@ -11,6 +11,8 @@
 
     <!-- The four physical faders -->
     <div class="strips">
+      <!-- With submixes on, which mix each output gets comes first -->
+      <MixAssignment v-if="submixEnabled()"/>
       <FaderStrip v-for="fader in faders" :key="fader" :fader="fader" @lighting="openLighting">
         <SubmixSlider v-if="submixEnabled() && inputMixer.includes(faderChannel(fader))" :id=channelNames.indexOf(faderChannel(fader))
                       :title="getChannelName(faderChannel(fader))" :slider-min-value=0 :slider-max-value=255
@@ -29,7 +31,6 @@
     </div>
 
     <CenteredContainer>
-      <MixAssignment v-if="submixEnabled()"/>
 
       <GroupContainer v-if="!submixEnabled()" :title="$t('message.mixer.otherInputs')">
         <Slider v-for="item in otherInputs()" :key=item :id=channelNames.indexOf(item) :title="getChannelName(item)"
@@ -304,6 +305,7 @@ label {
 .strips {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
   flex-wrap: wrap;
   gap: 12px;
 }

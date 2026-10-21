@@ -15,6 +15,10 @@
           </span>
         </div>
         <div class="row">
+          <span></span>
+          <span class="hint">{{ getStyleHint() }}</span>
+        </div>
+        <div class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.fader.bottomColour') }}</span>
           <ColourPicker inline :title="$t('message.lighting.mixer.fader.bottomColour')" :color-value="getFaderBottomColour()"
                         @colour-changed="onFaderBottomColourChange"/>
@@ -87,7 +91,7 @@
           <div class="leds">
             <i v-for="(colour, index) in getLedColours()" :key="index" :style="{ backgroundColor: colour }"></i>
           </div>
-          <span>{{ $t('message.lighting.channel.previewFader') }}</span>
+          <span>{{ styleContains('Meter') ? $t('message.lighting.channel.previewMeter') : $t('message.lighting.channel.previewFader') }}</span>
         </div>
         <div v-if="!isDeviceMini()" class="preview-item">
           <div class="screen" :style="{ backgroundColor: getScreenColour() }">
@@ -118,7 +122,8 @@ import Toggle from "@/components/design/Toggle.vue";
 import {store} from "@/store";
 import {getBaseHTTPAddress} from "@/util/sockets";
 
-const LED_COUNT = 12;
+// As on the device (and the visualiser): 15 LEDs, lit up to the fader position
+const LED_COUNT = 15;
 
 function mix(a, b, t) {
   const pa = [1, 3, 5].map(i => parseInt(a.slice(i, i + 2), 16));
@@ -134,14 +139,32 @@ export default {
   components: {ColourPicker, ButtonLighting, Toggle},
 
   methods: {
-    // Bottom to top: a blend of the two colours with Gradient, the two halves otherwise
+    // What each style does with the two colours
+    getStyleHint() {
+      const gradient = this.styleContains('Gradient'), meter = this.styleContains('Meter');
+      if (meter) {
+        return gradient ? this.$t('message.lighting.channel.hintGradientMeter') : this.$t('message.lighting.channel.hintMeter');
+      }
+      return gradient ? this.$t('message.lighting.channel.hintGradient') : this.$t('message.lighting.channel.hintTwoColour');
+    },
+
+    // The LEDs from top to bottom, following the fader position (as the visualiser does): below
+    // it the bottom colour, or a blend towards the top colour with Gradient; above it the top
+    // colour, or nothing with Gradient. With Meter the device follows the sound instead, the
+    // preview then shows the same colours.
     getLedColours() {
       const bottom = this.getFaderBottomColour(), top = this.getFaderTopColour();
       const gradient = this.styleContains('Gradient');
+      const channel = store.getActiveDevice().fader_status[this.activeChannel].channel;
+      const volume = store.getActiveDevice().levels.volumes[channel] || 0;
+      const lit = Math.ceil(LED_COUNT / 255 * volume + 0.25);
       const colours = [];
-      for (let i = LED_COUNT - 1; i >= 0; i--) {
-        const t = i / (LED_COUNT - 1);
-        colours.push(gradient ? mix(bottom, top, t) : (t < 0.5 ? bottom : top));
+      for (let level = LED_COUNT - 1; level >= 0; level--) {
+        if (level >= lit) {
+          colours.push(gradient ? "transparent" : top);
+        } else {
+          colours.push(gradient ? mix(bottom, top, level / LED_COUNT) : bottom);
+        }
       }
       return colours;
     },
@@ -331,8 +354,14 @@ select {
 }
 
 .leds i {
-  height: 7px;
+  height: 6px;
   border-radius: 2px;
+  box-shadow: inset 0 0 0 1px var(--c-line);
+}
+
+.hint {
+  color: var(--c-muted);
+  font-size: 11px;
 }
 
 .screen {

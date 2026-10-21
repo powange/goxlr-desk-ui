@@ -28,7 +28,7 @@ import {
     faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic, faTurnUp, faHeadphones,
     faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload, faFolderPlus, faPen,
     faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles,
-    faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh,
+    faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import {createI18n} from "vue-i18n";
 import {messages} from "@/lang/config.js";
@@ -39,7 +39,7 @@ library.add(
     faChevronLeft, faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic,
     faTurnUp, faHeadphones, faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload,
     faFolderPlus, faPen, faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles,
-    faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh
+    faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare
 );
 
 

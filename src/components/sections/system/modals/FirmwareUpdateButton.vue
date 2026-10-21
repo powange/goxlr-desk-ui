@@ -1,13 +1,13 @@
 <template>
-  <div v-show="this.shouldShowUpdateButton()">
-    <BigButton id="firmware_update_button" ref="firmware_update_button"
+  <div v-show="inline || this.shouldShowUpdateButton()">
+    <BigButton v-if="!inline" id="firmware_update_button" ref="firmware_update_button"
                :title="updateButtonTitle"
                @button-clicked="handleButtonClick"
     >
       <font-awesome-icon icon="fa-solid fa-download" />
     </BigButton>
-    <AccessibleModal id="firmware_update_modal" ref="firmware_update_modal" width="620px" :show_footer=false>
-      <template v-slot:title>{{updateButtonTitle}}</template>
+    <AccessibleModal :inline="inline" id="firmware_update_modal" ref="firmware_update_modal" width="620px" :show_footer=false>
+      <template v-slot:title>{{ updateButtonTitle || $t('message.system.menu.firmware') }}</template>
 
       <p class="firmwareWarning">
         {{ $t('message.system.firmwareUpdate.warning') }}
@@ -60,6 +60,10 @@ import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 
 export default {
+  props: {
+    // Shows the content in place (System section) instead of a button opening a dialog
+    inline: {type: Boolean, default: false},
+  },
   name: "FirmwareUpdateButton",
   components: {BigButton, AccessibleModal},
 

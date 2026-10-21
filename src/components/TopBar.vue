@@ -21,6 +21,11 @@
       </select>
     </label>
 
+    <button ref="lighting" class="bar-button" @click="openLighting">
+      <font-awesome-icon icon="fa-solid fa-lightbulb"/>
+      <span>{{ $t('message.topBar.lighting') }}</span>
+    </button>
+
     <span class="grow"></span>
 
     <button class="map-button" @click="$emit('toggle-visualiser')" :aria-expanded="visualiserOpen"
@@ -35,6 +40,11 @@
       <font-awesome-icon :icon="visualiserOpen ? 'fa-solid fa-chevron-up' : 'fa-solid fa-chevron-down'" class="chevron"/>
     </button>
   </header>
+
+  <AccessibleModal ref="lightingModal" id="globalLighting" width="min(560px, 94vw)" body-padding="0">
+    <template v-slot:title>{{ $t('message.topBar.lightingTitle') }}</template>
+    <GlobalLighting v-if="lightingOpen"/>
+  </AccessibleModal>
 
   <AccessibleModal ref="saveModal" id="topBarSave" :show_close="false">
     <template v-slot:title>{{ $t('message.profileManager.overwriteTitle') }}</template>
@@ -52,10 +62,17 @@ import {sendHttpCommand} from "@/util/sockets";
 import {isDeviceMini} from "@/util/util";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
+import GlobalLighting from "@/components/sections/lighting/GlobalLighting.vue";
 
 export default {
   name: "TopBar",
-  components: {ModalButton, AccessibleModal},
+  components: {GlobalLighting, ModalButton, AccessibleModal},
+
+  data() {
+    return {
+      lightingOpen: false,
+    };
+  },
   emits: ["toggle-visualiser"],
 
   props: {
@@ -65,6 +82,15 @@ export default {
   },
 
   methods: {
+    // The device-wide lighting (moved here from the Lighting section)
+    openLighting() {
+      this.lightingOpen = false;
+      this.$nextTick(() => {
+        this.lightingOpen = true;
+        this.$refs.lightingModal.openModal(undefined, this.$refs.lighting);
+      });
+    },
+
     isMini() {
       return isDeviceMini();
     },

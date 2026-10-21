@@ -22,6 +22,10 @@
       <font-awesome-icon icon="fa-solid fa-folder"/>
       <span>{{ $t('message.effects.preset.menuLoad') }}</span>
     </button>
+    <button ref="lightingButton" type="button" class="preset-button" @click="openLighting()">
+      <font-awesome-icon icon="fa-solid fa-lightbulb"/>
+      <span>{{ $t('message.effects.lighting.customise') }}</span>
+    </button>
     <span class="grow"></span>
     <label class="master">
       <span class="preset-label">{{ $t('message.effects.face.master') }}</span>
@@ -43,6 +47,12 @@
   </div>
 
   <!-- Modals -->
+  <AccessibleModal ref="lightingModal" id="effectsLighting" width="min(640px, 94vw)" body-padding="0">
+    <template v-slot:title>{{ $t('message.effects.lighting.title') }}</template>
+    <EffectsLighting v-if="lightingOpen" :preset="getActivePreset()" :preset-name="getCurrentPresetName()"
+                     :selected-effect="selectedEffect"/>
+  </AccessibleModal>
+
 
   <AccessibleModal
       ref="select_preset_modal"
@@ -113,6 +123,7 @@ import HardTuneEffect from "@/components/sections/effects/HardTuneEffect.vue";
 import {EffectPresets} from "@/util/mixerMapping";
 import EffectsFace from "@/components/sections/effects/EffectsFace.vue";
 import Toggle from "@/components/design/Toggle.vue";
+import EffectsLighting from "@/components/sections/effects/lighting/EffectsLighting.vue";
 
 // The settings shown under the device face, and the command switching a button effect
 const EFFECT_COMPONENTS = {
@@ -132,6 +143,7 @@ export default {
 
   name: "EffectsTab",
   components: {
+    EffectsLighting,
     EffectsFace,
     Toggle,
     ScrollingRadioList,
@@ -150,6 +162,7 @@ export default {
       nameDraft: "",
       // The effect whose settings are shown
       selectedEffect: "reverb",
+      lightingOpen: false,
     };
   },
 
@@ -171,6 +184,15 @@ export default {
   },
 
   methods: {
+    // The effects' lighting (moved here from the Lighting section)
+    openLighting() {
+      this.lightingOpen = false;
+      this.$nextTick(() => {
+        this.lightingOpen = true;
+        this.$refs.lightingModal.openModal(undefined, this.$refs.lightingButton);
+      });
+    },
+
     getSelectedComponent() {
       return EFFECT_COMPONENTS[this.selectedEffect];
     },

@@ -1,9 +1,9 @@
 <template>
   <div>
-    <BigButton id="license_button" ref="license_button" :title="$t('message.system.licenses')" @button-clicked="$refs.licenseModal.openModal(undefined, $refs.license_button)">
+    <BigButton v-if="!inline" id="license_button" ref="license_button" :title="$t('message.system.licenses')" @button-clicked="$refs.licenseModal.openModal(undefined, $refs.license_button)">
       <font-awesome-icon icon="fa-solid fa-book-open"/>
     </BigButton>
-    <AccessibleModal width="680px" ref="licenseModal" id="license_modal" :show_footer=false>
+    <AccessibleModal :inline="inline" width="680px" ref="licenseModal" id="license_modal" :show_footer=false>
       <template v-slot:title>{{ $t('message.system.licenses') }}</template>
       <textarea
           style="width: 630px; height: 710px; background-color: var(--c-disabled); color: var(--c-text); border: 1px solid var(--c-line); resize: none"
@@ -57,6 +57,10 @@ import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 
 export default {
+  props: {
+    // Shows the content in place (System section) instead of a button opening a dialog
+    inline: {type: Boolean, default: false},
+  },
   name: "LicenseButton",
   components: {BigButton, AccessibleModal},
 

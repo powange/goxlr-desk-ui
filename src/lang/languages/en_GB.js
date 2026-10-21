@@ -245,6 +245,8 @@ export default {
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Lighting",
+                lightingTitle: "Cough and Bleep lighting",
                 behaviour: {
                     hold: "Hold",
                     toggle: "Toggle",
@@ -256,6 +258,16 @@ export default {
         },
 
         effects: {
+            lighting: {
+                customise: "Customise colours",
+                title: "Effects lighting",
+                presetButton: "Preset button · {name}",
+                applyPresets: "Apply to all presets",
+                encoders: "Encoders",
+                applyEncoders: "Apply to all encoders",
+                buttons: "Effect buttons",
+                applyButtons: "Apply to all effect buttons",
+            },
             face: {
                 label: "Effects",
                 master: "Effects",
@@ -435,6 +447,14 @@ export default {
         },
 
         sampler: {
+            lighting: {
+                label: "Lighting",
+                customise: "Customise colours",
+                title: "Sampler lighting",
+                bank: "Bank {bank} buttons",
+                note: "The device sets these colours for the whole bank, all four buttons share them.",
+                applyBanks: "Apply to all banks",
+            },
             bankTitle: "Bank",
             pads: {
                 title: "Buttons",
@@ -537,6 +557,11 @@ export default {
                 display: "Display",
                 preview: "Preview",
                 previewFader: "fader",
+                previewMeter: "meter",
+                hintTwoColour: "Below the fader: bottom colour. Above it: top colour.",
+                hintGradient: "Below the fader: a blend from the bottom to the top colour. Above it: off.",
+                hintMeter: "The LEDs follow the channel's sound level rather than the fader position.",
+                hintGradientMeter: "The LEDs follow the channel's sound level, blending from the bottom to the top colour.",
                 previewScreen: "screen",
                 previewActive: "active",
                 previewRest: "at rest",
@@ -734,6 +759,9 @@ export default {
 
         system: {
             title: "System",
+            menu: {
+                firmware: "Firmware update",
+            },
 
             powerButton: "Power Action",
             power: {
@@ -930,6 +958,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            lighting: "Global lighting",
+            lightingTitle: "Global lighting",
             profile: "Profile",
             profileLabel: "Active profile",
             micProfile: "Mic",

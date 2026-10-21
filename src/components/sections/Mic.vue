@@ -21,7 +21,7 @@
       <Gate ref="gate" />
       <Compressor/>
       <MicExtra />
-      <Cough />
+      <Cough ref="cough"/>
     </ContentContainer>
   </div>
 </template>

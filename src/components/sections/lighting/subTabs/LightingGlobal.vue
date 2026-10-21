@@ -185,7 +185,7 @@ export default {
       }
 
       store.getActiveDevice().lighting.animation.mod2 = this.mod2Value;
-      websocket.send_command(store.getActiveSerial(), {"SetAnimationMod2": this.this.mod2Value});
+      websocket.send_command(store.getActiveSerial(), {"SetAnimationMod2": this.mod2Value});
     },
 
     // Waterfall Settings..

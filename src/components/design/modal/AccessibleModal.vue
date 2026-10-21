@@ -1,5 +1,10 @@
 <template>
-  <div v-show=is_visible class="modal-mask">
+  <!-- Inline: the content shown in place, as a titled panel (no mask, no close button) -->
+  <section v-if="inline" class="inline-panel" :aria-labelledby="`${id}_label`">
+    <h2 :id="`${id}_label`" class="inline-title"><slot name="title"></slot></h2>
+    <div class="inline-body"><slot></slot></div>
+  </section>
+  <div v-else v-show=is_visible class="modal-mask">
     <div class="modal-wrapper">
       <div ref="dialog" class="modal-container" role="dialog" aria-modal="true" :aria-labelledby="`${id}_label`"
            :aria-describedby="`${id}_body`" @keyup.esc.prevent="closeModalEsc">
@@ -38,7 +43,8 @@ export default {
     prevent_esc: {type: Boolean, default: false},
 
     bodyPadding: {type: String, default: "20px"},
-    width: {type: String, default: "500px"}
+    width: {type: String, default: "500px"},
+    inline: {type: Boolean, default: false},
   },
 
   data() {
@@ -51,6 +57,7 @@ export default {
 
   methods: {
     openModal(focusRef, returnFocus) {
+      if (this.inline) return;
       this.returnFocus = returnFocus;
       this.is_visible = true;
 
@@ -79,6 +86,7 @@ export default {
     },
 
     closeModal() {
+      if (this.inline) return;
       // Deactivate the Trap (if active)..
       this.trap.deactivate();
 
@@ -94,7 +102,7 @@ export default {
     },
 
     isOpen() {
-      return this.is_visible;
+      return this.inline || this.is_visible;
     }
   }
 }
@@ -103,6 +111,26 @@ export default {
 </script>
 
 <style scoped>
+.inline-panel {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  color: var(--c-text);
+}
+
+.inline-title {
+  margin: 0;
+  font-family: var(--f-title);
+  font-size: 18px;
+  font-weight: normal;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.inline-body {
+  text-align: left;
+}
+
 /* Turn the background of the screen grey */
 .modal-mask {
   position: fixed;

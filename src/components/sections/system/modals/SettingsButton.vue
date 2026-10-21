@@ -1,7 +1,7 @@
 <template>
   <div>
     <BigButton
-        v-if="store.getConfig() !== undefined"
+        v-if="!inline && store.getConfig() !== undefined"
         id="settings_button"
         ref="button"
         :title="$t('message.system.settingsButton')"
@@ -9,7 +9,7 @@
     >
       <font-awesome-icon icon="fa-solid fa-gear"/>
     </BigButton>
-    <AccessibleModal
+    <AccessibleModal :inline="inline"
         width="630px"
         ref="modal"
         id="about_modal"
@@ -111,6 +111,10 @@ import ListSetting from "@/components/sections/system/modals/settings/ListSettin
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 
 export default {
+  props: {
+    // Shows the content in place (System section) instead of a button opening a dialog
+    inline: {type: Boolean, default: false},
+  },
   name: "SettingsButton",
   computed: {
     languages() {

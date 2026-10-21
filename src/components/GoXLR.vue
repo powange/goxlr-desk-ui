@@ -33,7 +33,7 @@
           </ContentContainer>
         </Tab>
         <Tab id="mic" icon="fa-solid fa-microphone-lines" :name="$t('message.navigation.microphone')">
-          <Mic/>
+          <Mic ref="mic"/>
         </Tab>
         <Tab id="effects" v-if="!isDeviceMini()" icon="fa-solid fa-wand-magic-sparkles" :name="$t('message.navigation.effects')">
           <EffectsTab ref="effects" @on-effect-preset-change="onEffectPresetChange"/>
@@ -53,9 +53,6 @@
             <Routing/>
           </ContentContainer>
         </Tab>
-        <Tab id="lighting" icon="fa-solid fa-lightbulb" :name="$t('message.navigation.lighting')">
-          <LightingTab ref="lighting" @on-lighting-changed="onLightingDataChange"/>
-        </Tab>
 
         <Tab id="profiles" icon="fa-solid fa-file-lines" :group="$t('message.navigation.library')" :name="$t('message.navigation.profiles')">
           <div class="library">
@@ -67,18 +64,11 @@
             </Panel>
           </div>
         </Tab>
-        <Tab id="presets" v-if="!isDeviceMini()" icon="fa-solid fa-layer-group" :group="$t('message.navigation.library')" :name="$t('message.navigation.presets')">
-          <div class="library">
-            <Panel :title="$t('message.navigation.presets')">
-              <PresetHandler/>
-            </Panel>
-          </div>
-        </Tab>
 
         <Tab id="system" icon="fa-solid fa-gear" :group="$t('message.navigation.application')" :name="$t('message.navigation.system')">
-          <ContentContainer>
+          <div class="system-wrap">
             <SystemComponent/>
-          </ContentContainer>
+          </div>
         </Tab>
       </Tabs>
     </template>
@@ -168,10 +158,8 @@ import Panel from "@/components/design/Panel.vue";
 import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
 import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
 import SampleHandler from "@/components/sections/files/SampleHandler.vue";
-import PresetHandler from "@/components/sections/files/PresetHandler.vue";
 import EffectsTab from "@/components/sections/EffectsTab.vue";
 import {isDeviceMini} from "@/util/util";
-import LightingTab from "@/components/sections/lighting/LightingTab.vue";
 import SamplerTab from "@/components/sections/SamplerTab.vue";
 import SampleAssignModal from "@/components/sections/sampler/SampleAssignModal.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
@@ -209,7 +197,6 @@ export default {
     ContentContainer,
     SamplerTab,
     SampleAssignModal,
-    LightingTab,
     EffectsTab,
     TopBar,
     SegmentedControl,
@@ -217,7 +204,6 @@ export default {
     ProfileHandler,
     MicProfileHandler,
     SampleHandler,
-    PresetHandler,
     SystemComponent,
     DeviceSelector,
     Routing,
@@ -360,28 +346,6 @@ export default {
       this.visualiserHighlightAreas = [HighlightArea[`SAMPLER_BANK_${activeBank}`]];
     },
 
-    onLightingDataChange() {
-      let lightingData = this.$refs.lighting.getNodes();
-
-      // mixer channels
-      if (lightingData[0] === "mixer")
-        this.visualiserHighlightAreas = [HighlightArea[`CHANNEL_${lightingData[1]}`]];
-
-      // effect presets
-      else if (lightingData[0] === "effects")
-        this.visualiserHighlightAreas = [HighlightArea[`EFFECTS_PRESET${lightingData[1].slice(-1)}`]];
-
-      // sampler banks
-      else if (lightingData[0] === "sampler")
-        this.visualiserHighlightAreas = [HighlightArea[`SAMPLER_BANK_${lightingData[1].slice(-1)}`]];
-
-      // cough
-      else if (lightingData[0] === "cough")
-        this.visualiserHighlightAreas = [HighlightArea.COUGH];
-
-      // nothing
-      else this.visualiserHighlightAreas = [];
-    },
 
     onFirmwareClicked() {
       if (store.getActiveDevice() === null || store.getActiveDevice() === undefined) {
@@ -399,10 +363,32 @@ export default {
         this.$nextTick(() => this.$refs.mixer.openLighting(faderAreas[area.area]));
         return;
       }
+      const presetAreas = [HighlightArea.EFFECTS_PRESET1, HighlightArea.EFFECTS_PRESET2, HighlightArea.EFFECTS_PRESET3,
+        HighlightArea.EFFECTS_PRESET4, HighlightArea.EFFECTS_PRESET5, HighlightArea.EFFECTS_PRESET6];
+      if (area.alt && presetAreas.includes(area.area)) {
+        // Effects lighting lives in the Effects section now
+        this.$refs["device-tabs"].selectTabById("effects");
+        this.$nextTick(() => this.$refs.effects.openLighting());
+        return;
+      }
+      if (area.alt && area.area === HighlightArea.COUGH) {
+        // Cough and Bleep lighting lives in the Mic section now
+        this.$refs["device-tabs"].selectTabById("mic");
+        this.$nextTick(() => this.$refs.mic.$refs.cough.openLighting());
+        return;
+      }
+      const bankAreas = {[HighlightArea.SAMPLER_BANK_A]: "A", [HighlightArea.SAMPLER_BANK_B]: "B", [HighlightArea.SAMPLER_BANK_C]: "C"};
+      if (area.alt && bankAreas[area.area] !== undefined) {
+        // Sampler lighting lives in the Sampler section now
+        this.$refs["device-tabs"].selectTabById("sampler");
+        this.$nextTick(() => {
+          this.$refs.sampler.setActiveBank(bankAreas[area.area]);
+          this.$refs.sampler.openLighting();
+        });
+        return;
+      }
       if (area.alt) {
-        // All right click behaviour is handled by the Lighting Tab (saves sub-tab headaches)
-        this.$refs["device-tabs"].selectTabById("lighting");
-        this.$nextTick(() => this.$refs.lighting.activateArea(area.area));
+        // Every lit area has its lighting next to its settings now (handled above)
         return;
       }
 
@@ -641,25 +627,39 @@ export default {
   max-width: 760px;
 }
 
+/* Library and buttons side by side, the selected button's samples below across the page */
 #main .sampler-page {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: stretch;
   gap: 16px;
   padding: 24px;
 }
 
 #main .sampler-library {
   flex: 0 1 460px;
+  min-width: 0;
 }
 
 #main .sampler-device {
-  flex: 1 1 560px;
+  display: contents;
+}
+
+/* The buttons card keeps its own height; the library stretches to it */
+#main .sampler-library {
   display: flex;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  gap: 16px;
-  min-width: 0;
+  flex-direction: column;
+}
+
+/* Its own row, from the left edge */
+#main .sampler-page .button-samples {
+  flex: 0 0 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#main .system-wrap {
+  padding: 24px;
 }
 
 #main .library {

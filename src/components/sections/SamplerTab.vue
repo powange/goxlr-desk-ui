@@ -36,9 +36,17 @@
         <SegmentedControl :options="getOrderOptions()" :selected="getActiveOrder()" @selection-changed="setActiveOrder"
                           :label="$t('message.sampler.banks.playOrderLabel', {activeButton: activeButton, activeBank: activeBank})"/>
       </div>
+
+      <div class="pad-row">
+        <span class="field-label">{{ $t('message.sampler.lighting.label') }}</span>
+        <button ref="lightingButton" type="button" class="lighting-button" @click="openLighting">
+          <font-awesome-icon icon="fa-solid fa-lightbulb"/>
+          <span>{{ $t('message.sampler.lighting.customise') }}</span>
+        </button>
+      </div>
     </div>
   </GroupContainer>
-  <GroupContainer :title="$t('message.sampler.samplesTitle')">
+  <GroupContainer class="button-samples" :title="$t('message.sampler.samplesTitle')">
     <RadioSelection
         :title="$t('message.sampler.samples.samplesTitle')"
         group="sampler_samples"
@@ -72,6 +80,11 @@
         :sample-name="getActiveSampleName(activeSample)"
     />
   </GroupContainer>
+
+  <AccessibleModal ref="lightingModal" id="samplerLighting" width="min(560px, 94vw)" body-padding="0">
+    <template v-slot:title>{{ $t('message.sampler.lighting.title') }}</template>
+    <SamplerLighting v-if="lightingOpen" :bank="activeBank"/>
+  </AccessibleModal>
 
   <AccessibleModal
       ref="add_sample_modal"
@@ -160,6 +173,7 @@ import {websocket} from "@/util/sockets";
 import SampleFileSelector from "@/components/sections/sampler/SampleFileSelector.vue";
 import Slider from "@/components/slider/Slider.vue";
 import SegmentedControl from "@/components/design/SegmentedControl.vue";
+import SamplerLighting from "@/components/sections/sampler/SamplerLighting.vue";
 import {getDraggedSamples, isSampleDrag} from "@/util/sampleDrag";
 
 export default {
@@ -169,6 +183,7 @@ export default {
   components: {
     Slider,
     SegmentedControl,
+    SamplerLighting,
     SampleFileSelector,
 
     ModalButton,
@@ -188,6 +203,7 @@ export default {
       activeSample: "-1",
       // The pad samples are being dragged over
       dropButton: undefined,
+      lightingOpen: false,
 
       showAddModal: false,
       waitModal: false,
@@ -205,6 +221,15 @@ export default {
         {id: "B", label: this.$t('message.sampler.banks.bank.b')},
         {id: "C", label: this.$t('message.sampler.banks.bank.c')},
       ];
+    },
+
+    // The bank's lighting (moved here from the Lighting section)
+    openLighting() {
+      this.lightingOpen = false;
+      this.$nextTick(() => {
+        this.lightingOpen = true;
+        this.$refs.lightingModal.openModal(undefined, this.$refs.lightingButton);
+      });
     },
 
     getPadSamples(button) {
@@ -545,6 +570,30 @@ export default {
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--c-muted);
+}
+
+.pad-panel .lighting-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pad-panel .lighting-button:hover {
+  border-color: var(--c-line-strong);
+}
+
+.pad-panel .lighting-button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 .pad-select {

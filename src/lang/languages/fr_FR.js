@@ -222,6 +222,8 @@ export default {
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Éclairage",
+                lightingTitle: "Éclairage de Toux et Bip",
                 behaviour: {
                     hold: "Maintenir",
                     toggle: "Basculer",
@@ -233,6 +235,16 @@ export default {
         },
 
         effects: {
+            lighting: {
+                customise: "Personnaliser la couleur",
+                title: "Éclairage des effets",
+                presetButton: "Bouton du préréglage · {name}",
+                applyPresets: "Appliquer à tous les préréglages",
+                encoders: "Molettes",
+                applyEncoders: "Appliquer à toutes les molettes",
+                buttons: "Boutons d'effet",
+                applyButtons: "Appliquer à tous les boutons d'effet",
+            },
             face: {
                 label: "Effets",
                 master: "Effets",
@@ -412,6 +424,14 @@ export default {
         },
 
         sampler: {
+            lighting: {
+                label: "Éclairage",
+                customise: "Personnaliser la couleur",
+                title: "Éclairage du sampler",
+                bank: "Boutons de la banque {bank}",
+                note: "La GoXLR règle ces couleurs pour toute la banque : les quatre boutons les partagent.",
+                applyBanks: "Appliquer à toutes les banques",
+            },
             bankTitle: "Banque",
             pads: {
                 title: "Boutons",
@@ -513,6 +533,11 @@ export default {
                 display: "Affichage",
                 preview: "Aperçu",
                 previewFader: "fader",
+                previewMeter: "vumètre",
+                hintTwoColour: "Sous le fader : couleur basse. Au-dessus : couleur haute.",
+                hintGradient: "Sous le fader : dégradé de la couleur basse vers la haute. Au-dessus : éteint.",
+                hintMeter: "Les LED suivent le niveau du son du canal, et non la position du fader.",
+                hintGradientMeter: "Les LED suivent le niveau du son du canal, en dégradé de la couleur basse vers la haute.",
                 previewScreen: "écran",
                 previewActive: "actif",
                 previewRest: "au repos",
@@ -709,6 +734,9 @@ export default {
 
         system: {
             title: "Système",
+            menu: {
+                firmware: "Mise à jour du firmware",
+            },
 
             powerButton: "Actions d'alimentation",
             power: {
@@ -734,7 +762,7 @@ export default {
                 }
             },
 
-            deviceButton: "Paramètres de l'appareil.",
+            deviceButton: "Paramètres de l'appareil",
             device: {
                 holdDuration: "Durée du maintien du bouton de sourdine pour mettre en sourdine tout.",
                 holdDurationAccessibility: "La durée en millisecondes pendant laquelle le bouton de sourdine doit être maintenu enfoncé pour mettre en sourdine tous les canaux.",
@@ -830,6 +858,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            lighting: "Éclairage global",
+            lightingTitle: "Éclairage global",
             profile: "Profil",
             profileLabel: "Profil actif",
             micProfile: "Micro",
