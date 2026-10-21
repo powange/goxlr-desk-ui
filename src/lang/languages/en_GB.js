@@ -406,6 +406,12 @@ export default {
 
         sampler: {
             bankTitle: "Bank",
+            pads: {
+                title: "Buttons",
+                empty: "Empty",
+                count: "{count} sample(s)",
+                dropHere: "Drop to assign",
+            },
             banks: {
                 bankTitle: "Bank",
                 bank: {

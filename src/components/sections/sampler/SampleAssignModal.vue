@@ -60,8 +60,8 @@ export default {
   },
 
   methods: {
-    open(button, paths) {
-      this.bank = store.getActiveDevice().sampler.active_bank;
+    open(button, paths, bank = undefined) {
+      this.bank = bank || store.getActiveDevice().sampler.active_bank;
       this.button = button;
       this.paths = paths;
       this.busy = false;

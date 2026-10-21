@@ -383,6 +383,12 @@ export default {
 
         sampler: {
             bankTitle: "Banque",
+            pads: {
+                title: "Boutons",
+                empty: "Vide",
+                count: "{count} son(s)",
+                dropHere: "Déposer pour affecter",
+            },
             banks: {
                 bankTitle: "Banque",
                 bank: {

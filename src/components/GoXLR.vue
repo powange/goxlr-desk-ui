@@ -35,9 +35,14 @@
           <EffectsTab ref="effects" @on-effect-preset-change="onEffectPresetChange"/>
         </Tab>
         <Tab id="sampler" v-if="!isDeviceMini()" icon="fa-solid fa-table-cells-large" :name="$t('message.navigation.sampler')">
-          <ContentContainer>
-            <SamplerTab ref="sampler" @on-sample-bank-change="onSampleBankChange"/>
-          </ContentContainer>
+          <div class="sampler-page">
+            <Panel :title="$t('message.navigation.samples')" class="sampler-library">
+              <SampleHandler/>
+            </Panel>
+            <div class="sampler-device">
+              <SamplerTab ref="sampler" @on-sample-bank-change="onSampleBankChange" @sample-drop="onSampleDrop"/>
+            </div>
+          </div>
         </Tab>
         <Tab id="routing" icon="fa-solid fa-shuffle" :name="$t('message.navigation.routing')">
           <ContentContainer>
@@ -52,13 +57,6 @@
           <div class="library">
             <Panel :title="$t('message.navigation.profiles')">
               <ProfileHandler/>
-            </Panel>
-          </div>
-        </Tab>
-        <Tab id="samples" v-if="!isDeviceMini()" icon="fa-solid fa-music" :group="$t('message.navigation.library')" :name="$t('message.navigation.samples')">
-          <div class="library">
-            <Panel :title="$t('message.navigation.samples')">
-              <SampleHandler/>
             </Panel>
           </div>
         </Tab>
@@ -321,7 +319,7 @@ export default {
 
     // Samples dragged from the Samples browser onto a sampler button
     onSampleDrop(drop) {
-      this.$refs.sampleAssign.open(drop.button, drop.paths);
+      this.$refs.sampleAssign.open(drop.button, drop.paths, drop.bank);
     },
 
     onFaderChannelChange(activeChannel) {
@@ -604,6 +602,27 @@ export default {
 #main .visualiser-panel > * {
   width: 100%;
   max-width: 760px;
+}
+
+#main .sampler-page {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px;
+}
+
+#main .sampler-library {
+  flex: 0 1 460px;
+}
+
+#main .sampler-device {
+  flex: 1 1 560px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
 }
 
 #main .library {
