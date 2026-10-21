@@ -4,15 +4,26 @@
          @pointermove="onPointerMove" @pointerup="onPointerUp" @pointercancel="onPointerUp">
       <line v-for="gain in [-6, 0, 6]" :key="'g' + gain" x1="0" :x2="width" :y1="gainToY(gain)" :y2="gainToY(gain)"
             :class="gain === 0 ? 'axis' : 'grid'"/>
+      <line v-for="tick in ticks" :key="'t' + tick" :x1="freqToX(tick)" :x2="freqToX(tick)" y1="0" :y2="height" class="grid"/>
+      <text v-for="gain in [6, 0, -6]" :key="'l' + gain" x="4" :y="gainToY(gain) - 4" class="gain-label">{{ gain > 0 ? '+' + gain : gain }} dB</text>
       <path :d="areaPath()" class="area"/>
       <path :d="linePath()" class="line"/>
-      <circle v-for="(band, index) in bands()" :key="band" :cx="bandX(index)" :cy="gainToY(gainOf(band))" r="7"
-              class="point" :class="{ dragging: dragIndex === index }" tabindex="0" role="slider"
-              :aria-label="bandLabel(index)" aria-valuemin="-9" aria-valuemax="9" :aria-valuenow="gainOf(band)"
-              @pointerdown="onPointerDown($event, index)" @keydown="onKeydown($event, index)"/>
+      <g v-for="(band, index) in bands()" :key="band">
+        <circle :cx="bandX(index)" :cy="gainToY(gainOf(band))" r="7"
+                class="point" :class="{ active: activeIndex === index, wide: fineTune }" tabindex="0" role="slider"
+                :aria-label="$t('message.microphone.chain.bandLabel', {freq: freqLabel(freqOf(band))})"
+                aria-valuemin="-9" aria-valuemax="9" :aria-valuenow="gainOf(band)"
+                :aria-valuetext="`${gainOf(band)} dB, ${freqLabel(freqOf(band))}`"
+                @pointerdown="onPointerDown($event, index)" @keydown="onKeydown($event, index)"
+                @pointerenter="hoverIndex = index" @pointerleave="hoverIndex = undefined"
+                @focus="hoverIndex = index" @blur="hoverIndex = undefined"/>
+        <text v-if="activeIndex === index" :x="bandX(index)" :y="gainToY(gainOf(band)) - 14" class="value-label">
+          {{ gainText(gainOf(band)) }} · {{ freqLabel(freqOf(band)) }}
+        </text>
+      </g>
     </svg>
-    <div class="labels">
-      <span v-for="(band, index) in bands()" :key="band">{{ bandLabel(index) }}</span>
+    <div class="ticks">
+      <span v-for="tick in ticks" :key="tick" :style="{ left: freqToX(tick) / width * 100 + '%' }">{{ freqLabel(tick) }}</span>
     </div>
   </div>
 </template>
@@ -20,21 +31,39 @@
 <script>
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
-import {isDeviceMini} from "@/util/util";
+import {isDeviceMini, roundToStep} from "@/util/util";
 import {EqFreqs, EqMiniFreqs} from "@/util/mixerMapping";
+import Equalizer from "@/components/sections/mic/Equalizer.vue";
 
-// The equaliser as a curve: each band is a point that can be dragged up and down (or moved with
-// the arrow keys), from -9 to +9 dB, like the band sliders.
+// The frequency ranges, steps, reset and fine tune setting are the equaliser's own (1-based band
+// index), so the curve follows the same rules as the official sliders did.
+const shared = ["getMinEqValue", "getMaxEqValue", "getStep", "fineTuneEnabled", "resetEqValues", "sendFreqCommand"];
+
+const MIN_FREQ = 20;
+const MAX_FREQ = 20000;
+
+// The equaliser as a curve on a frequency axis: each band is a point dragged up and down for its
+// gain (-9 to +9 dB), and sideways for its frequency when fine tuning is on. Arrow keys do the same.
 export default {
   name: "EqCurve",
 
   data() {
     return {
       width: 800,
-      height: 150,
+      height: 170,
       dragIndex: undefined,
-      sending: false,
+      hoverIndex: undefined,
+      ticks: [50, 100, 200, 500, 1000, 2000, 5000, 10000],
     }
+  },
+
+  computed: {
+    fineTune() {
+      return this.fineTuneEnabled();
+    },
+    activeIndex() {
+      return this.dragIndex !== undefined ? this.dragIndex : this.hoverIndex;
+    },
   },
 
   // The drawing follows the element's width, so the points stay round.
@@ -50,6 +79,13 @@ export default {
   },
 
   methods: {
+    ...Object.fromEntries(shared.map(name => [name, Equalizer.methods[name]])),
+
+    // Called by the panel's Reset button
+    reset() {
+      this.resetEqValues();
+    },
+
     bands() {
       return isDeviceMini() ? EqMiniFreqs : EqFreqs;
     },
@@ -63,23 +99,41 @@ export default {
       return this.equaliser().gain[band];
     },
 
-    bandLabel(index) {
-      const hz = this.equaliser().frequency[this.bands()[index]];
+    freqOf(band) {
+      return parseFloat(this.equaliser().frequency[band]);
+    },
+
+    gainText(gain) {
+      return (gain > 0 ? "+" : "") + gain + " dB";
+    },
+
+    freqLabel(hz) {
       return hz >= 1000 ? `${Math.round(hz / 100) / 10} kHz` : `${Math.round(hz)} Hz`;
     },
 
+    freqToX(hz) {
+      const pad = 10;
+      const ratio = (Math.log10(hz) - Math.log10(MIN_FREQ)) / (Math.log10(MAX_FREQ) - Math.log10(MIN_FREQ));
+      return pad + ratio * (this.width - pad * 2);
+    },
+
+    xToFreq(x) {
+      const pad = 10;
+      const ratio = (x - pad) / (this.width - pad * 2);
+      return Math.pow(10, Math.log10(MIN_FREQ) + ratio * (Math.log10(MAX_FREQ) - Math.log10(MIN_FREQ)));
+    },
+
     bandX(index) {
-      const step = this.width / this.bands().length;
-      return step * index + step / 2;
+      return this.freqToX(this.freqOf(this.bands()[index]));
     },
 
     gainToY(gain) {
-      const pad = 12;
+      const pad = 22;
       return pad + (9 - gain) / 18 * (this.height - pad * 2);
     },
 
     yToGain(y) {
-      const pad = 12;
+      const pad = 22;
       const gain = 9 - (y - pad) / (this.height - pad * 2) * 18;
       return Math.max(-9, Math.min(9, Math.round(gain)));
     },
@@ -116,6 +170,16 @@ export default {
       websocket.send_command(store.getActiveSerial(), command);
     },
 
+    // Keeps the frequency inside the band's range (which depends on its neighbours) and on its step.
+    setFreq(index, hz) {
+      const band = this.bands()[index];
+      const min = this.getMinEqValue(index + 1);
+      const max = this.getMaxEqValue(index + 1);
+      const value = roundToStep(Math.max(min, Math.min(max, hz)), this.getStep(index + 1));
+      if (value === this.freqOf(band)) return;
+      this.sendFreqCommand(isDeviceMini() ? "SetEqMiniFreq" : "SetEqFreq", band, value);
+    },
+
     onPointerDown(event, index) {
       this.dragIndex = index;
       this.$refs.svg.setPointerCapture(event.pointerId);
@@ -125,8 +189,10 @@ export default {
     onPointerMove(event) {
       if (this.dragIndex === undefined) return;
       const rect = this.$refs.svg.getBoundingClientRect();
+      const x = (event.clientX - rect.left) / rect.width * this.width;
       const y = (event.clientY - rect.top) / rect.height * this.height;
       this.setGain(this.dragIndex, this.yToGain(y));
+      if (this.fineTune) this.setFreq(this.dragIndex, this.xToFreq(x));
     },
 
     onPointerUp() {
@@ -134,11 +200,22 @@ export default {
     },
 
     onKeydown(event, index) {
-      const step = {ArrowUp: 1, ArrowRight: 1, ArrowDown: -1, ArrowLeft: -1}[event.key];
-      if (step === undefined) return;
-      event.preventDefault();
-      const gain = this.gainOf(this.bands()[index]);
-      this.setGain(index, Math.max(-9, Math.min(9, gain + step)));
+      const band = this.bands()[index];
+      const gainStep = {ArrowUp: 1, ArrowDown: -1}[event.key];
+      if (gainStep !== undefined) {
+        event.preventDefault();
+        this.setGain(index, Math.max(-9, Math.min(9, this.gainOf(band) + gainStep)));
+        return;
+      }
+      const freqStep = {ArrowRight: 1.02, ArrowLeft: 1 / 1.02}[event.key];
+      if (freqStep !== undefined && this.fineTune) {
+        event.preventDefault();
+        const hz = this.freqOf(band);
+        const next = hz * freqStep;
+        // Always move by at least one step, so small bands still move
+        const step = this.getStep(index + 1);
+        this.setFreq(index, Math.abs(next - hz) < step ? hz + Math.sign(next - hz) * step : next);
+      }
     },
   }
 }
@@ -147,14 +224,15 @@ export default {
 <style scoped>
 .eq-curve {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .curve {
   width: 100%;
-  height: 150px;
+  height: 170px;
   display: block;
   touch-action: none;
+  overflow: visible;
 }
 
 .grid {
@@ -166,6 +244,12 @@ export default {
 .axis {
   stroke: var(--c-line-strong);
   stroke-width: 1;
+}
+
+.gain-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  fill: var(--c-faint);
 }
 
 .area {
@@ -187,21 +271,34 @@ export default {
   cursor: ns-resize;
 }
 
-.point:hover, .point.dragging, .point:focus-visible {
+.point.wide {
+  cursor: move;
+}
+
+.point.active, .point:focus-visible {
   fill: var(--c-accent);
   outline: none;
 }
 
-.labels {
-  display: flex;
-  justify-content: space-around;
+.value-label {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  fill: var(--c-text);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+.ticks {
+  position: relative;
+  height: 14px;
   font-family: var(--f-mono);
   font-size: 10px;
   color: var(--c-muted);
 }
 
-.labels span {
-  flex: 1;
-  text-align: center;
+.ticks span {
+  position: absolute;
+  transform: translateX(-50%);
+  white-space: nowrap;
 }
 </style>
