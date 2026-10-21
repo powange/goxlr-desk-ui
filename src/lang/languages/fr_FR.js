@@ -230,6 +230,14 @@ export default {
         },
 
         effects: {
+            face: {
+                label: "Effets",
+                master: "Effets",
+                enabled: "Activé",
+                on: "marche",
+                off: "arrêt",
+                power: "Allumer ou éteindre {effect}",
+            },
             preset: {
                 name: "Nom",
                 title: "Préréglages",

@@ -253,6 +253,14 @@ export default {
         },
 
         effects: {
+            face: {
+                label: "Effects",
+                master: "Effects",
+                enabled: "On",
+                on: "on",
+                off: "off",
+                power: "Turn {effect} on or off",
+            },
             preset: {
                 name: "Name",
                 title: "Preset",
