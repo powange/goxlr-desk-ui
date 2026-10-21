@@ -13,7 +13,7 @@ export default {
     label: { type: String, required: false },
     id: {type: String, required: true},
 
-    background: {type: String, required: false, default: "#3b413f" },
+    background: {type: String, required: false, default: "var(--c-raised-2)" },
     disabled: {type: Boolean, required: false, default: false},
     padding: {type: String, required: false, default: "8px"},
     centered: { type: Boolean, required: false, default: false }
@@ -33,7 +33,7 @@ export default {
 
 <style scoped>
 button {
-  font-family: LeagueMonoCondensed, sans-serif;
+  font-family: var(--f-body);
 
   display: block;
   box-sizing: border-box;
@@ -53,16 +53,16 @@ button {
    */
   padding: v-bind(padding);
   text-align: left;
-  color: #fff;
+  color: var(--c-text);
 }
 
 button:focus {
-  background-color: #49514e;
+  background-color: var(--c-hover);
   outline: none;
 }
 
 button:not(.disabled):hover {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 button.centered {
@@ -70,7 +70,7 @@ button.centered {
 }
 
 button.disabled {
-  background-color: #383D3B;
-  color: #959796;
+  background-color: var(--c-raised-2);
+  color: var(--c-muted);
 }
 </style>

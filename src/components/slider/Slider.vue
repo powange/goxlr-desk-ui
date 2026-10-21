@@ -48,12 +48,12 @@ export default {
     id: {type: Number, default: -1},
     storePath: {type: String, required: true},
 
-    backgroundColour: {type: String, required: false, default: "#353937"},
-    inputBackgroundColour: {type: String, required: false, default: "#3b413f"},
-    rangeBackgroundColour: {type: String, required: false, default: '#252927'},
-    rangeColour: { type: String, required: false, default: '#59b1b6' },
-    textColour: {type: String, required: false, default: '#59b1b6' },
-    labelColour: {type: String, required: false, default: '#fff'},
+    backgroundColour: {type: String, required: false, default: "var(--c-raised)"},
+    inputBackgroundColour: {type: String, required: false, default: "var(--c-raised-2)"},
+    rangeBackgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
+    rangeColour: { type: String, required: false, default: 'var(--c-accent)' },
+    textColour: {type: String, required: false, default: 'var(--c-accent)' },
+    labelColour: {type: String, required: false, default: 'var(--c-text)'},
 
     title: {type: String, default: ""},
 

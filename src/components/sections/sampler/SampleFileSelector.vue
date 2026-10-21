@@ -45,7 +45,7 @@ export default {
     prefix: { type: String, optional: false },
     maxHeight: {type: String, optional: true, default: "inherit"},
     padding: {type: String, required: false, default: "8px"},
-    background: {type: String, required: false, default: "#3b413f"},
+    background: {type: String, required: false, default: "var(--c-raised-2)"},
     group: {type: String, required: true}
   },
 

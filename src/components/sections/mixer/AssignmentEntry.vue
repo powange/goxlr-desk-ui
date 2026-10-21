@@ -92,14 +92,14 @@ export default {
 
   box-sizing: border-box;
   border: none;
-  background-color: #3b413f;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
+  font-family: var(--f-body);
   white-space: nowrap;
 }
 
 .button.highlight {
-  border: 1px solid #59b1b6;
+  border: 1px solid var(--c-accent);
 }
 
 .button .icon {
@@ -108,7 +108,7 @@ export default {
 }
 
 .button .icon.faded {
-  color: #838584;
+  color: var(--c-muted);
   box-sizing: border-box;
 }
 
@@ -124,29 +124,29 @@ export default {
 
 .box {
   display: flex;
-  background-color: #2A2D2C;
+  background-color: var(--c-panel);
   flex-direction: row;
   padding: 4px;
   border-radius: 3px;
 }
 
 .label {
-  color: #fff;
+  color: var(--c-text);
   padding: 4px 16px;
   display: block;
   border-radius: 3px;
 }
 
 .selected {
-  color: #2A2D2C;
+  color: var(--c-on-accent);
 }
 
 .selected.MixA {
-  background-color: #59b1b6;
+  background-color: var(--c-accent);
 }
 
 .selected.MixB {
-  background-color: #CC7224;
+  background-color: var(--c-warn);
 }
 
 

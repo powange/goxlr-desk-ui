@@ -53,12 +53,12 @@ export default {
 
   box-sizing: border-box;
   border: none;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  color: var(--c-text);
+  font-family: var(--f-body);
 }
 
 .button.highlight {
-  border: 1px solid #59b1b6;
+  border: 1px solid var(--c-accent);
 }
 
 .button .icon {
@@ -68,7 +68,7 @@ export default {
 }
 
 .button .icon.faded {
-  color: #838584;
+  color: var(--c-muted);
   box-sizing: border-box;
 }
 
@@ -84,14 +84,14 @@ export default {
   padding: 3px 8px;
   border-radius: 4px;
 
-  color: #2A2D2C;
+  color: var(--c-on-accent);
 }
 
 .button .highlight.mixA {
-  background-color: #59b1b6;
+  background-color: var(--c-accent);
 }
 
 .button .highlight.mixB {
-  background-color: #CC7224;
+  background-color: var(--c-warn);
 }
 </style>

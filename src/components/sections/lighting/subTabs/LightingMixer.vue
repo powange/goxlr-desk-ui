@@ -363,7 +363,7 @@ export default {
                         @selection-changed="onDisplayOptionsChanged">
           <div style="text-align: center">
             <hr style="margin-top: 14px"/>
-            <div style="color: #fff; text-align: left; padding-left: 8px; margin-top: 16px;">
+            <div style="color: var(--c-text); text-align: left; padding-left: 8px; margin-top: 16px;">
               {{ $t('message.lighting.mixer.screen.options.text') }}:
             </div>
             <input type="text" v-model="textValue" @blur="applyUpdate" v-on:keyup.enter="applyUpdate"
@@ -392,9 +392,9 @@ export default {
 
 <style scoped>
 input[type=text] {
-  font-family: LeagueMonoCondensed, sans-serif;
-  background-color: #3b413f;
-  color: #59b1b6;
+  font-family: var(--f-body);
+  background-color: var(--c-raised-2);
+  color: var(--c-accent);
   box-sizing: border-box;
   text-align: center;
 
@@ -418,24 +418,24 @@ button.applyToAll {
   border: 0;
   margin: 0;
   padding: 5px 24px;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  color: var(--c-text);
+  font-family: var(--f-body);
   font-size: 12px;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
 }
 
 button.applyToAll:hover {
-  background-color: #535c59;
+  background-color: var(--c-hover-strong);
 }
 
 .openButton {
   display: inline-block;
-  color: #a5a7a6;
+  color: var(--c-muted);
   font-size: 14px
 }
 
 .openButton:hover {
-  color: #fff;
+  color: var(--c-text);
   cursor: pointer;
 }
 </style>

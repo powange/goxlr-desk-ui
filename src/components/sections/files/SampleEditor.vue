@@ -82,6 +82,7 @@ import WaveSurfer from "wavesurfer.js/dist/wavesurfer";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions";
 import {getBaseHTTPAddress, websocket} from "@/util/sockets";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import {themeColour} from "@/util/util";
 
 const SELECTION_COLOUR = "rgba(89, 177, 182, 0.35)";
 const REMOVED_COLOUR = "rgba(210, 70, 70, 0.45)";
@@ -155,9 +156,9 @@ export default {
       this.wavesurfer = WaveSurfer.create({
         container: this.$refs.waveform,
         height: 128,
-        waveColor: "#d7d7d7",
-        progressColor: "#9fc5c7",
-        cursorColor: "#ffffff",
+        waveColor: themeColour("text-soft"),
+        progressColor: themeColour("accent-light"),
+        cursorColor: themeColour("text"),
         normalize: true,
         plugins: [RegionsPlugin.create({dragSelection: {slop: 5}})],
       });
@@ -391,13 +392,13 @@ export default {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  color: #fff;
+  color: var(--c-text);
   width: 720px;
 }
 
 .waveform {
-  background-color: #2B2F2D;
-  border: 1px solid #3b413f;
+  background-color: var(--c-disabled);
+  border: 1px solid var(--c-line);
   min-height: 128px;
 }
 
@@ -406,7 +407,7 @@ export default {
   gap: 20px;
   flex-wrap: wrap;
   font-size: 0.9em;
-  color: #d7d7d7;
+  color: var(--c-text-soft);
 }
 
 .tools, .footer {
@@ -420,27 +421,27 @@ export default {
 }
 
 button {
-  font-family: LeagueMonoCondensed, sans-serif;
-  background-color: #3b413f;
-  color: #fff;
-  border: 1px solid #49514e;
+  font-family: var(--f-body);
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
+  border: 1px solid var(--c-line);
   padding: 6px 10px;
   cursor: pointer;
 }
 
 button:hover:not(:disabled), button:focus {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 button:disabled {
-  color: #6c706f;
+  color: var(--c-faint);
   cursor: default;
 }
 
 button.primary {
-  background-color: #59b1b6;
-  border-color: #59b1b6;
-  color: #000;
+  background-color: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-on-accent);
 }
 
 .option {
@@ -450,27 +451,27 @@ button.primary {
 }
 
 .save {
-  border: 1px solid #3b413f;
+  border: 1px solid var(--c-line);
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
 .save input[type=text] {
-  background-color: #2B2F2D;
-  border: 1px solid #3b413f;
+  background-color: var(--c-disabled);
+  border: 1px solid var(--c-line);
   padding: 5px;
-  color: #fff;
+  color: var(--c-text);
 }
 
 .hint {
   margin: 0;
   font-size: 0.85em;
-  color: #a5a7a6;
+  color: var(--c-muted);
 }
 
 .error {
   margin: 0;
-  color: #f07a7a;
+  color: var(--c-danger);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div style="height: 30px; text-align: right">
     <div style="height: 14px; display: inline-block; width: calc(100% - 50px);">
-      <hr style="border: 1px solid #2d3230" />
+      <hr style="border: 1px solid var(--c-line)" />
     </div>
     <div class="openButton" @click="openProfiles">
       <font-awesome-icon icon="fa-solid fa-folder" />
@@ -64,12 +64,12 @@ export default {
 <style scoped>
 .openButton {
   display: inline-block;
-  color: #a5a7a6;
+  color: var(--c-muted);
   padding: 10px;
   font-size: 14px
 }
 
 .openButton:hover {
-  color: #fff;
+  color: var(--c-text);
 }
 </style>

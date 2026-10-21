@@ -45,16 +45,16 @@ export default {
   box-sizing: border-box;
   width: calc(100% - 16px);
   margin: 8px;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
   padding: v-bind(padding);
   text-align: left;
-  color: #fff;
+  color: var(--c-text);
 
   cursor: default;
 }
 
 .button:hover:not(.active) {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 .button:first-child {
@@ -76,12 +76,12 @@ export default {
 }
 
 .active {
-  background-color: #59b1b6;
-  color: #353937;
+  background-color: var(--c-accent);
+  color: var(--c-on-accent);
 }
 
 .disabled {
-  background-color: #383D3B;
-  color: #959796;
+  background-color: var(--c-raised-2);
+  color: var(--c-muted);
 }
 </style>

@@ -33,7 +33,7 @@ export default {
     disabled: {type: Boolean, required: false, default: false},
 
     padding: {type: String, required: false, default: "8px"},
-    background: {type: String, required: false, default: "#3b413f" },
+    background: {type: String, required: false, default: "var(--c-raised-2)" },
 
     // Optional extra information shown on the right of the text, and a small icon after it
     detail: {type: String, required: false},
@@ -71,21 +71,21 @@ export default {
   float: right;
   margin-left: 10px;
   font-size: 0.85em;
-  color: #a5a7a6;
+  color: var(--c-muted);
 }
 
 label.selected .detail {
-  color: #353937;
+  color: var(--c-on-accent);
 }
 
 .badge {
   margin-left: 6px;
   font-size: 0.8em;
-  color: #59b1b6;
+  color: var(--c-accent);
 }
 
 label.selected .badge {
-  color: #353937;
+  color: var(--c-on-accent);
 }
 
 .wrapper {
@@ -111,7 +111,7 @@ label {
 
   padding: v-bind(padding);
   text-align: left;
-  color: #fff;
+  color: var(--c-text);
 }
 
 /* Buttons on the right (menu, play..), side by side, on the same background as the item */
@@ -122,38 +122,38 @@ label {
   flex: 0 0 auto;
   background-color: v-bind(background);
   margin-right: auto;
-  color: #fff;
+  color: var(--c-text);
 }
 
 :slotted(.right_side > *) {
-  color: #fff;
+  color: var(--c-text);
 }
 
 :slotted(.right_side.selected > *) {
-  color: #353937;
+  color: var(--c-on-accent);
 }
 
 .right_side.selected {
-  background-color: #59b1b6;
-  color: #353937;
+  background-color: var(--c-accent);
+  color: var(--c-on-accent);
 }
 
 label.selected {
-  background-color: #59b1b6;
-  color: #353937;
+  background-color: var(--c-accent);
+  color: var(--c-on-accent);
 }
 
 label:not(.selected):focus-within {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 label:not(.selected):hover, label:not(.selected):hover + div {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 label.disabled, label.disabled + div {
-  background-color: #383D3B;
-  color: #959796;
+  background-color: var(--c-raised-2);
+  color: var(--c-muted);
 }
 
 </style>

@@ -489,12 +489,12 @@ button {
 
 .openButton {
   display: inline-block;
-  color: #a5a7a6;
+  color: var(--c-muted);
   font-size: 14px;
 }
 
 .openButton:hover {
-  color: #fff;
+  color: var(--c-text);
   cursor: pointer;
 }
 </style>

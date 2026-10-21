@@ -25,9 +25,9 @@ export default {
 <style scoped>
 input[type=text] {
   width: calc(100% - 10px);
-  background-color: #2B2F2D;
-  border: 1px solid #3b413f;
+  background-color: var(--c-disabled);
+  border: 1px solid var(--c-line);
   padding: 5px;
-  color: #fff;
+  color: var(--c-text);
 }
 </style>

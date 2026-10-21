@@ -106,3 +106,9 @@ export function versionNewerOrEqualTo(version, comparison) {
     // If we get here, everything has matched.
     return true;
 }
+
+// Resolves a theme colour token (see assets/theme.css) to its value, for places that can't use
+// CSS variables, such as canvas drawing and wavesurfer.
+export function themeColour(name) {
+    return getComputedStyle(document.documentElement).getPropertyValue(`--c-${name}`).trim();
+}

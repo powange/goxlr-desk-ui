@@ -20,8 +20,8 @@ export default {
 
 <style scoped>
 .modal-button {
-  background-color: #353937;
-  color: #fff;
+  background-color: var(--c-raised);
+  color: var(--c-text);
   padding: 8px 30px;
   border: none;
   margin: 8px;
@@ -31,10 +31,10 @@ export default {
 }
 
 .modal-button:disabled {
-  background-color: #2B2F2D;
+  background-color: var(--c-disabled);
 }
 
 .modal-button:not(:disabled):hover, .modal-button:not(:disabled):focus {
-  background-color: #737775;
+  background-color: var(--c-hover-strong);
 }
 </style>

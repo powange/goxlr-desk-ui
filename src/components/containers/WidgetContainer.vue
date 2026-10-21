@@ -32,15 +32,15 @@ export default {
     min-width: 200px;
     max-width: v-bind(maxWidth);
 
-    background-color: #353937;
+    background-color: var(--c-raised);
 }
 
 .title {
     width: 100%;
     padding: 10px 0;
 
-    color: #ffffff;
-    background-color: #3b413f;
+    color: var(--c-text);
+    background-color: var(--c-raised-2);
     text-transform: uppercase;
     text-align: center;
 }

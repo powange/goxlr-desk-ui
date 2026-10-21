@@ -80,16 +80,16 @@ export default {
   gap: 5px;
   height: 18px;
   padding: 5px;
-  color: #ccc;
+  color: var(--c-text-soft);
 }
 
 .setting:focus-within {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .setting:hover {
   cursor: pointer;
-  color: #fff;
+  color: var(--c-text);
 }
 
 .label {
@@ -107,17 +107,17 @@ export default {
   text-align: right;
   border: 0;
   background-color: transparent;
-  font-family: LeagueMonoCondensed, sans-serif;
-  color: #CCCCCC;
+  font-family: var(--f-body);
+  color: var(--c-text-soft);
 }
 
 .input select:hover {
-  color: #fff;
+  color: var(--c-text);
   cursor: pointer;
 }
 
 .input select option {
-  background-color: #2F2F2F;
+  background-color: var(--c-panel);
   text-align: left;
 }
 </style>

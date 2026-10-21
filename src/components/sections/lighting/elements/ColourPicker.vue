@@ -223,8 +223,8 @@ export default {
   height: 35px;
   width: 100%;
 
-  background-color: #3b413f;
-  color: #59b1b6;
+  background-color: var(--c-raised-2);
+  color: var(--c-accent);
 }
 
 .colourPreview {
@@ -238,7 +238,7 @@ button {
   height: 100%;
   width: 35px;
 
-  color: #ffffff;
+  color: var(--c-text);
   background-color: transparent;
   border: none;
   cursor: pointer;
@@ -247,10 +247,10 @@ button {
 input[type=text] {
   width: 6em;
 
-  color: #59b1b6;
-  background-color: #3b413f;
+  color: var(--c-accent);
+  background-color: var(--c-raised-2);
   border: none;
-  font-family: LeagueMonoCondensed, sans-serif;
+  font-family: var(--f-body);
   text-align: center;
 
   -moz-appearance: textfield;

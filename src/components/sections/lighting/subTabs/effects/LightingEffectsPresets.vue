@@ -132,13 +132,13 @@ button {
   border: 0;
   margin: 0;
   padding: 5px 24px;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  color: var(--c-text);
+  font-family: var(--f-body);
   font-size: 12px;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
 }
 
 button:hover {
-  background-color: #535c59;
+  background-color: var(--c-hover-strong);
 }
 </style>

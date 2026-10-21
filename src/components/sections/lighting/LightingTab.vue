@@ -236,18 +236,18 @@ export default {
 
   margin-top: 15px;
 
-  color: #ffffff;
-  background-color: #353937;
+  color: var(--c-text);
+  background-color: var(--c-raised);
   border: none;
   cursor: pointer;
 }
 
 .button:not(.active):hover {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 .button.active {
-  color: #2b2f2d;
-  background-color: #59b1b6;
+  color: var(--c-on-accent);
+  background-color: var(--c-accent);
 }
 </style>

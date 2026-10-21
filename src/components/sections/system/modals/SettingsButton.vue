@@ -441,11 +441,11 @@ export default {
 
 <style scoped>
 .settingList > :nth-child(odd) {
-  background-color: #353937;
+  background-color: var(--c-raised);
 }
 
 .settingList > :nth-child(even) {
-  background-color: #242826;
+  background-color: var(--c-bg);
 }
 
 .recoverDefaults {
@@ -457,7 +457,7 @@ export default {
 .recoverDefaults .label {
   margin: auto;
   width: 100%;
-  color: #ccc;
+  color: var(--c-text-soft);
 }
 
 .recoverDefaults .buttons {
@@ -467,16 +467,16 @@ export default {
 
 .recoverDefaults .buttons div button {
   white-space: nowrap;
-  border: 1px solid #CCCCCC;
+  border: 1px solid var(--c-line-strong);
   background-color: transparent;
-  color: #ccc;
+  color: var(--c-text-soft);
   padding: 3px 8px;
   cursor: pointer;
 }
 
 .recoverDefaults .buttons div button:hover {
-  border: 1px solid #fff;
-  color: #fff;
+  border: 1px solid var(--c-text);
+  color: var(--c-text);
 }
 
 .shutdownButton {
@@ -485,16 +485,16 @@ export default {
 }
 
 .shutdownButton .shutdown {
-  color: #cccccc;
-  border: 1px solid #cc0000;
+  color: var(--c-text-soft);
+  border: 1px solid var(--c-danger);
   background-color: transparent;
   padding: 4px;
 }
 
 .shutdownButton .shutdown:hover {
   cursor: pointer;
-  color: #ffffff;
-  border: 1px solid #ff0000;
+  color: var(--c-text);
+  border: 1px solid var(--c-danger);
 }
 
 

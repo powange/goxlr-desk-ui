@@ -2,6 +2,14 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import vClickOutside from "click-outside-vue3";
 
+// Colour tokens and the bundled text faces (the app must work offline).
+import "./assets/theme.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+
 /**
  * We use FontAwesome for SVG icons, before they can be used they need to be imported here, so they're correctly
  * embedded into the app at build time. If you need a new Icon, search for it at:

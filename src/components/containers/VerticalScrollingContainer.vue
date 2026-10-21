@@ -52,7 +52,7 @@ export default {
 }
 
 .scroll::-webkit-scrollbar-thumb {
-  background-color: #dfdfdf;
+  background-color: var(--c-line-strong);
   border-radius: 3px;
 }
 </style>

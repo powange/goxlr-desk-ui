@@ -166,8 +166,8 @@ export default {
 }
 
 .actionButton {
-  color: #a5a7a6;
-  background-color: #353937;
+  color: var(--c-muted);
+  background-color: var(--c-raised);
   width: 100%;
   margin-left: 5px;
   margin-right: 5px;
@@ -176,11 +176,11 @@ export default {
 }
 
 /*.actionButton.disabled {*/
-/*  background-color: #2B2F2D;*/
+/*  background-color: var(--c-disabled);*/
 /*}*/
 
 .actionButton.disabled:hover {
-  background-color: #2B2F2D;
+  background-color: var(--c-disabled);
 }
 
 .actionButton:first-child {
@@ -192,11 +192,11 @@ export default {
 }
 
 .actionButton:hover {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 .actionButton:disabled {
-  background-color: #2B2F2D;
+  background-color: var(--c-disabled);
 }
 
 .menu {
@@ -210,14 +210,14 @@ export default {
 
 button {
   background-color: transparent;
-  color: #fff;
+  color: var(--c-text);
   border: 0;
   padding: 0;
   margin: 0;
 }
 
 button:focus {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 button:focus {

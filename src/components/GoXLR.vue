@@ -13,7 +13,7 @@
         </div>
       </div>
 
-      <div style="height: 25px; background-color: #3b413f"/>
+      <div style="height: 25px; background-color: var(--c-raised-2)"/>
       <h1 class="sr-only">{{ $t('message.navigation.accessibilityDeviceSection') }}</h1>
       <Tabs ref="device-tabs" @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
         <Tab id="mic" :name="$t('message.navigation.microphone')">
@@ -502,30 +502,30 @@ export default {
 
   button {
     padding: 5px;
-    color: #ccc;
-    border: 1px solid #CCCCCC;
+    color: var(--c-text-soft);
+    border: 1px solid var(--c-line-strong);
     background-color: transparent;
     padding: 4px 8px;
     cursor: pointer;
 
     &:hover {
-      color: #fff;
-      border-color: #fff;
+      color: var(--c-text);
+      border-color: var(--c-text);
     }
 
     &.cancel {
-      border-color: #c00;
+      border-color: var(--c-danger);
 
       &:hover {
-        border-color: #ff0000;
+        border-color: var(--c-danger);
       }
     }
 
     &.close {
-      border-color: #417b80;
+      border-color: var(--c-accent-muted);
 
       &:hover {
-        border-color: #59b1b6;
+        border-color: var(--c-accent);
       }
     }
   }

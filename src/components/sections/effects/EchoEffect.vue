@@ -92,16 +92,16 @@ export default {
     },
 
     getBackgroundColour(disabled) {
-      return (disabled) ? "#303533" : "#353937";
+      return (disabled) ? "var(--c-disabled)" : "var(--c-raised)";
     },
     getInputBackgroundColour(disabled) {
-      return (disabled) ? "#333937" : "#3b413f";
+      return (disabled) ? "var(--c-disabled)" : "var(--c-raised-2)";
     },
     getSliderColour(disabled) {
-      return (disabled) ? "#3b7679" : "#59b1b6";
+      return (disabled) ? "var(--c-accent-muted)" : "var(--c-accent)";
     },
     getLabelColour(disabled) {
-      return (disabled) ? "#838584" : "#fff";
+      return (disabled) ? "var(--c-faint)" : "var(--c-text)";
     },
 
 

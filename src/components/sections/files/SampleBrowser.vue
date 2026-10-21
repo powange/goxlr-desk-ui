@@ -508,8 +508,8 @@ export default {
 }
 
 .browser.importing {
-  border-color: #59b1b6;
-  background-color: rgba(89, 177, 182, 0.08);
+  border-color: var(--c-accent);
+  background-color: color-mix(in srgb, var(--c-accent) 8%, transparent);
 }
 
 .topRow {
@@ -531,26 +531,26 @@ export default {
 .breadcrumb button {
   background: transparent;
   border: 0;
-  color: #a5a7a6;
+  color: var(--c-muted);
   padding: 2px 4px;
   cursor: pointer;
-  font-family: LeagueMonoCondensed, sans-serif;
+  font-family: var(--f-body);
 }
 
 .breadcrumb button:hover, .breadcrumb button:focus, .breadcrumb button.current {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .separator {
-  color: #6c706f;
+  color: var(--c-faint);
 }
 
 .search {
   width: 140px;
-  background-color: #2B2F2D;
-  border: 1px solid #3b413f;
+  background-color: var(--c-disabled);
+  border: 1px solid var(--c-line);
   padding: 4px 6px;
-  color: #fff;
+  color: var(--c-text);
 }
 
 .multiBar {
@@ -560,8 +560,8 @@ export default {
   gap: 6px;
   padding: 6px;
   margin: 0 6px 8px 6px;
-  background-color: #3b413f;
-  color: #fff;
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
 }
 
 .multiBar span {
@@ -569,15 +569,15 @@ export default {
 }
 
 .multiBar button {
-  background-color: #2B2F2D;
-  border: 1px solid #49514e;
-  color: #fff;
+  background-color: var(--c-disabled);
+  border: 1px solid var(--c-line);
+  color: var(--c-text);
   padding: 3px 8px;
   cursor: pointer;
 }
 
 .multiBar button:disabled {
-  color: #6c706f;
+  color: var(--c-faint);
   cursor: default;
 }
 
@@ -596,17 +596,17 @@ export default {
 }
 
 .folderRow.dropTarget, .breadcrumb button.dropTarget {
-  outline: 1px dashed #59b1b6;
+  outline: 1px dashed var(--c-accent);
 }
 
 .folderButton {
   flex: 1;
   min-width: 0;
   text-align: left;
-  font-family: LeagueMonoCondensed, sans-serif;
+  font-family: var(--f-body);
   background-color: transparent;
   border: 0;
-  color: #fff;
+  color: var(--c-text);
   padding: 6px;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -615,14 +615,14 @@ export default {
 }
 
 .folderButton:hover, .folderButton:focus {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 .folderAction, .itemPlay {
   background-color: transparent;
   border: 0;
   padding: 0 8px;
-  color: #a5a7a6;
+  color: var(--c-muted);
   cursor: pointer;
 }
 
@@ -632,7 +632,7 @@ export default {
 }
 
 .folderAction:hover, .folderAction:focus {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .itemCheck {
@@ -641,7 +641,7 @@ export default {
 
 .empty, .dropHint {
   margin: 8px;
-  color: #a5a7a6;
+  color: var(--c-muted);
   font-size: 0.85em;
 }
 </style>

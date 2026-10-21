@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-left: 8px; margin-right: 8px; font-family: LeagueMonoCondensed, sans-serif;;">
+  <div style="margin-left: 8px; margin-right: 8px; font-family: var(--f-body);">
     <div class="tab" role="TabList" :aria-label="tabListLabel">
       <button v-for="tab in tabs" :key="tab.name"
         :class="{ active: tab.isActive }" v-show="!tab.hidden" @click="selectTab(tab)" role="tab"
@@ -144,7 +144,7 @@ export default {
 
 <style>
 .tab {
-  border-bottom: 1px solid #59b1b6;
+  border-bottom: 1px solid var(--c-accent);
   text-align: left;
 }
 
@@ -160,23 +160,23 @@ export default {
 
   /*font-family: LeagueMonoVariable, sans-serif;*/
   border-radius: 5px 5px 0 0;
-  color: #fff;
+  color: var(--c-text);
   white-space: nowrap;
 }
 
 .tab button:hover:not(.active) {
-  background-color: #2d3230;
+  background-color: var(--c-panel);
 }
 
 .tab button.active {
-  border: 1px solid #59b1b6;
-  border-bottom: 1px solid #252927;
+  border: 1px solid var(--c-accent);
+  border-bottom: 1px solid var(--c-bg);
 
-  text-shadow: 0 0 3px #59b1b6, 0 0 5px #59b1b6;
+  text-shadow: 0 0 3px var(--c-accent), 0 0 5px var(--c-accent);
 }
 
 .tabs-details {
-  border: 1px solid #59b1b6;
+  border: 1px solid var(--c-accent);
   border-top: 0;
   padding: 0;
   margin: 0;

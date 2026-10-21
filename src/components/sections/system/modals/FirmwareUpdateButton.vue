@@ -246,22 +246,22 @@ export default {
 
   button {
     padding: 5px;
-    color: #ccc;
-    border: 1px solid #CCCCCC;
+    color: var(--c-text-soft);
+    border: 1px solid var(--c-line-strong);
     background-color: transparent;
     padding: 4px 8px;
     cursor: pointer;
 
     &:hover {
-      color: #fff;
-      border-color: #fff;
+      color: var(--c-text);
+      border-color: var(--c-text);
     }
 
     &.cancel {
-      border-color: #c00;
+      border-color: var(--c-danger);
 
       &:hover {
-        border-color: #ff0000;
+        border-color: var(--c-danger);
       }
     }
   }
@@ -273,10 +273,10 @@ export default {
   background: rgba(204, 0, 0, 0.1);
 
   a {
-    color: #fff;
+    color: var(--c-text);
 
     &:hover {
-      color: #59b1b6;
+      color: var(--c-accent);
     }
   }
 }

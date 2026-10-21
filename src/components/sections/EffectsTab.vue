@@ -324,7 +324,7 @@ export default {
 <style scoped>
 button {
   background-color: transparent;
-  color: #fff;
+  color: var(--c-text);
   border: 0;
   padding: 0;
   margin: 0;
@@ -342,12 +342,12 @@ button:focus {
 
 
   display: inline-block;
-  color: #a5a7a6;
+  color: var(--c-muted);
   font-size: 14px;
 }
 
 .openButton:hover {
-  color: #fff;
+  color: var(--c-text);
   cursor: pointer;
 }
 </style>

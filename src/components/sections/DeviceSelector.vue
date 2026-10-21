@@ -108,7 +108,7 @@ export default {
   height: 220px;
   width: 700px;
   margin: 3px;
-  background-color: #353937;
+  background-color: var(--c-raised);
 }
 
 .buttonList:not(:last-child) {
@@ -134,15 +134,15 @@ export default {
 }
 
 .buttonHolder::-webkit-scrollbar-thumb {
-  background-color: #dfdfdf;
+  background-color: var(--c-line-strong);
   border-radius: 3px;
 }
 
 .label {
   width: 680px;
   padding: 10px;
-  color: #fff;
-  background-color: #3b413f;
+  color: var(--c-text);
+  background-color: var(--c-raised-2);
 
   text-transform: uppercase;
 
@@ -150,7 +150,7 @@ export default {
 }
 
 .no-device {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .no-device.disconnected {

@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 440px; border: 1px solid #59b1b6; padding: 6px; color: #fff">
+  <div style="width: 440px; border: 1px solid var(--c-accent); padding: 6px; color: var(--c-text)">
     Submix Supported: {{ isSubMixSupported() }}<br/>
     Submix Enabled: <input type="checkbox" :checked="isSubMixEnabled()" @change="setSubmixEnabled" /><br/><br/>
     <div v-if="isSubMixEnabled()">

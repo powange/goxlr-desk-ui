@@ -210,6 +210,6 @@ export default {
 
 <style scoped>
 label {
-  color: #fff;
+  color: var(--c-text);
 }
 </style>

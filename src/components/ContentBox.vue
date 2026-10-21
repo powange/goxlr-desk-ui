@@ -28,12 +28,12 @@ export default {
   display: inline-flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  background-color: #2d3230;
+  background-color: var(--c-panel);
   padding: 20px;
 }
 
 .contentTitle {
-  color: #fff;
+  color: var(--c-text);
   margin-bottom: 10px;
   text-transform: uppercase;
 }

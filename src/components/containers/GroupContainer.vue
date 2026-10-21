@@ -73,7 +73,7 @@ export default {
 
   padding: 8px v-bind(sidePadding) v-bind(sidePadding);
 
-  background-color: #2D3230;
+  background-color: var(--c-panel);
 }
 
 .title {
@@ -83,7 +83,7 @@ export default {
   padding: 16px 0 10px;
   margin-left: v-bind(rightWidth);
 
-  color: #ffffff;
+  color: var(--c-text);
   text-align: center;
   text-transform: uppercase;
 }

@@ -33,7 +33,7 @@ button.content {
   min-width: 130px;
   max-width: min-content;
   height: 170px;
-  background: #252927;
+  background: var(--c-bg);
   border: 0;
   margin: 0;
   padding: 0;
@@ -43,7 +43,7 @@ button .img-section {
   text-align: center;
   height: 130px;
   font-size: 80px;
-  color: #8C8F8E;
+  color: var(--c-muted);
 
   display: flex;
   justify-content: center;
@@ -59,22 +59,22 @@ button:hover {
 }
 
 button:hover .img-section {
-  color: #fff;
-  background-color: #49514E;
+  color: var(--c-text);
+  background-color: var(--c-hover);
 }
 
 button .iconTitle {
   height: 40px;
   line-height: 40px;
-  background-color: #353937;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-family: var(--f-body);
   text-align: center;
   white-space: nowrap;
   padding: 0px 10px;
 }
 button:hover .iconTitle {
-  background-color: #6E7170;
+  background-color: var(--c-hover-strong);
 }
 
 
