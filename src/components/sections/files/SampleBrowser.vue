@@ -94,6 +94,7 @@
 import {store} from "@/store";
 import {getBaseHTTPAddress} from "@/util/sockets";
 import RadioList from "@/components/lists/RadioList.vue";
+import {SAMPLE_DRAG_TYPE} from "@/util/sampleDrag";
 
 // List ids are this prefix + the sample's path relative to the samples folder.
 const PREFIX = "browser_";
@@ -395,8 +396,10 @@ export default {
       let path = this.pathOf(id);
       // Dragging a checked sample moves all the checked ones.
       this.dragging = (this.multi && this.checked.includes(path)) ? [...this.checked] : [path];
-      event.dataTransfer.effectAllowed = "move";
+      // Moved within the browser, or copied onto a sampler button of the visualiser.
+      event.dataTransfer.effectAllowed = "copyMove";
       event.dataTransfer.setData("text/plain", this.dragging.join('\n'));
+      event.dataTransfer.setData(SAMPLE_DRAG_TYPE, JSON.stringify(this.dragging));
     },
 
     onSampleDragEnd() {

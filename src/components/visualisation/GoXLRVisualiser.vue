@@ -6,6 +6,9 @@
     @contextmenu.prevent="e => handleClick(e, true)"
     @mouseover="handleHover"
     @moussleave="handleHover"
+    @dragover="handleDragOver"
+    @dragleave="handleDragLeave"
+    @drop="handleDrop"
     v-html="getGoXLRSvg()"
     :isDeviceUpdating="isDeviceUpdating"
   />
@@ -16,6 +19,7 @@ import {store} from "@/store";
 import {EffectLightingPresets, EffectPresets, MuteButtonNamesForFader} from "@/util/mixerMapping";
 import {getBaseHTTPAddress, websocket} from "@/util/sockets";
 import {isDeviceMini, isDeviceWhite} from "@/util/util";
+import {getDraggedSamples, isSampleDrag} from "@/util/sampleDrag";
 
 import GoXLRFull from "@/assets/preview/GoXLR.svg?raw";
 import GoXLRMini from "@/assets/preview/GoXLR-Mini.svg?raw";
@@ -28,11 +32,14 @@ export default {
     highlightedAreas: {type: Array, required: true},
   },
 
-  emits: ["areaClick"],
+  emits: ["areaClick", "sampleDrop"],
 
   data: () => {
     return {
       hoveredArea: null,
+      // While samples from the Samples browser are dragged over the visualiser
+      sampleDragging: false,
+      dropButton: null,
       whiteButtonColour: "#3D3D3D",
     }
   },
@@ -52,6 +59,64 @@ export default {
 
       let clickedArea = mapElementToArea(e.target, activeEffectPreset, activeSampleBank);
       this.$emit("areaClick", { area: clickedArea, alt: rightClick });
+    },
+
+    // Which sampler button (TopLeft, ...) is under the pointer, if any. The buttons sit under
+    // the capture layer, so this goes by their position rather than the event target.
+    sampleButtonAt(e) {
+      if (isDeviceMini()) return null;
+
+      for (const button of ["TopLeft", "TopRight", "BottomLeft", "BottomRight"]) {
+        const elem = this.$el.querySelector(`.sampler #${button}`);
+        if (elem === null) continue;
+
+        const rect = elem.getBoundingClientRect();
+        if (e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          return button;
+        }
+      }
+      return null;
+    },
+
+    handleDragOver(e) {
+      if (isDeviceMini() || !isSampleDrag(e)) return;
+
+      this.sampleDragging = true;
+      this.dropButton = this.sampleButtonAt(e);
+      if (this.dropButton !== null) {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = "copy";
+      }
+    },
+
+    handleDragLeave(e) {
+      // Ignore moves between elements inside the visualiser
+      if (e.relatedTarget !== null && this.$el.contains(e.relatedTarget)) return;
+      this.sampleDragging = false;
+      this.dropButton = null;
+    },
+
+    handleDrop(e) {
+      if (!this.sampleDragging) return;
+      e.preventDefault();
+
+      const button = this.sampleButtonAt(e);
+      const paths = getDraggedSamples(e);
+      this.sampleDragging = false;
+      this.dropButton = null;
+
+      if (button !== null && paths.length > 0) {
+        this.$emit("sampleDrop", { button, paths });
+      }
+    },
+
+    updateDropClasses() {
+      for (const button of ["TopLeft", "TopRight", "BottomLeft", "BottomRight"]) {
+        const elem = this.$el.querySelector(`.sampler #${button}`);
+        if (elem === null) continue;
+        elem.classList.toggle("drop-candidate", this.sampleDragging);
+        elem.classList.toggle("drop-target", this.dropButton === button);
+      }
     },
 
     // highlight hovered area
@@ -631,6 +696,9 @@ export default {
   },
 
   watch: {
+    sampleDragging() { this.updateDropClasses(); },
+    dropButton() { this.updateDropClasses(); },
+
     // toggle .blink class if required
     isTopLeftSampleRecording(active) { this.setBlinkClass(".sampler #TopLeft", active); },
     isTopRightSampleRecording(active) { this.setBlinkClass(".sampler #TopRight", active); },
@@ -985,6 +1053,8 @@ export default {
 #goxlr-visualiser .effects .encoders .gender .level #Level13 { color: v-bind('computeEncoderLevelColour("gender", "Gender", 6, true)'); }
 
 /* sampler area: buttons */
+#goxlr-visualiser .sampler .drop-candidate { filter: drop-shadow(0 0 3px #59b1b6); }
+#goxlr-visualiser .sampler .drop-target { filter: drop-shadow(0 0 6px #ffffff) brightness(1.5); stroke-width: 4px !important; }
 #goxlr-visualiser .sampler #BankA { color: v-bind('computeSamplerBankColour("A")'); }
 #goxlr-visualiser .sampler #BankA text { color: v-bind('computeSamplerBankColourText("A")'); }
 #goxlr-visualiser .sampler #BankB { color: v-bind('computeSamplerBankColour("B")'); }

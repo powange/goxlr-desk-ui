@@ -762,6 +762,19 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        sampleAssign: {
+            title: "Affecter à {bank} · {button}",
+            bank: "Banque",
+            empty: "Ce bouton n'a pas encore de son.",
+            current: "Ce bouton contient déjà {count} son(s) :",
+            add: "Ajouter",
+            replace: "Remplacer",
+            removing: "Retrait des sons actuels…",
+            adding: "Ajout {index} sur {total} : {name}…",
+            done: "{count} son(s) affecté(s) à {bank} · {button}",
+            timeoutRemove: "Le daemon a mis trop de temps à retirer les sons actuels",
+            timeout: "{name} : le daemon a mis trop de temps à ajouter ce son",
+        },
         sampleManager: {
             newFolder: "Nouveau dossier",
             openFolder: "Ouvrir le dossier des sons",

@@ -8,7 +8,8 @@
           <FileTabs/>
         </div>
         <div aria-hidden="true" style="margin: auto; width: 100%">
-          <GoXLRVisualiser :highlighted-areas="this.visualiserHighlightAreas" @area-click="onAreaClicked"/>
+          <GoXLRVisualiser :highlighted-areas="this.visualiserHighlightAreas" @area-click="onAreaClicked"
+                           @sample-drop="onSampleDrop"/>
         </div>
       </div>
 
@@ -117,6 +118,8 @@
       <!--<textarea :value="JSON.stringify(firmwareUpdateStatus, null, 2)"></textarea>-->
 
     </AccessibleModal>
+
+    <SampleAssignModal v-if="isDeviceSet() && !isDeviceMini()" ref="sampleAssign"/>
   </div>
 </template>
 
@@ -138,6 +141,7 @@ import EffectsTab from "@/components/sections/EffectsTab.vue";
 import {isDeviceMini} from "@/util/util";
 import LightingTab from "@/components/sections/lighting/LightingTab.vue";
 import SamplerTab from "@/components/sections/SamplerTab.vue";
+import SampleAssignModal from "@/components/sections/sampler/SampleAssignModal.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
 import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 import GoXLRVisualiser from "@/components/visualisation/GoXLRVisualiser.vue";
@@ -160,6 +164,7 @@ export default {
     CenteredContainer,
     ContentContainer,
     SamplerTab,
+    SampleAssignModal,
     LightingTab,
     EffectsTab,
     FileTabs,
@@ -254,6 +259,11 @@ export default {
       } else {
         this.visualiserHighlightAreas = []
       }
+    },
+
+    // Samples dragged from the Samples browser onto a sampler button
+    onSampleDrop(drop) {
+      this.$refs.sampleAssign.open(drop.button, drop.paths);
     },
 
     onFaderChannelChange(activeChannel) {
