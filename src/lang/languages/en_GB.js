@@ -101,6 +101,8 @@ export default {
             lighting: "Lighting",
             routing: "Routing",
             system: "System",
+            library: "Library",
+            application: "Application",
 
             // Navigation Sections on the Lighting Page
             lightingGlobal: "Global",
@@ -862,6 +864,15 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        topBar: {
+            profile: "Profile",
+            profileLabel: "Active profile",
+            micProfile: "Mic",
+            micProfileLabel: "Active mic profile",
+            save: "Save",
+            showDevice: "Show the GoXLR",
+            hideDevice: "Hide the GoXLR",
+        },
         sampleAssign: {
             title: "Assign to {bank} · {button}",
             bank: "Bank",

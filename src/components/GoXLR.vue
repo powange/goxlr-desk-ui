@@ -2,29 +2,36 @@
   <div id="main">
     <DeviceSelector v-if="!isDeviceSet()"/>
     <template v-if="isDeviceSet()">
-      <h1 class="screenreader-only"> {{ $t('message.navigation.accessibilityProfileSection') }}</h1>
-      <div style="display: flex; flex-direction: row; column-gap: 30px">
-        <div>
-          <FileTabs/>
-        </div>
-        <div aria-hidden="true" style="margin: auto; width: 100%">
-          <GoXLRVisualiser :highlighted-areas="this.visualiserHighlightAreas" @area-click="onAreaClicked"
-                           @sample-drop="onSampleDrop"/>
-        </div>
-      </div>
+      <Tabs ref="device-tabs" vertical shortcuts @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
+        <template #nav-top>
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>GoXLR Utility</span>
+          </div>
+        </template>
+        <template #nav-bottom>
+          <div class="device-status">
+            <span class="device-name"><span class="dot" aria-hidden="true"></span>{{ getDeviceName() }}</span>
+            <span class="device-detail">{{ getSerial() }}</span>
+          </div>
+        </template>
+        <template #header>
+          <TopBar :active-zone="activeZone" :visualiser-open="visualiserOpen" @toggle-visualiser="toggleVisualiser"/>
+          <div v-show="visualiserOpen" class="visualiser-panel" aria-hidden="true">
+            <GoXLRVisualiser :highlighted-areas="this.visualiserHighlightAreas" @area-click="onAreaClicked"
+                             @sample-drop="onSampleDrop"/>
+          </div>
+        </template>
 
-      <div style="height: 25px; background-color: var(--c-raised-2)"/>
-      <h1 class="sr-only">{{ $t('message.navigation.accessibilityDeviceSection') }}</h1>
-      <Tabs ref="device-tabs" @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
-        <Tab id="mic" :name="$t('message.navigation.microphone')">
-          <Mic/>
-        </Tab>
-        <Tab id="mixer" :name="$t('message.navigation.mixer')" selected>
+        <Tab id="mixer" icon="fa-solid fa-sliders" :name="$t('message.navigation.mixer')" selected>
           <ContentContainer>
             <Mixer/>
           </ContentContainer>
         </Tab>
-        <Tab id="configuration" :name="$t('message.navigation.configuration')">
+        <Tab id="mic" icon="fa-solid fa-microphone-lines" :name="$t('message.navigation.microphone')">
+          <Mic/>
+        </Tab>
+        <Tab id="configuration" icon="fa-solid fa-screwdriver-wrench" :name="$t('message.navigation.configuration')">
           <ContentContainer>
             <CenteredContainer>
               <Faders ref="faders" @on-fader-channel-change="onFaderChannelChange"/>
@@ -32,23 +39,46 @@
             </CenteredContainer>
           </ContentContainer>
         </Tab>
-        <Tab id="effects" v-if="!isDeviceMini()" :name="$t('message.navigation.effects')">
+        <Tab id="effects" v-if="!isDeviceMini()" icon="fa-solid fa-wand-magic-sparkles" :name="$t('message.navigation.effects')">
           <EffectsTab ref="effects" @on-effect-preset-change="onEffectPresetChange"/>
         </Tab>
-        <Tab id="sampler" v-if="!isDeviceMini()" :name="$t('message.navigation.sampler')">
+        <Tab id="sampler" v-if="!isDeviceMini()" icon="fa-solid fa-table-cells-large" :name="$t('message.navigation.sampler')">
           <ContentContainer>
             <SamplerTab ref="sampler" @on-sample-bank-change="onSampleBankChange"/>
           </ContentContainer>
         </Tab>
-        <Tab id="lighting" :name="$t('message.navigation.lighting')">
-          <LightingTab ref="lighting" @on-lighting-changed="onLightingDataChange"/>
-        </Tab>
-        <Tab id="routing" :name="$t('message.navigation.routing')">
+        <Tab id="routing" icon="fa-solid fa-shuffle" :name="$t('message.navigation.routing')">
           <ContentContainer>
             <Routing/>
           </ContentContainer>
         </Tab>
-        <Tab id="system" :name="$t('message.navigation.system')">
+        <Tab id="lighting" icon="fa-solid fa-lightbulb" :name="$t('message.navigation.lighting')">
+          <LightingTab ref="lighting" @on-lighting-changed="onLightingDataChange"/>
+        </Tab>
+
+        <Tab id="profiles" icon="fa-solid fa-file-lines" :group="$t('message.navigation.library')" :name="$t('message.navigation.profiles')">
+          <div class="library">
+            <Panel :title="$t('message.navigation.profiles')">
+              <ProfileHandler/>
+            </Panel>
+          </div>
+        </Tab>
+        <Tab id="samples" v-if="!isDeviceMini()" icon="fa-solid fa-music" :group="$t('message.navigation.library')" :name="$t('message.navigation.samples')">
+          <div class="library">
+            <Panel :title="$t('message.navigation.samples')">
+              <SampleHandler/>
+            </Panel>
+          </div>
+        </Tab>
+        <Tab id="presets" v-if="!isDeviceMini()" icon="fa-solid fa-layer-group" :group="$t('message.navigation.library')" :name="$t('message.navigation.presets')">
+          <div class="library">
+            <Panel :title="$t('message.navigation.presets')">
+              <PresetHandler/>
+            </Panel>
+          </div>
+        </Tab>
+
+        <Tab id="system" icon="fa-solid fa-gear" :group="$t('message.navigation.application')" :name="$t('message.navigation.system')">
           <ContentContainer>
             <SystemComponent/>
           </ContentContainer>
@@ -136,7 +166,11 @@ import {store} from "@/store";
 import Cough from "@/components/sections/Cough.vue";
 import {runWebsocket, websocket} from "@/util/sockets";
 import SystemComponent from "@/components/sections/System.vue";
-import FileTabs from "@/components/sections/files/FileTabs.vue";
+import TopBar from "@/components/TopBar.vue";
+import Panel from "@/components/design/Panel.vue";
+import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
+import SampleHandler from "@/components/sections/files/SampleHandler.vue";
+import PresetHandler from "@/components/sections/files/PresetHandler.vue";
 import EffectsTab from "@/components/sections/EffectsTab.vue";
 import {isDeviceMini} from "@/util/util";
 import LightingTab from "@/components/sections/lighting/LightingTab.vue";
@@ -150,6 +184,18 @@ import {HighlightArea} from "@/components/visualisation/VisualiserHelper";
 import Language from "@/components/Language.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ProgressBar from "@/components/design/ProgressBar.vue";
+
+// Whether the large GoXLR drawing is shown, remembered between sessions (open by default).
+function loadVisualiserOpen() {
+  try {
+    return localStorage.getItem("visualiserOpen") !== "false";
+  } catch (e) {
+    return true;
+  }
+}
+
+// The device zone shown on the top bar map for each section.
+const SECTION_ZONES = {mixer: "faders", configuration: "faders", mic: "mic", effects: "effects", sampler: "sampler"};
 
 export default {
   name: "GoXLR",
@@ -167,7 +213,11 @@ export default {
     SampleAssignModal,
     LightingTab,
     EffectsTab,
-    FileTabs,
+    TopBar,
+    Panel,
+    ProfileHandler,
+    SampleHandler,
+    PresetHandler,
     SystemComponent,
     Cough,
     DeviceSelector,
@@ -204,11 +254,30 @@ export default {
   data() {
     return {
       visualiserHighlightAreas: [],
+      activeZone: "faders",
+      visualiserOpen: loadVisualiserOpen(),
     }
   },
 
   methods: {
     isDeviceMini,
+
+    toggleVisualiser() {
+      this.visualiserOpen = !this.visualiserOpen;
+      try {
+        localStorage.setItem("visualiserOpen", String(this.visualiserOpen));
+      } catch (e) {
+        // Storage can be unavailable, the panel just won't be remembered.
+      }
+    },
+
+    getDeviceName() {
+      return isDeviceMini() ? "GoXLR Mini" : "GoXLR";
+    },
+
+    getSerial() {
+      return store.getActiveDevice().hardware.serial_number;
+    },
 
     loadLocale() {
       if (!this.utilitySupportsLanguages()) {
@@ -242,6 +311,7 @@ export default {
 
     onTabChange(tab) {
       let id = tab.id;
+      this.activeZone = SECTION_ZONES[id] || "none";
       if (id === "configuration") {
         this.visualiserHighlightAreas = [
           HighlightArea.COUGH,
@@ -490,6 +560,73 @@ export default {
 #main {
   width: 100%;
   font-size: 10pt;
+}
+
+#main .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 16px;
+  font-family: var(--f-title);
+  font-size: 15px;
+  letter-spacing: .04em;
+  color: var(--c-text);
+}
+
+#main .brand-mark {
+  width: 22px;
+  height: 14px;
+  border: 2px solid var(--c-accent);
+  border-radius: 3px;
+}
+
+#main .device-status {
+  margin-top: auto;
+  padding: 12px 10px 2px;
+  border-top: 1px solid var(--c-line);
+  display: grid;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--c-muted);
+}
+
+#main .device-name {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+#main .device-status .dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--c-ok);
+  margin-right: 7px;
+  vertical-align: 1px;
+}
+
+#main .device-detail {
+  font-family: var(--f-mono);
+  font-size: 11px;
+}
+
+#main .visualiser-panel {
+  display: flex;
+  justify-content: center;
+  padding: 10px 16px 0;
+  border-bottom: 1px solid var(--c-line);
+}
+
+#main .visualiser-panel > * {
+  width: 100%;
+  max-width: 760px;
+}
+
+#main .library {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
 }
 </style>
 

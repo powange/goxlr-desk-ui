@@ -41,7 +41,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--c-text);
-  margin-top: 10px;
   user-select: none;
 }
 

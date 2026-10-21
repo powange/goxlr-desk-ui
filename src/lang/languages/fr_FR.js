@@ -70,19 +70,21 @@ export default {
         // These Strings appear in the tabs throughout the pages
         navigation: {
             // Tabs at the top of the Page
-            profiles: "Profiles",
+            profiles: "Profils",
             presets: "Préréglages",
-            samples: "Sons enregistrés",
+            samples: "Sons",
 
             // Main Navigation Tabs
             microphone: "Micro",
             mixer: "Mixer",
             configuration: "Configuration",
             effects: "Effets",
-            sampler: "Sons enregistrés",
+            sampler: "Sampler",
             lighting: "Éclairage",
-            routing: "Entrée/Sortie",
+            routing: "Routage",
             system: "Système",
+            library: "Bibliothèque",
+            application: "Application",
 
             // Navigation Sections on the Lighting Page
             lightingGlobal: "Global",
@@ -762,6 +764,15 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        topBar: {
+            profile: "Profil",
+            profileLabel: "Profil actif",
+            micProfile: "Micro",
+            micProfileLabel: "Profil micro actif",
+            save: "Enregistrer",
+            showDevice: "Afficher la GoXLR",
+            hideDevice: "Masquer la GoXLR",
+        },
         sampleAssign: {
             title: "Affecter à {bank} · {button}",
             bank: "Banque",
