@@ -285,5 +285,7 @@ export default {
   background-color: v-bind(backgroundColour);
   min-width: 92px;
   max-width: min-content;
+  border-radius: 6px;
+  overflow: hidden;
 }
 </style>

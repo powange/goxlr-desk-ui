@@ -33,14 +33,18 @@ export default {
     max-width: v-bind(maxWidth);
 
     background-color: var(--c-raised);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .title {
     width: 100%;
-    padding: 10px 0;
+    padding: 10px 0 8px;
 
-    color: var(--c-text);
-    background-color: var(--c-raised-2);
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    color: var(--c-muted);
     text-transform: uppercase;
     text-align: center;
 }
