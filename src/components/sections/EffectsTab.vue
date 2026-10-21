@@ -1,12 +1,10 @@
 <template>
   <div class="preset-bar" role="group" :aria-label="$t('message.effects.preset.title')">
-    <label class="preset-field">
+    <div class="preset-field">
       <span class="preset-label">{{ $t('message.effects.preset.title') }}</span>
-      <select :value="getActivePreset()" @change="onEffectSelectionChange($event.target.value)"
-              :aria-label="$t('message.effects.preset.group')">
-        <option v-for="option in getEffectOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-      </select>
-    </label>
+      <SelectMenu class="preset-select" :options="getEffectOptions()" :selected="getActivePreset()"
+                  @select="onEffectSelectionChange" :label="$t('message.effects.preset.group')"/>
+    </div>
     <label class="preset-field">
       <span class="preset-label">{{ $t('message.effects.preset.name') }}</span>
       <input ref="nameInput" class="preset-name" type="text" v-model="nameDraft" maxlength="64"
@@ -14,18 +12,18 @@
              @keydown.enter="commitName" @keydown.esc="nameDraft = getCurrentPresetName(); $refs.nameInput.blur()"
              @blur="commitName"/>
     </label>
-    <button ref="saveButton" type="button" class="preset-button primary" @click="savePressed">
+    <AppButton ref="saveButton" variant="primary" @click="savePressed">
       <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
       <span>{{ $t('message.effects.preset.menuSave') }}</span>
-    </button>
-    <button ref="loadButton" type="button" class="preset-button" @click="$refs.select_preset_modal.openModal(undefined, $refs.loadButton)">
+    </AppButton>
+    <AppButton ref="loadButton" @click="$refs.select_preset_modal.openModal(undefined, $refs.loadButton)">
       <font-awesome-icon icon="fa-solid fa-folder"/>
       <span>{{ $t('message.effects.preset.menuLoad') }}</span>
-    </button>
-    <button ref="lightingButton" type="button" class="preset-button" @click="openLighting()">
+    </AppButton>
+    <AppButton ref="lightingButton" @click="openLighting()">
       <font-awesome-icon icon="fa-solid fa-lightbulb"/>
-      <span>{{ $t('message.effects.lighting.customise') }}</span>
-    </button>
+      <span>{{ $t('message.common.lighting') }}</span>
+    </AppButton>
     <span class="grow"></span>
     <label class="master">
       <span class="preset-label">{{ $t('message.effects.face.master') }}</span>
@@ -47,7 +45,8 @@
   </div>
 
   <!-- Modals -->
-  <AccessibleModal ref="lightingModal" id="effectsLighting" width="min(640px, 94vw)" body-padding="0">
+  <AccessibleModal ref="lightingModal" id="effectsLighting" width="min(640px, 94vw)" body-padding="0"
+                   @modal-close="lightingOpen = false">
     <template v-slot:title>{{ $t('message.effects.lighting.title') }}</template>
     <EffectsLighting v-if="lightingOpen" :preset="getActivePreset()" :preset-name="getCurrentPresetName()"
                      :selected-effect="selectedEffect"/>
@@ -113,7 +112,9 @@
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import ReverbEffect from "@/components/sections/effects/ReverbEffect.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import EchoEffect from "@/components/sections/effects/EchoEffect.vue";
 import PitchEffect from "@/components/sections/effects/PitchEffect.vue";
 import GenderEffect from "@/components/sections/effects/GenderEffect.vue";
@@ -142,7 +143,7 @@ export default {
   emits: ["on-effect-preset-change"],
 
   name: "EffectsTab",
-  components: {
+  components: {AppButton, SelectMenu, 
     EffectsLighting,
     EffectsFace,
     Toggle,
@@ -233,8 +234,11 @@ export default {
     },
 
     savePressed() {
-      // Saving under a name that's already in the library asks before overwriting it
-      if (store.getPresetFiles().includes(this.getCurrentPresetName())) {
+      // Saving under a name that's already in the library asks before overwriting it. The name
+      // typed may not have reached the device yet, so check that one.
+      const name = this.nameDraft.trim() || this.getCurrentPresetName();
+      if (name !== this.getCurrentPresetName()) this.commitName();
+      if (store.getPresetFiles().includes(name)) {
         this.$refs.overwrite_library_save.openModal(this.$refs.overwriteConfirm, this.$refs.saveButton);
       } else {
         this.saveActivePreset();
@@ -350,7 +354,7 @@ export default {
   flex-wrap: wrap;
   align-items: flex-end;
   gap: 12px;
-  margin: 24px 40px 0;
+  margin: var(--page-gutter) var(--page-gutter) 0;
   padding: 12px 14px;
   background-color: var(--c-panel);
   border: 1px solid var(--c-line);
@@ -372,14 +376,14 @@ export default {
 
 .preset-field select, .preset-name {
   padding: 7px 10px;
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--c-field-border);
   border-radius: 6px;
   background-color: var(--c-raised);
   color: var(--c-text);
   font-size: 13px;
 }
 
-.preset-field select {
+.preset-select {
   min-width: 200px;
 }
 
@@ -390,35 +394,6 @@ export default {
 .preset-field select:focus-visible, .preset-name:focus {
   outline: 2px solid var(--c-accent);
   outline-offset: 1px;
-}
-
-.preset-bar .preset-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.preset-bar .preset-button.primary {
-  background-color: var(--c-accent);
-  border-color: var(--c-accent);
-  color: var(--c-on-accent);
-}
-
-.preset-bar .preset-button:hover {
-  filter: brightness(1.1);
-}
-
-.preset-bar .preset-button:focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 2px;
 }
 
 .grow {
@@ -437,7 +412,7 @@ export default {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   gap: 16px;
-  padding: 16px 40px 40px;
+  padding: 16px var(--page-gutter) var(--page-gutter);
 }
 
 .effect-settings {

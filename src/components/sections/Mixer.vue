@@ -1,5 +1,6 @@
 <template>
   <div class="mixer-page">
+    <ScenesBar/>
     <!-- Options that apply to the whole mixer -->
     <div v-if="isSubMixSupported()" class="options">
       <label class="option">
@@ -61,7 +62,8 @@
       </GroupContainer>
     </CenteredContainer>
 
-    <AccessibleModal ref="lightingModal" id="faderLighting" width="min(900px, 94vw)" body-padding="0">
+    <AccessibleModal ref="lightingModal" id="faderLighting" width="min(900px, 94vw)" body-padding="0"
+                     @modal-close="lightingFader = undefined">
       <template v-slot:title>{{ $t('message.mixer.strip.lightingTitle', { channel: lightingFader ? $t(`message.faders.${lightingFader}`) : '' }) }}</template>
       <ChannelLighting v-if="lightingFader" :key="lightingFader" :fixed-channel="lightingFader"/>
     </AccessibleModal>
@@ -69,6 +71,7 @@
 </template>
 
 <script>
+import ScenesBar from "@/components/sections/mixer/ScenesBar.vue";
 import Slider from "../slider/Slider.vue";
 import {
   ChannelName,
@@ -91,7 +94,7 @@ import ChannelLighting from "@/components/sections/lighting/subTabs/ChannelLight
 
 export default {
   name: "MixerTop",
-  components: {ChannelLighting, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
+  components: {ScenesBar, ChannelLighting, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
 
   data() {
     return {
@@ -234,9 +237,13 @@ export default {
     },
 
     // Opens the lighting settings of one fader (its lights, screen and mute button)
+    // A fresh dialog on each opening, so it reads the current settings (screen text..)
     openLighting(fader) {
-      this.lightingFader = fader;
-      this.$refs.lightingModal.openModal();
+      this.lightingFader = undefined;
+      this.$nextTick(() => {
+        this.lightingFader = fader;
+        this.$refs.lightingModal.openModal();
+      });
     },
 
     setSubmixEnabled(enabled) {

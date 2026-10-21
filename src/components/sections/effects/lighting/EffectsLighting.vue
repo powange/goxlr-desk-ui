@@ -3,7 +3,7 @@
     <section class="sect">
       <div class="sect-head">
         <h3>{{ $t('message.effects.lighting.presetButton', { name: presetName }) }}</h3>
-        <button type="button" class="link" @click="$refs.preset.applyToAll()">{{ $t('message.effects.lighting.applyPresets') }}</button>
+        <AppButton variant="link" @click="$refs.preset.applyToAll()">{{ $t('message.effects.lighting.applyPresets') }}</AppButton>
       </div>
       <PresetLightingRows ref="preset" :preset="preset"/>
     </section>
@@ -11,7 +11,7 @@
     <section class="sect">
       <div class="sect-head">
         <h3>{{ $t('message.effects.lighting.encoders') }}</h3>
-        <button type="button" class="link" @click="$refs.encoder.applyToAll()">{{ $t('message.effects.lighting.applyEncoders') }}</button>
+        <AppButton variant="link" @click="$refs.encoder.applyToAll()">{{ $t('message.effects.lighting.applyEncoders') }}</AppButton>
       </div>
       <EncoderLightingRows ref="encoder" :initial="initialEncoder"/>
     </section>
@@ -19,7 +19,7 @@
     <section class="sect">
       <div class="sect-head">
         <h3>{{ $t('message.effects.lighting.buttons') }}</h3>
-        <button type="button" class="link" @click="$refs.button.applyToAll()">{{ $t('message.effects.lighting.applyButtons') }}</button>
+        <AppButton variant="link" @click="$refs.button.applyToAll()">{{ $t('message.effects.lighting.applyButtons') }}</AppButton>
       </div>
       <EffectButtonLightingRows ref="button" :initial="initialButton"/>
     </section>
@@ -27,6 +27,7 @@
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import PresetLightingRows from "@/components/sections/effects/lighting/PresetLightingRows.vue";
 import EncoderLightingRows from "@/components/sections/effects/lighting/EncoderLightingRows.vue";
 import EffectButtonLightingRows from "@/components/sections/effects/lighting/EffectButtonLightingRows.vue";
@@ -38,7 +39,7 @@ const BUTTONS = {megaphone: "EffectMegaphone", robot: "EffectRobot", hard_tune: 
 
 export default {
   name: "EffectsLighting",
-  components: {PresetLightingRows, EncoderLightingRows, EffectButtonLightingRows},
+  components: {AppButton, PresetLightingRows, EncoderLightingRows, EffectButtonLightingRows},
 
   props: {
     preset: {type: String, required: true},
@@ -90,23 +91,8 @@ export default {
   color: var(--c-muted);
 }
 
-.link {
-  border: none;
-  background: transparent;
-  color: var(--c-accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
-.link:hover {
-  text-decoration: underline;
-}
 
-.link:focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 1px;
-}
 
 :deep(.rows) {
   display: grid;

@@ -10,9 +10,8 @@
           </tr>
           <tr class="subHeader">
             <th colspan="2" class="hidden">&nbsp;</th>
-            <th v-for="input in InputRouting()" :key="input">{{
-              $t(`message.routing.inputs["${input}"]`)
-              }}
+            <th v-for="input in InputRouting()" :key="input" :title="$t(`message.routing.help.inputs.${input}`)">
+              <span class="help-label">{{ $t(`message.routing.inputs["${input}"]`) }}</span>
             </th>
           </tr>
         </thead>
@@ -20,12 +19,24 @@
           <th v-if="output === 'Headphones'" class="rotated" :rowspan="getOutputChannels.length">
             <span>{{ $t('message.routing.output') }}</span></th>
           <SubmixButton :name="output" :display="getOutputString(output)" v-if="submixEnabled()" />
-          <th v-else>{{ getOutputString(output) }}</th>
+          <th v-else :title="$t(`message.routing.help.outputs.${output}`)"><span class="help-label">{{ getOutputString(output) }}</span></th>
           <Cell v-for="input in InputRouting()" :key="input" :enabled="isEnabled(output, input)" :output="output"
             :input="input" :orange="isDeviceMix(output, 'B')" @clicked="handleClick"
+            :label="cellLabel(input, output)"
+            :reason="canRoute(output, input) ? '' : $t('message.routing.help.chatLoop')"
             :cell-disabled="!canRoute(output, input)" />
         </tr>
       </table>
+      <!-- Where to send the usual apps -->
+      <div class="routing-help">
+        <strong>{{ $t('message.routing.help.title') }}</strong>
+        <ul>
+          <li>{{ $t('message.routing.help.obs') }}</li>
+          <li>{{ $t('message.routing.help.discord') }}</li>
+          <li>{{ $t('message.routing.help.apps') }}</li>
+          <li>{{ $t('message.routing.help.hover') }}</li>
+        </ul>
+      </div>
     </GroupContainer>
   </CenteredContainer>
 </template>
@@ -59,6 +70,10 @@ export default {
         return this.$t(key);
       }
       return this.$t(`message.routing.outputs['${name}']`)
+    },
+
+    cellLabel(input, output) {
+      return this.$t('message.routing.cellLabel', {input: this.$t(`message.routing.inputs["${input}"]`), output: this.getOutputString(output)});
     },
 
     handleClick: function (output, input) {
@@ -163,6 +178,29 @@ export default {
 </script>
 
 <style scoped>
+.help-label {
+  text-decoration: underline dotted var(--c-muted);
+  text-underline-offset: 3px;
+  cursor: help;
+}
+
+.routing-help {
+  margin-top: 16px;
+  max-width: 720px;
+  padding: 12px 14px;
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+  background-color: var(--c-raised);
+  color: var(--c-text-soft);
+  font-size: 13px;
+  text-align: left;
+}
+
+.routing-help ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
 table {
   color: var(--c-text);
   font-stretch: condensed;

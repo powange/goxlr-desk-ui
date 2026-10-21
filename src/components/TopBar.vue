@@ -1,30 +1,46 @@
 <template>
   <header class="topbar">
-    <label class="picker">
-      <span class="picker-label">{{ $t('message.topBar.profile') }}</span>
-      <select :value="getActiveProfile()" @change="loadProfile($event.target.value)"
-              :aria-label="$t('message.topBar.profileLabel')">
-        <option v-for="name in getProfiles()" :key="name" :value="name">{{ name }}</option>
-      </select>
-    </label>
-    <button ref="save" class="bar-button primary" @click="$refs.saveModal.openModal($refs.saveOk, $refs.save)"
-            :title="$t('message.profileManager.saveProfileName', { profileName: getActiveProfile() })">
-      <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
-      <span>{{ $t('message.topBar.save') }}</span>
-    </button>
+    <SelectMenu class="picker" button-class="picker-button" :options="getProfiles()" :selected="getActiveProfile()"
+                :label="$t('message.topBar.profileLabel')" @select="askLoad($event, false)">
+      <template #prefix><span class="picker-label">{{ $t('message.topBar.profile') }}</span></template>
+    </SelectMenu>
+    <!-- Saves the profile and the mic profile (Ctrl+S); the arrow saves only one of them -->
+    <div class="save-group" ref="saveGroup">
+      <AppButton ref="save" variant="primary" class="save-main" @click="save(true, true)"
+                 :title="$t('message.topBar.saveBothHint', { profile: getActiveProfile(), mic: getActiveMicProfile() })">
+        <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
+        <span>{{ $t('message.topBar.save') }}</span>
+        <span v-if="isModified()" class="unsaved-dot" :title="$t('message.topBar.unsaved')"></span>
+        <span v-if="isModified()" class="screenreader-only">{{ $t('message.topBar.unsaved') }}</span>
+      </AppButton>
+      <AppButton variant="primary" class="save-more" :aria-expanded="saveMenuOpen" aria-haspopup="menu"
+                 :aria-label="$t('message.topBar.saveMore')" @click="saveMenuOpen = !saveMenuOpen">
+        <font-awesome-icon icon="fa-solid fa-chevron-down"/>
+      </AppButton>
+      <div v-if="saveMenuOpen" class="save-menu" role="menu" @keydown.esc.stop="saveMenuOpen = false">
+        <button type="button" role="menuitem" @click="save(true, false)">
+          {{ $t('message.topBar.saveProfileOnly', { profile: getActiveProfile() }) }}
+        </button>
+        <button type="button" role="menuitem" @click="save(false, true)">
+          {{ $t('message.topBar.saveMicOnly', { mic: getActiveMicProfile() }) }}
+        </button>
+        <button v-if="isModified()" type="button" role="menuitem" class="revert" @click="revert()">
+          {{ $t('message.topBar.revert') }}
+        </button>
+      </div>
+    </div>
 
-    <label class="picker">
-      <span class="picker-label">{{ $t('message.topBar.micProfile') }}</span>
-      <select :value="getActiveMicProfile()" @change="loadMicProfile($event.target.value)"
-              :aria-label="$t('message.topBar.micProfileLabel')">
-        <option v-for="name in getMicProfiles()" :key="name" :value="name">{{ name }}</option>
-      </select>
-    </label>
+    <SelectMenu class="picker" button-class="picker-button" :options="getMicProfiles()" :selected="getActiveMicProfile()"
+                :label="$t('message.topBar.micProfileLabel')" @select="askLoad($event, true)">
+      <template #prefix><span class="picker-label">{{ $t('message.topBar.micProfile') }}</span></template>
+    </SelectMenu>
 
-    <button ref="lighting" class="bar-button" @click="openLighting">
+    <MicMuteButton/>
+
+    <AppButton ref="lighting" @click="openLighting">
       <font-awesome-icon icon="fa-solid fa-lightbulb"/>
       <span>{{ $t('message.topBar.lighting') }}</span>
-    </button>
+    </AppButton>
 
     <span class="grow"></span>
 
@@ -41,36 +57,49 @@
     </button>
   </header>
 
-  <AccessibleModal ref="lightingModal" id="globalLighting" width="min(560px, 94vw)" body-padding="0">
+  <AccessibleModal ref="lightingModal" id="globalLighting" width="min(560px, 94vw)" body-padding="0"
+                   @modal-close="lightingOpen = false">
     <template v-slot:title>{{ $t('message.topBar.lightingTitle') }}</template>
     <GlobalLighting v-if="lightingOpen"/>
   </AccessibleModal>
 
-  <AccessibleModal ref="saveModal" id="topBarSave" :show_close="false">
-    <template v-slot:title>{{ $t('message.profileManager.overwriteTitle') }}</template>
-    <template v-slot:default>{{ $t('message.profileManager.overwriteQuestion', { activeProfile: getActiveProfile() }) }}</template>
+  <!-- Loading another profile replaces the current one, including what wasn't saved -->
+  <AccessibleModal ref="loadModal" id="topBarLoad" :show_close="false">
+    <template v-slot:title>{{ $t('message.topBar.loadTitle', { name: pendingLoad.name }) }}</template>
+    <template v-slot:default>
+      {{ $t(pendingLoad.mic ? 'message.topBar.loadMicQuestion' : 'message.topBar.loadQuestion', { current: pendingLoad.current }) }}
+    </template>
     <template v-slot:footer>
-      <ModalButton ref="saveOk" @click="saveProfile(); $refs.saveModal.closeModal()">{{ $t('message.profileManager.overwriteYes') }}</ModalButton>
-      <ModalButton @click="$refs.saveModal.closeModal()">{{ $t('message.profileManager.overwriteNo') }}</ModalButton>
+      <ModalButton ref="loadOk" @click="confirmLoad(false)">{{ $t('message.topBar.load') }}</ModalButton>
+      <ModalButton @click="confirmLoad(true)">{{ $t('message.topBar.saveThenLoad') }}</ModalButton>
+      <ModalButton @click="$refs.loadModal.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
     </template>
   </AccessibleModal>
+
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
-import {sendHttpCommand} from "@/util/sockets";
+import {runCommand} from "@/util/sockets";
+import {clearUndo} from "@/util/undo";
 import {isDeviceMini} from "@/util/util";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import GlobalLighting from "@/components/sections/lighting/GlobalLighting.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
+import MicMuteButton from "@/components/MicMuteButton.vue";
 
 export default {
   name: "TopBar",
-  components: {GlobalLighting, ModalButton, AccessibleModal},
+  components: {MicMuteButton, AppButton, SelectMenu, GlobalLighting, ModalButton, AccessibleModal},
 
   data() {
     return {
       lightingOpen: false,
+      saveMenuOpen: false,
+      // The profile chosen in a picker, waiting for confirmation
+      pendingLoad: {name: "", mic: false, current: ""},
     };
   },
   emits: ["toggle-visualiser"],
@@ -81,7 +110,40 @@ export default {
     visualiserOpen: {type: Boolean, default: false},
   },
 
+  mounted() {
+    window.addEventListener("keydown", this.onKeydown);
+    document.addEventListener("pointerdown", this.onOutside);
+  },
+
+  unmounted() {
+    window.removeEventListener("keydown", this.onKeydown);
+    document.removeEventListener("pointerdown", this.onOutside);
+  },
+
   methods: {
+    onKeydown(event) {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        this.save(true, true);
+      }
+    },
+
+    onOutside(event) {
+      if (this.saveMenuOpen && !this.$refs.saveGroup.contains(event.target)) this.saveMenuOpen = false;
+    },
+
+    // Saves the profile and / or the mic profile, then confirms with a notification.
+    async save(profile, mic) {
+      this.saveMenuOpen = false;
+      const serial = store.getActiveSerial();
+      const names = {profile: this.getActiveProfile(), mic: this.getActiveMicProfile()};
+      if (profile && !(await runCommand(serial, {SaveProfile: []}))) return;
+      if (mic && !(await runCommand(serial, {SaveMicProfile: []}))) return;
+      const key = profile && mic ? "savedBoth" : (profile ? "savedProfile" : "savedMic");
+      store.addToast("ok", this.$t(`message.topBar.${key}`, names));
+      store.setAccessibilityNotification("polite", this.$t(`message.topBar.${key}`, names));
+    },
+
     // The device-wide lighting (moved here from the Lighting section)
     openLighting() {
       this.lightingOpen = false;
@@ -100,11 +162,50 @@ export default {
     },
 
     getProfiles() {
-      return store.getProfileFiles().slice().sort(Intl.Collator().compare);
+      return store.getProfileFiles().slice().sort(Intl.Collator().compare).map(name => ({id: name, label: name}));
     },
 
     getMicProfiles() {
-      return store.getMicProfileFiles().slice().sort(Intl.Collator().compare);
+      return store.getMicProfileFiles().slice().sort(Intl.Collator().compare).map(name => ({id: name, label: name}));
+    },
+
+    // Unsaved changes in the profile and / or mic profile (tracked by the daemon)
+    isModified(profile = true, mic = true) {
+      const device = store.getActiveDevice();
+      return (profile && device.profile_modified === true) || (mic && device.mic_profile_modified === true);
+    },
+
+    // Loads the saved versions back, dropping the changes
+    revert() {
+      this.saveMenuOpen = false;
+      if (this.isModified(true, false)) this.loadProfile(this.getActiveProfile());
+      if (this.isModified(false, true)) this.loadMicProfile(this.getActiveMicProfile());
+    },
+
+    askLoad(name, mic) {
+      // Nothing would be lost: load straight away
+      if (!this.isModified(!mic, mic)) {
+        if (mic) this.loadMicProfile(name); else this.loadProfile(name);
+        return;
+      }
+      const current = mic ? this.getActiveMicProfile() : this.getActiveProfile();
+      this.pendingLoad = {name, mic, current};
+      this.$refs.loadModal.openModal(this.$refs.loadOk);
+    },
+
+    // Optionally saves the current profile first, then loads the chosen one
+    async confirmLoad(saveFirst) {
+      const {name, mic} = this.pendingLoad;
+      this.$refs.loadModal.closeModal();
+      const serial = store.getActiveSerial();
+      if (saveFirst) {
+        if (!(await runCommand(serial, mic ? {SaveMicProfile: []} : {SaveProfile: []}))) return;
+      }
+      if (mic) {
+        this.loadMicProfile(name);
+      } else {
+        this.loadProfile(name);
+      }
     },
 
     getActiveProfile() {
@@ -116,17 +217,14 @@ export default {
     },
 
     loadProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), {LoadProfile: [name, true]}).catch(error => console.log(error));
-      store.setAccessibilityNotification("polite", this.$t('message.profileManager.accessibilityLoadedProfile', {profileName: name}));
+      clearUndo();
+      runCommand(store.getActiveSerial(), {LoadProfile: [name, true]},
+          {a11y: this.$t('message.profileManager.accessibilityLoadedProfile', {profileName: name})});
     },
 
     loadMicProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), {LoadMicProfile: [name, true]}).catch(error => console.log(error));
-    },
-
-    saveProfile() {
-      sendHttpCommand(store.getActiveSerial(), {SaveProfile: []});
-      store.setAccessibilityNotification("polite", this.$t('message.profileManager.accessibilitySavedProfile', {profileName: this.getActiveProfile()}));
+      clearUndo();
+      runCommand(store.getActiveSerial(), {LoadMicProfile: [name, true]});
     },
   }
 }
@@ -144,75 +242,90 @@ export default {
 }
 
 .picker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 4px 0 10px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
+  min-width: 170px;
+  max-width: 260px;
+}
+
+.picker :deep(.picker-button) {
+  padding: 7px 10px;
+  border-color: var(--c-line-strong);
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .picker-label {
   font-family: var(--f-mono);
   font-size: 10px;
+  font-weight: normal;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--c-muted);
 }
 
-.picker select {
-  appearance: none;
-  border: none;
-  background: transparent;
-  color: var(--c-text);
-  font-weight: 600;
-  font-size: 13px;
-  padding: 7px 22px 7px 2px;
-  cursor: pointer;
-  max-width: 220px;
-  background-image: linear-gradient(45deg, transparent 50%, var(--c-muted) 50%), linear-gradient(135deg, var(--c-muted) 50%, transparent 50%);
-  background-position: calc(100% - 11px) 50%, calc(100% - 6px) 50%;
-  background-size: 5px 5px;
-  background-repeat: no-repeat;
-}
-
-.picker select option {
-  background-color: var(--c-panel);
-  color: var(--c-text);
-}
-
-.picker:focus-within {
-  border-color: var(--c-accent);
-}
-
-.bar-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--c-line);
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.bar-button.primary {
-  background-color: var(--c-accent);
-  border-color: var(--c-accent);
-  color: var(--c-on-accent);
-}
-
-.bar-button:hover {
-  filter: brightness(1.1);
-}
-
-.bar-button:focus-visible, .map-button:focus-visible {
+.map-button:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 2px;
+}
+
+.save-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.save-main {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.save-more {
+  padding-left: 8px;
+  padding-right: 8px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 1px solid var(--c-on-accent);
+}
+
+.save-menu {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 4px);
+  left: 0;
+  display: grid;
+  min-width: 100%;
+  padding: 4px;
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-line-strong);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px var(--c-shadow);
+}
+
+.save-menu button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--c-text);
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.save-menu button.revert {
+  color: var(--c-danger);
+}
+
+.unsaved-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--c-warn);
+  box-shadow: 0 0 0 2px var(--c-accent);
+}
+
+.save-menu button:hover, .save-menu button:focus-visible {
+  background-color: var(--c-hover);
+  outline: none;
 }
 
 .grow {

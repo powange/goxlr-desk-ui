@@ -1,19 +1,10 @@
-<script>
-import GroupContainer from "@/components/containers/GroupContainer.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
-
+// Shared logic (data, methods) of the former LightingEffectsEncoders page, used by the components
+// that replaced it. It has no template of its own.
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import {LightingInactiveOptions} from "@/util/mixerMapping";
 
 export default {
-  name: "LightingEffectsEncoders",
-  components: {
-    GroupContainer,
-    RadioSelection,
-    ColourPicker
-  },
 
   data() {
     return {
@@ -103,50 +94,3 @@ export default {
     }
   }
 }
-</script>
-
-<template>
-  <GroupContainer :title="$t('message.lighting.effects.encoders.title')">
-    <template #right>
-      <button class="applyToAll" @click="applyToAll()">{{ $t('message.lighting.common.applyToAll') }}</button>
-    </template>
-    <RadioSelection
-        :title="$t('message.lighting.effects.encoders.title')"
-        group="lighting_effects_encoders"
-        :options="this.getEncoderOptions()"
-        :selected="this.selectedEncoder"
-        @selection-changed="onButtonSelectionChange"
-    />
-    <ColourPicker
-        :title="$t('message.lighting.effects.encoders.leftColour')"
-        :color-value="leftColour()"
-        @colour-changed="onLeftColourChange"
-    />
-    <ColourPicker
-        :title="$t('message.lighting.effects.encoders.rightColour')"
-        :color-value="rightColour()"
-        @colour-changed="onRightColourChange"
-    />
-    <ColourPicker
-        :title="$t('message.lighting.effects.encoders.knobColour')"
-        :color-value="knobColour()"
-        @colour-changed="onKnobColourChange"
-    />
-  </GroupContainer>
-</template>
-
-<style scoped>
-button {
-  border: 0;
-  margin: 0;
-  padding: 5px 24px;
-  color: var(--c-text);
-  font-family: var(--f-body);
-  font-size: 12px;
-  background-color: var(--c-raised-2);
-}
-
-button:hover {
-  background-color: var(--c-hover-strong);
-}
-</style>

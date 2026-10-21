@@ -115,6 +115,11 @@ export default {
   },
 
   methods: {
+    applyThemeColours() {
+      this.wavesurfer.setWaveColor(themeColour("text-soft"));
+      this.wavesurfer.setProgressColor(themeColour("text-soft"));
+    },
+
     playActiveSample() {
       if (this.activeSample === -1) {
         return;
@@ -525,6 +530,12 @@ export default {
       cursorWidth: 0,
       progressColor: themeColour("text-soft"),
     });
+    window.addEventListener("themechange", this.applyThemeColours);
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("themechange", this.applyThemeColours);
+    this.wavesurfer.destroy();
   },
 
   computed: {

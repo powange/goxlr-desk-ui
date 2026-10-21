@@ -5,14 +5,14 @@
 </template>
 
 <script>
-import LightingEffectsPresets from "@/components/sections/lighting/subTabs/effects/LightingEffectsPresets.vue";
+import lightingEffectsPresets from "@/mixins/lightingEffectsPresets";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 import {EffectLightingPresets, EffectPresets} from "@/util/mixerMapping";
 
 // The lighting of one effect preset button, from the Lighting section's preset settings.
 export default {
   name: "PresetLightingRows",
-  extends: LightingEffectsPresets,
+  extends: lightingEffectsPresets,
   components: {ButtonLighting},
 
   props: {

@@ -3,10 +3,14 @@
   <div v-if="vertical" class="tabs-vertical">
     <nav class="side" :aria-label="tabListLabel">
       <slot name="nav-top"></slot>
-      <div class="tab-list-vertical" role="tablist" aria-orientation="vertical" :aria-label="tabListLabel">
+      <!-- The nav carries the name. Group titles are read as the description of their tabs (a
+           tablist may only contain tabs). -->
+      <div class="tab-list-vertical" role="tablist" aria-orientation="vertical">
         <template v-for="(tab, index) in tabs" :key="tab.id">
-          <div v-if="tab.group && !tab.hidden && tab.group !== groupBefore(index)" class="group-label" aria-hidden="true">{{ tab.group }}</div>
+          <div v-if="tab.group && !tab.hidden && tab.group !== groupBefore(index)" :id="groupId(tab.group)"
+               class="group-label" aria-hidden="true">{{ tab.group }}</div>
           <button :class="{ active: tab.isActive }" v-show="!tab.hidden" @click="selectTab(tab)" role="tab"
+                  :id="tabId(tab)" :aria-controls="panelId" :aria-describedby="tab.group ? groupId(tab.group) : undefined"
                   :aria-selected="tab.isActive" :tabindex="tab.isActive ? 0 : -1" @keydown="onTabKeydown" :ref="tab.name">
             <font-awesome-icon v-if="tab.icon" :icon="tab.icon" class="tab-icon" fixed-width/>
             <span>{{ tab.name }}</span>
@@ -17,37 +21,43 @@
     </nav>
     <div class="main-column">
       <slot name="header"></slot>
-      <div class="tabs-details-vertical" role="tabpanel" :aria-label="getActiveTab().name">
+      <div class="tabs-details-vertical" role="tabpanel" :id="panelId" :aria-labelledby="tabId(getActiveTab())">
         <slot></slot>
       </div>
     </div>
   </div>
 
   <div v-else style="margin-left: 8px; margin-right: 8px;">
-    <div class="tab" role="TabList" :aria-label="tabListLabel">
+    <div class="tab" role="tablist" :aria-label="tabListLabel">
       <button v-for="tab in tabs" :key="tab.name"
         :class="{ active: tab.isActive }" v-show="!tab.hidden" @click="selectTab(tab)" role="tab"
+        :id="tabId(tab)" :aria-controls="panelId"
         :aria-selected="tab.isActive" :tabindex="tab.isActive ? 0 : -1" @keydown="onTabKeydown" :ref="tab.name">
         {{ tab.name }}
       </button>
     </div>
-    <div class="tabs-details" role="tabpanel" :aria-label="getActiveTab().name">
+    <div class="tabs-details" role="tabpanel" :id="panelId" :aria-labelledby="tabId(getActiveTab())">
       <slot></slot>
     </div>
   </div>
 </template>
 
 <script>
+let counter = 0;
+
 export default {
   emits: ["on-change"],
   name: "TabList",
 
   data() {
-    return { tabs: [] };
+    return { tabs: [], uid: `tabs-${++counter}` };
   },
   computed: {
     tabListLabel() {
       return this.label || this.$t('message.common.tabList');
+    },
+    panelId() {
+      return `${this.uid}-panel`;
     },
   },
   props: {
@@ -132,6 +142,14 @@ export default {
         this.$refs[nextTab.name][0].focus();
       }
     },
+    tabId(tab) {
+      return tab ? `${this.uid}-tab-${tab.id}` : undefined;
+    },
+
+    groupId(group) {
+      return `${this.uid}-group-${group.replace(/\W+/g, "-")}`;
+    },
+
     // The group of the closest visible tab before this one, to only label a group once.
     groupBefore(index) {
       for (let i = index - 1; i >= 0; i--) {

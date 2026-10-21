@@ -4,9 +4,14 @@
       {{ $t('message.microphone.profiles.title') }}
     </div>
     <div style="height: 30px; text-align: right">
-      <div style="height: 14px; display: inline-block; width: calc(100% - 50px);">
+      <div style="height: 14px; display: inline-block; width: calc(100% - 90px);">
         <hr style="border: 1px solid var(--c-line)" />
       </div>
+      <input ref="importInput" type="file" accept=".goxlrMicProfile" multiple hidden @change="onImport"/>
+      <button :aria-label="$t('message.profileManager.import')" :title="$t('message.profileManager.import')"
+              class="openButton" @click="$refs.importInput.click()">
+        <font-awesome-icon icon="fa-solid fa-file-import" />
+      </button>
       <button :aria-label="$t('message.profileManager.accessibilityOpenMicProfileDirectory')"
               class="openButton" @click="openProfiles">
         <font-awesome-icon icon="fa-solid fa-folder" />
@@ -18,6 +23,11 @@
                       @save-profile="saveProfile" @save-profile-as="saveProfileAs"
                       @menu-item-pressed="menuItemPressed" />
     </div>
+
+    <NameDialog ref="nameDialog" id="micNameDialog" :taken="getProfileList()"
+                :title="nameAction.slug === 'rename' ? $t('message.profileManager.renameTitle', {name: nameAction.from}) : $t('message.profileManager.duplicateTitle', {name: nameAction.from})"
+                :ok-label="nameAction.slug === 'rename' ? $t('message.profileManager.menuRename') : $t('message.profileManager.menuDuplicate')"
+                @submit="applyName"/>
 
     <AccessibleModal ref="deleteMicModal" id="delMicProfile">
       <template v-slot:title>{{ $t('message.profileManager.deleteTitle') }}</template>
@@ -37,10 +47,12 @@
 
 <script>
 import {store} from "@/store";
-import {sendHttpCommand, websocket} from "@/util/sockets";
+import {runCommand, websocket} from "@/util/sockets";
+import {exportProfile, importProfiles} from "@/util/profileFiles";
 import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
+import NameDialog from "@/components/profiles/NameDialog.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
@@ -49,11 +61,13 @@ export default {
     bare: {type: Boolean, default: false},
   },
   name: "MicProfileHandler",
-  components: {FontAwesomeIcon, ModalButton, AccessibleModal, ProfileManager},
+  components: {NameDialog, FontAwesomeIcon, ModalButton, AccessibleModal, ProfileManager},
 
   data() {
     return {
       selectedProfile: '',
+      // The rename / duplicate waiting for a name
+      nameAction: {slug: '', from: ''},
     }
   },
 
@@ -61,8 +75,18 @@ export default {
     getMenuList() {
       return [
         {name: this.$t('message.profileManager.menuLoadProfile'), slug: 'load'},
+        {name: this.$t('message.profileManager.menuRename'), slug: 'rename'},
+        {name: this.$t('message.profileManager.menuDuplicate'), slug: 'duplicate'},
+        {name: this.$t('message.profileManager.export'), slug: 'export'},
         {name: this.$t('message.profileManager.menuDeleteProfile'), slug: 'delete'}
       ];
+    },
+
+    applyName(name) {
+      const {slug, from} = this.nameAction;
+      const command = slug === "rename" ? {RenameMicProfile: [from, name]} : {DuplicateMicProfile: [from, name]};
+      const done = slug === "rename" ? 'message.profileManager.renamed' : 'message.profileManager.duplicated';
+      runCommand(store.getActiveSerial(), command, {ok: this.$t(done, {name: from, newName: name})});
     },
 
     getProfileList() {
@@ -73,7 +97,25 @@ export default {
       return store.getActiveDevice().mic_profile_name;
     },
 
+    onImport(event) {
+      const files = [...event.target.files];
+      event.target.value = "";
+      if (files.length > 0) importProfiles(files, true, this.$t('message.profileManager.imported', {count: files.length}));
+    },
+
     menuItemPressed(event) {
+      if (event.option.slug === "export") {
+        exportProfile(event.item, true);
+        return;
+      }
+      if (event.option.slug === "rename" || event.option.slug === "duplicate") {
+        this.nameAction = {slug: event.option.slug, from: event.item};
+        const button = this.$refs.manager.$refs[this.$refs.manager.getButtonId(event.item)][0];
+        const name = event.option.slug === "rename" ? event.item : this.$t('message.profileManager.copyName', {name: event.item});
+        this.$refs.nameDialog.open(name, button);
+        return;
+      }
+
       if (event.option.slug === "load") {
         this.loadProfile(event.item);
       }
@@ -93,29 +135,30 @@ export default {
         "LoadMicProfile": [label, true]
       };
 
-      sendHttpCommand(store.getActiveSerial(), command)
-          .catch((error) => {
-            console.log(error);
-          });
+      runCommand(store.getActiveSerial(), command);
     },
 
     newProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), {"NewMicProfile": name})
+      runCommand(store.getActiveSerial(), {"NewMicProfile": name},
+          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })});
     },
 
     saveProfile() {
-      sendHttpCommand(store.getActiveSerial(), {"SaveMicProfile": []});
+      runCommand(store.getActiveSerial(), {"SaveMicProfile": []},
+          {ok: this.$t('message.profileManager.accessibilitySavedProfile', { profileName: this.getActiveProfile() })});
     },
 
     saveProfileAs(name) {
       let command = {
         "SaveMicProfileAs": name
       }
-      sendHttpCommand(store.getActiveSerial(), command);
+      runCommand(store.getActiveSerial(), command,
+          {ok: this.$t('message.profileManager.accessibilitySavedProfileAs', { profileName: name })});
     },
 
     deleteProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), { "DeleteMicProfile": name });
+      runCommand(store.getActiveSerial(), { "DeleteMicProfile": name },
+          {ok: this.$t('message.profileManager.accessibilityProfileDeleted', { profileName: name })});
     },
 
     openProfiles() {

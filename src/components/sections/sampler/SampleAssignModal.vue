@@ -4,8 +4,8 @@
     <template v-slot:default>
       <div class="bankRow">
         <span>{{ $t('message.sampleAssign.bank') }}</span>
-        <button v-for="b in ['A', 'B', 'C']" :key="b" class="bankButton" :class="{ active: bank === b }"
-                :disabled="busy" @click="bank = b">{{ b }}</button>
+        <SegmentedControl :options="['A', 'B', 'C'].map(b => ({id: b, label: b}))" :selected="bank"
+                          :label="$t('message.sampleAssign.bank')" :disabled="busy" @selection-changed="bank = $event"/>
       </div>
 
       <ul class="samples">
@@ -37,6 +37,7 @@
 <script>
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
+import SegmentedControl from "@/components/design/SegmentedControl.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 
@@ -46,7 +47,7 @@ const REMOVE_TIMEOUT = 10000;
 
 export default {
   name: "SampleAssignModal",
-  components: {ModalButton, AccessibleModal},
+  components: {ModalButton, AccessibleModal, SegmentedControl},
 
   data() {
     return {
@@ -57,6 +58,16 @@ export default {
       progressText: "",
       error: undefined,
     }
+  },
+
+  watch: {
+    busy(value) {
+      store.sampleAssignBusy = value;
+    },
+  },
+
+  unmounted() {
+    store.sampleAssignBusy = false;
   },
 
   methods: {
@@ -161,21 +172,8 @@ export default {
   margin-bottom: 12px;
 }
 
-.bankButton {
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  border: none;
-  padding: 4px 14px;
-}
 
-.bankButton.active {
-  background-color: var(--c-accent);
-  color: var(--c-on-accent);
-}
 
-.bankButton:not(.active):not(:disabled):hover {
-  background-color: var(--c-hover-strong);
-}
 
 .samples, .current {
   margin: 0;

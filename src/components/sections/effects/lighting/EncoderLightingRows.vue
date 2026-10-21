@@ -25,13 +25,13 @@
 </template>
 
 <script>
-import LightingEffectsEncoders from "@/components/sections/lighting/subTabs/effects/LightingEffectsEncoders.vue";
+import lightingEffectsEncoders from "@/mixins/lightingEffectsEncoders";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 
 // The colours of one encoder (left and right of its ring, and its knob), starting on `initial`.
 export default {
   name: "EncoderLightingRows",
-  extends: LightingEffectsEncoders,
+  extends: lightingEffectsEncoders,
   components: {ColourPicker},
 
   props: {

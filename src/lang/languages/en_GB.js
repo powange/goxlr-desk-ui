@@ -23,6 +23,69 @@
 
 export default {
     message: {
+        scenes: {
+            title: "Scenes",
+            runHint: "Apply the scene {name} (volumes, mutes, routing, effects)",
+            update: "Replace {name} with the current settings",
+            delete: "Delete the scene {name}",
+            empty: "Save the current volumes, mutes, routing and effects to bring them back in one click.",
+            new: "New scene from the current settings…",
+            newTitle: "New scene",
+            create: "Create",
+            saved: "Scene {name} saved",
+            ran: "Scene {name} applied",
+            deleted: "Scene {name} deleted",
+        },
+        integrations: {
+            title: "Integrations",
+            intro: "Stream Deck, OBS, Touch Portal or your own scripts can control the GoXLR through the utility's HTTP API, the same one this interface uses.",
+            commandUrl: "Send a command",
+            statusUrl: "Read the full status",
+            websocketUrl: "Follow changes (WebSocket)",
+            format: "A command is a JSON object whose \"Command\" entry holds the device's serial and the command, as in the examples below. The names and arguments are those of GoXLRCommand in the utility's source (ipc/src/lib.rs).",
+            examples: "Examples for this device",
+            copyCurl: "Copy curl",
+            copyJson: "Copy JSON",
+            more: "From another computer, network access must be on and the link must carry the access token (see Utility settings).",
+            exampleMicMute: "Mute the microphone",
+            exampleVolume: "Set the Music volume to half",
+            exampleProfile: "Load the profile {name}",
+            exampleScene: "Apply the scene {name}",
+            copyFailed: "Unable to copy to the clipboard",
+        },
+        setupWizard: {
+            menu: "Setup assistant",
+            title: "Getting started ({step} of {count})",
+            micTitle: "Your microphone",
+            micText: "Choose the type of microphone, then raise the gain until your normal voice reaches the middle of the meter, without going into the red.",
+            routingTitle: "Where the sound goes",
+            routingText: "The GoXLR adds audio devices to the computer. Send each app to its own device to control it with the faders:",
+            openRouting: "Open the routing table",
+            saveTitle: "Keep these settings",
+            saveText: "Save the profile and the mic profile: they're loaded again each time the GoXLR starts.",
+            saveButton: "Save the profile and the mic profile",
+            skip: "Don't show again",
+            back: "Back",
+            next: "Next",
+            finish: "Finish",
+        },
+        micMute: {
+            mute: "Mute mic",
+            muted: "Mic muted",
+            hint: "Mutes the microphone like the device's Mute button (M)",
+            holdMode: "The Mute button is in Hold mode: it only mutes while held on the device",
+        },
+        shortcuts: {
+            undo: "Undo the last change (volumes, mutes, routing, equaliser, colours)",
+            undone: "Change undone",
+            title: "Keyboard shortcuts",
+            save: "Save the profile and the mic profile",
+            micMute: "Mute or unmute the microphone",
+            sections: "Go to a section of the side bar",
+            presets: "Effect presets 1 to 6",
+            banks: "Sampler banks A, B and C",
+            help: "Show these shortcuts",
+        },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
             All: "All",
@@ -57,7 +120,7 @@ export default {
             percentage: "%",
             milliseconds: "ms",
             hertz: "Hz",
-            kilohertz: "KHz",
+            kilohertz: "kHz",
             ratio: ":{value}",
             beatsPerMinute: "BPM",
         },
@@ -73,6 +136,7 @@ export default {
 
         common: {
             close: "Close",
+            lighting: "Lighting",
             clear: "Clear",
             collapseSection: "Collapse Section",
             expandSection: "Expand Section",
@@ -89,32 +153,22 @@ export default {
         navigation: {
             // Tabs at the top of the Page
             profiles: "Profiles",
-            presets: "Presets",
             samples: "Samples",
 
             // Main Navigation Tabs
             microphone: "Mic",
             mixer: "Mixer",
-            configuration: "Configuration",
             effects: "Effects",
             sampler: "Sampler",
-            lighting: "Lighting",
             routing: "Routing",
             system: "System",
             library: "Library",
             application: "Application",
 
             // Navigation Sections on the Lighting Page
-            lightingGlobal: "Global",
-            lightingMixer: "Mixer",
-            lightingEffects: "Effects",
-            lightingSampler: "Sampler",
-            lightingCough: "Cough",
 
             // Accessibility Messages (these are announced to screen readers)
-            accessibilityProfileSection: "Profiles and Files",
             accessibilityDeviceSection: "Device Settings",
-            accessibilityLightingSection: "Lighting Settings",
         },
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
@@ -135,13 +189,15 @@ export default {
                 fineTune: "Adjust frequencies",
                 bandLabel: "Band at {freq}",
                 curveHint: "drag a point to set its band",
-                types: {Dynamic: "Dynamic (XLR)", Condenser: "Condenser (XLR, +48V)", Jack: "Jack"},
             },
             profiles: {
                 title: "Mic Profiles"
             },
 
             setup: {
+                phantomTitle: "Switch on phantom power (+{voltage}V)?",
+                phantomWarning: "Only for condenser microphones that need it. Turn your headphones and stream down first: switching it on can make a loud pop.",
+                phantomEnable: "Switch on",
                 button: "Mic Setup",
                 title: "Mic Setup",
                 type: "Mic Type",
@@ -168,12 +224,16 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Reset the equaliser?",
+                resetQuestion: "Every band goes back to 0 dB at its default frequency. Before / After can still bring the saved equaliser back until you save.",
+                compare: "Compare with the saved equaliser",
+                before: "Before",
+                after: "After",
+                save: "Save",
+                saveHint: "Saves the equaliser in the mic profile {profile}",
+                savedNotice: "Equaliser saved in the mic profile {profile}",
                 title: "Equaliser",
                 reset: "Reset",
-                enableFineTune: "Enable Fine Tune",
-                bass: "Bass",
-                mid: "Mid",
-                treble: "Treble",
             },
 
             compressor: {
@@ -195,13 +255,14 @@ export default {
 
         mixer: {
             // Box Headers
-            inputs: "Inputs",
             outputs: "Outputs",
             otherInputs: "Other Inputs",
             strip: {
+                muteAllHint: "Right click or long press: mute for everyone",
+                notMuted: "Not muted",
+                mutedAll: "Muted for everyone",
                 source: "Source",
                 mute: "Mute",
-                muted: "Muted",
                 muteFunction: "Mute to",
                 lighting: "{channel} lighting",
                 lightingTitle: "Lighting · {channel}",
@@ -224,22 +285,12 @@ export default {
                 base: "Mute to {channel}",
                 all: "Mute to All",
 
-                stream: "Mute to @:message.channels.StreamMix",
-                stream1: "Mute to @:message.channels.StreamMix1",
-                stream2: "Mute to @:message.channels.StreamMix2",
-                streams: "Mute to @:message.channels.StreamMix 1 + 2",
-                chatMic: "Mute to @:message.channels.ChatMic",
-                headphones: "Mute to @:message.channels.Headphones",
-                lineOut: "Mute to @:message.channels.LineOut",
             },
             muteBehaviourTitle: "Mute Behaviour",
             muteBehaviourLabel: "Mute Behaviour for {channel}",
 
             // Config for the Faders
             faders: {
-                title: "Faders",
-                channelTitle: "Channel",
-                sourceTitle: "Source",
                 sourceLabel: "Source for {channel}",
             },
 
@@ -259,7 +310,6 @@ export default {
 
         effects: {
             lighting: {
-                customise: "Customise colours",
                 title: "Effects lighting",
                 presetButton: "Preset button · {name}",
                 applyPresets: "Apply to all presets",
@@ -288,10 +338,6 @@ export default {
 
                 loadPreset: "Load Preset",
 
-                renamePresetTitle: "Rename Preset",
-                renamePresetPlaceholder: "New Preset Name",
-                renamePresetOk: "@:message.modalButtons.ok",
-                renamePresetCancel: "@:message.modalButtons.cancel",
 
                 noPresets: "There are currently no presets in the library, save or copy some for them to appear here.",
                 loadPresetOk: "@:message.modalButtons.ok",
@@ -449,14 +495,16 @@ export default {
         sampler: {
             lighting: {
                 label: "Lighting",
-                customise: "Customise colours",
                 title: "Sampler lighting",
                 bank: "Bank {bank} buttons",
                 note: "The device sets these colours for the whole bank, all four buttons share them.",
                 applyBanks: "Apply to all banks",
             },
-            bankTitle: "Bank",
             pads: {
+                record: "Record into {button}",
+                stopRecording: "Stop recording {button}",
+                play: "Play {button}",
+                stop: "Stop {button}",
                 title: "Buttons",
                 empty: "Empty",
                 count: "{count} sample(s)",
@@ -469,7 +517,6 @@ export default {
                     b: "B",
                     c: "C"
                 },
-                buttonTitle: "Button",
                 buttonLabel: "Button for bank {activeBank}",
                 buttons: {
                     topLeft: "Top Left",
@@ -564,14 +611,13 @@ export default {
                 hintGradientMeter: "The LEDs follow the channel's sound level, blending from the bottom to the top colour.",
                 previewScreen: "screen",
                 previewActive: "active",
+                previewMute: "MUTE",
                 previewRest: "at rest",
             },
             // These are some common strings that are used in multiple places
             common: {
-                colour: "Colour",
 
                 activeColour: "Active",
-                inactiveColour: "Inactive",
 
                 inactiveOption: "Inactive Option",
                 inactiveOptions: {
@@ -581,7 +627,6 @@ export default {
 
                 },
 
-                applyToAll: "Apply to All",
                 pickColour: "pick a colour",
                 restLabel: "At rest",
                 restColour: "Rest colour",
@@ -599,7 +644,6 @@ export default {
                         accent: "Accent",
                     },
 
-                    colour: "@:message.lighting.common.colour",
                 },
 
                 animations: {
@@ -624,10 +668,6 @@ export default {
             },
 
             mixer: {
-                faders: {
-                    title: "@:message.configuration.faders.title",
-                    channelTitle: "@:message.configuration.faders.channel",
-                },
 
                 fader: {
                     title: "Fader",
@@ -641,7 +681,6 @@ export default {
                     bottomColour: "Bottom Colour",
                     topColour: "Top Colour",
 
-                    accessibilityTitle: "Fader settings for {channel}",
                 },
 
                 screen: {
@@ -650,7 +689,6 @@ export default {
                     icons: "Icons",
                     iconNone: "-- NONE --",
 
-                    optionsTitle: "Options",
                     options: {
                         showNumber: "Show Number",
                         invertDisplay: "Invert Display",
@@ -663,15 +701,10 @@ export default {
                 mute: {
                     // Pretty much all other fields for this area come from 'Common'
                     title: "Mute",
-                    accessibilityTitle: "Mute Settings for {channel}"
                 }
             },
 
             effects: {
-                preset: {
-                    title: "Preset Buttons",
-                    presetTitle: "Preset"
-                },
 
                 encoders: {
                     title: "Encoders",
@@ -692,7 +725,6 @@ export default {
                 buttons: {
                     title: "Effect Buttons",
 
-                    effectTitle: "Effect",
                     effect: {
                         megaphone: "Megaphone",
                         robot: "Robot",
@@ -702,9 +734,7 @@ export default {
                 },
             },
             sampler: {
-                title: "Bank",
 
-                buttonsTitle: "Buttons",
                 buttons: {
                     a: "A",
                     b: "B",
@@ -713,13 +743,10 @@ export default {
 
                 active: "Active / Loaded",
                 empty: "Sample Empty",
-                inactive: "Inactive Bank",
             },
 
             cough: {
-                title: "Cough/Bleep Buttons",
 
-                buttonsTitle: "Buttons",
                 buttons: {
                     bleep: "Bleep",
                     cough: "Cough",
@@ -728,6 +755,33 @@ export default {
         },
 
         routing: {
+            cellLabel: "{input} to {output}",
+            help: {
+                title: "Where to send your apps",
+                obs: "OBS: capture the \"Broadcast Stream Mix\" device, it's what your stream hears.",
+                discord: "Discord: use \"Chat Mic\" as the input device and \"Chat\" as the output device.",
+                apps: "Games on \"Game\", music on \"Music\", everything else on \"System\": each gets its own fader and routing.",
+                hover: "Hover a row or column name to see what it is.",
+                chatLoop: "Voice chat can't go back to the Chat Mic, the people you talk to would hear themselves.",
+                inputs: {
+                    Microphone: "Your microphone, after its processing (gate, equaliser, compressor, effects).",
+                    Chat: "The \"Chat\" audio device of the computer: set it as the output of Discord or other voice chat apps.",
+                    Music: "The \"Music\" audio device: set it as the output of your music player.",
+                    Game: "The \"Game\" audio device: set it as the output of your games.",
+                    Console: "The console input on the back of the GoXLR.",
+                    LineIn: "The line input on the back of the GoXLR.",
+                    System: "The \"System\" audio device: the computer's default output (notifications, browser…).",
+                    Samples: "The sounds played by the sampler.",
+                },
+                outputs: {
+                    Headphones: "What you hear in your headphones.",
+                    BroadcastMix: "The \"Broadcast Stream Mix\" device: what your stream or recording hears (capture it in OBS).",
+                    StreamMix2: "A second stream mix, for example for a VOD track without music.",
+                    ChatMic: "The \"Chat Mic\" device: what the people in voice chat hear (set it as the input of Discord).",
+                    Sampler: "What the sampler records when you hold an empty pad.",
+                    LineOut: "The line output on the back of the GoXLR.",
+                },
+            },
             // There are (frustratingly) some minor differences between how channels appear in the routing table,
             // and how they appear in the Mixer, these changes also fall under the hood at the Utility level, so
             // we'll define all the channels here, and 'fix' anything which needs adjustment.
@@ -758,6 +812,28 @@ export default {
         },
 
         system: {
+            backup: {
+                title: "Backup",
+                withSamples: "Include the samples",
+                download: "Download a backup",
+                restore: "Restore a backup",
+                confirmTitle: "Restore this backup?",
+                confirmMessage: "Profiles, mic profiles, presets, icons and samples from {name} will be added. Files that would be replaced are first copied to the backups folder.",
+                restored: "Backup restored: {added} added, {replaced} replaced, {unchanged} unchanged",
+            },
+            networkAccess: {
+                restartNow: "Restart the utility now",
+                restarting: "The utility is restarting, the interface reconnects by itself.",
+                qr: "QR code",
+                qrAlt: "QR code to open {url}",
+                title: "Network access",
+                explain: "On another device of your network (tablet, phone, computer), open one of these links once. It remembers the access afterwards.",
+                restart: "Restart the GoXLR Utility to reach it from your network. The links will then show here.",
+                noAddress: "No network address was found for this computer.",
+                copy: "Copy",
+                copied: "Copied",
+                regenerate: "New link (the previous links stop working)",
+            },
             title: "System",
             menu: {
                 firmware: "Firmware update",
@@ -813,6 +889,10 @@ export default {
 
             settingsButton: "Utility Settings",
             settings: {
+                recoverConfirmTitle: "Restore default files?",
+                recoverConfirmMessage: "The default {type} that are missing will be added back. Existing files are not changed.",
+                recoverConfirmOk: "Restore",
+                recoverDone: "Default {type} restored",
                 language: "Language",
                 useSystem: "Use System Language (if available)",
 
@@ -895,6 +975,14 @@ export default {
                 custom: "Custom Firmware",
             },
             firmwareUpdate: {
+                seeLogs: "The utility's logs have the details (System, Utility settings, Open logs).",
+                noInfo: "The update servers didn't answer, so the latest version isn't known. This GoXLR runs {currentVersion}.",
+                updateTo: "Update to {version}",
+                reinstall: "Reinstall {version}",
+                customButton: "Custom firmware…",
+                confirmTitle: "Flash the firmware?",
+                confirmText: "The GoXLR restarts during the update. Don't unplug it or close the utility until it's done.",
+                confirmCustom: "You'll pick a firmware file (.bin) next. Only use a file you trust: a wrong file can leave the GoXLR unusable. Don't unplug it during the update.",
                 newVersionAvailable: "A newer firmware version ({latestVersion}) is available for your device.\nDo you want to update device now?",
                 currentVersionIsNewer: "Your current firmware version ({currentVersion}) is newer than the latest available firmware version ({latestVersion}) for your device.\nDo you want to downgrade to the latest firmware version?",
                 currentIsUpToDate: "Your firmware is already up to date.\nDo you want to reinstall the current firmware version?",
@@ -933,6 +1021,12 @@ export default {
         },
 
         deviceSelector: {
+            deviceLabel: "{model} · {serial}",
+            helpCable: "Check that the GoXLR is switched on and its USB cable is plugged in (try another USB port, preferably on the back of the computer).",
+            helpLinux: "On Linux, the udev rules (50-goxlr.rules) must be installed in /etc/udev/rules.d, then reload them (udevadm control --reload) and unplug and replug the GoXLR.",
+            helpWindows: "On Windows, the GoXLR driver from TC-Helicon must be installed; restart the computer after installing it.",
+            helpMacos: "On macOS, connect the GoXLR directly rather than through a hub, and allow the utility if the system asks for it.",
+            reconnecting: "Connection to the GoXLR Utility lost, reconnecting…",
             title: "Select Device",
             connecting: "Attempting to Connect to the GoXLR Utility..",
             disconnected: "Unable to connect to the GoXLR Utility, please check it's running.\n\nThis page will automatically try to reconnect..",
@@ -958,6 +1052,20 @@ export default {
             system: "Auto",
         },
         topBar: {
+            unsaved: "Unsaved changes",
+            revert: "Revert to the saved version",
+            saveBothHint: "Save the profile {profile} and the mic profile {mic} (Ctrl+S)",
+            saveMore: "More save options",
+            saveProfileOnly: "Save the profile {profile} only",
+            saveMicOnly: "Save the mic profile {mic} only",
+            savedBoth: "Profile {profile} and mic profile {mic} saved",
+            savedProfile: "Profile {profile} saved",
+            savedMic: "Mic profile {mic} saved",
+            loadTitle: "Load {name}?",
+            loadQuestion: "Settings of {current} that weren't saved will be lost.",
+            loadMicQuestion: "Settings of the mic profile {current} that weren't saved will be lost.",
+            load: "Load",
+            saveThenLoad: "Save, then load",
             lighting: "Global lighting",
             lightingTitle: "Global lighting",
             profile: "Profile",
@@ -1071,6 +1179,20 @@ export default {
         },
 
         profileManager: {
+            export: "Export",
+            import: "Import profile files",
+            imported: "Profile files imported: {count}",
+            menuRename: "Rename",
+            menuDuplicate: "Duplicate",
+            nameLabel: "Name",
+            nameEmpty: "Enter a name",
+            nameInvalid: "This name can't be used for a file (characters / \\ : * ? \" < > {'|'}, a reserved name, or a dot or space at the end)",
+            nameTaken: "{name} already exists",
+            copyName: "{name} copy",
+            renameTitle: "Rename {name}",
+            duplicateTitle: "Duplicate {name}",
+            renamed: "{name} renamed to {newName}",
+            duplicated: "{name} duplicated as {newName}",
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Save Profile {profileName}",
             createProfile: "Create Profile",
@@ -1090,7 +1212,11 @@ export default {
 
             // Dialog Popup when clicking the 'Delete' Menu Item
             deleteTitle: "Delete Confirmation",
-            deleteQuestion: "Are you sure you want to delete the profile {profileName}?",
+            deleteQuestion: "Delete the profile {profileName}? It goes to the trash for 30 days, it can be restored from Library > Profiles.",
+            trashTitle: "Deleted profiles",
+            trashEmpty: "No deleted profile. Deleted profiles are kept here for 30 days.",
+            trashProfile: "Profile",
+            trashMic: "Mic profile",
             deleteYes: "@:message.modalButtons.yes",
             deleteNo: "@:message.modalButtons.no",
 
@@ -1117,7 +1243,6 @@ export default {
             accessibilitySavedProfile: "Profile {profileName} Saved",
             accessibilitySavedProfileAs: "Profile {profileName} Saved as {newProfileName}",
             accessibilityProfileDeleted: "Profile {profileName} deleted",
-            accessibilityActiveProfile: "Active Profile",
             accessibilityDropMenuTitle: "{profileName} options",
             accessibilityOpenProfileDirectory: "Open Profile Directory",
             accessibilityOpenMicProfileDirectory: "Open Mic Profile Directory",

@@ -1,4 +1,5 @@
-<script>
+// Shared logic (data, methods) of the former LightingMixer page, used by the components
+// that replaced it. It has no template of its own.
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import {
@@ -7,21 +8,8 @@ import {
   ScribbleNames
 } from "@/util/mixerMapping";
 import {isDeviceMini} from "@/util/util";
-import ContentContainer from "@/components/containers/ContentContainer.vue";
-import GroupContainer from "@/components/containers/GroupContainer.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
-import CheckSelection from "@/components/lists/CheckSelection.vue";
 
 export default {
-  name: "LightingMixer",
-  components: {
-    CheckSelection,
-    ColourPicker,
-    RadioSelection,
-    GroupContainer,
-    ContentContainer,
-  },
 
   props: {
     // Shows one fader's lighting only, without the fader choice
@@ -64,7 +52,6 @@ export default {
         this.textValue = this.getBottomText();
       }
 
-      this.$emit("nav-updated");
     },
 
     /***************************/
@@ -322,132 +309,3 @@ export default {
     }
   }
 }
-</script>
-
-<template>
-  <div style="display: flex">
-    <ContentContainer :class="{ wrapped: fixedChannel }" style="padding-top: 15px; padding-bottom: 20px">
-      <GroupContainer v-if="!fixedChannel" :title="$t('message.lighting.mixer.faders.title')">
-        <RadioSelection :title="$t('message.lighting.mixer.faders.channelTitle')" group="lighting_mixer_channel_select"
-                        :options="getButtonOptions()" :selected="selectedChannel()"
-                        @selection-changed="onChannelSelectionChange"/>
-      </GroupContainer>
-
-      <GroupContainer :title="$t('message.lighting.mixer.fader.title')"
-                      :label="$t('message.lighting.mixer.fader.accessibilityTitle', { channel: getSelectedChannelName() })">
-        <template #right>
-          <button class="applyToAll" @click="applyFaderToAll()">{{ $t('message.lighting.common.applyToAll') }}
-          </button>
-        </template>
-
-        <CheckSelection :title="$t('message.lighting.mixer.fader.style')" :options="getStyleOptions()"
-                        @selection-changed="onStyleSelectionChanged"/>
-        <ColourPicker :title="$t('message.lighting.mixer.fader.bottomColour')" :color-value="getFaderBottomColour()"
-                      @colour-changed="onFaderBottomColourChange"/>
-        <ColourPicker :title="$t('message.lighting.mixer.fader.topColour')" :color-value="getFaderTopColour()"
-                      @colour-changed="onFaderTopColourChange"/>
-      </GroupContainer>
-
-      <GroupContainer v-if="!isDeviceMini()" :title="$t('message.lighting.mixer.screen.title')">
-        <ColourPicker :title="$t('message.lighting.mixer.screen.backgroundColour')" :color-value="getScreenColour()"
-                      @colour-changed="onScreenColourChange"/>
-        <RadioSelection group="lighting_mixer_icon_select" :options="getIconOptions()" :selected="getSelectedIcon()"
-                        @selection-changed="onIconSelectionChange" max-width="200px">
-          <template #title>
-            <div>
-              <span style="padding-right: 14px">{{ $t('message.lighting.mixer.screen.icons') }}</span>
-              <button class="openButton" @click="openIcons">
-                <font-awesome-icon icon="fa-solid fa-folder"/>
-              </button>
-            </div>
-          </template>
-        </RadioSelection>
-
-
-        <CheckSelection :title="$t('message.lighting.mixer.screen.optionsTitle')" :options="getDisplayOptions()"
-                        @selection-changed="onDisplayOptionsChanged">
-          <div style="text-align: center">
-            <hr style="margin-top: 14px"/>
-            <div style="color: var(--c-text); text-align: left; padding-left: 8px; margin-top: 16px;">
-              {{ $t('message.lighting.mixer.screen.options.text') }}:
-            </div>
-            <input type="text" v-model="textValue" @blur="applyUpdate" v-on:keyup.enter="applyUpdate"
-                   :aria-label="$t('message.lighting.mixer.screen.options.text')"
-                   :aria-description="$t('message.lighting.mixer.screen.options.accessibilityText')"/>
-          </div>
-        </CheckSelection>
-      </GroupContainer>
-
-      <GroupContainer :title="$t('message.lighting.mixer.mute.title')"
-                      :label="$t('message.lighting.mixer.mute.accessibilityTitle', {channel: getSelectedChannelName() })">
-        <template #right>
-          <button class="applyToAll" @click="applyMuteToAll()">{{ $t('message.lighting.common.applyToAll') }}</button>
-        </template>
-        <ColourPicker :title="$t('message.lighting.common.activeColour')" :color-value="getMuteActiveColour()"
-                      @colour-changed="onMuteActiveColourChanged"/>
-        <RadioSelection :title="$t('message.lighting.common.inactiveOption')"
-                        group="lighting_mixer_mute_inactive_behaviour" :options="getLightingInactiveOptions($t)"
-                        :selected="selectedMuteInactiveOption()" @selection-changed="onMuteInactiveSelectionChange"/>
-        <ColourPicker :title="$t('message.lighting.common.inactiveColour')" :color-value="getMuteInactiveColour()"
-                      @colour-changed="onMuteInactiveColourChanged"/>
-      </GroupContainer>
-    </ContentContainer>
-  </div>
-</template>
-
-<style scoped>
-/* In the Mixer's lighting dialog, the groups wrap instead of scrolling sideways */
-.wrapped.wrapped {
-  flex-wrap: wrap;
-  overflow-x: visible;
-}
-
-input[type=text] {
-  font-family: var(--f-body);
-  background-color: var(--c-raised-2);
-  color: var(--c-accent);
-  box-sizing: border-box;
-  text-align: center;
-
-  padding: 10px;
-  border: none;
-  background-image: none;
-  box-shadow: none;
-  outline: none;
-
-  -moz-appearance: textfield;
-}
-
-button {
-  border: 0;
-  background-color: transparent;
-  padding: 0;
-  margin: -4px;
-}
-
-button.applyToAll {
-  border: 0;
-  margin: 0;
-  padding: 5px 24px;
-  color: var(--c-text);
-  font-family: var(--f-body);
-  font-size: 12px;
-  background-color: var(--c-raised-2);
-}
-
-button.applyToAll:hover {
-  background-color: var(--c-hover-strong);
-}
-
-.openButton {
-  display: inline-block;
-  color: var(--c-muted);
-  font-size: 14px
-}
-
-.openButton:hover {
-  color: var(--c-text);
-  cursor: pointer;
-}
-</style>
-

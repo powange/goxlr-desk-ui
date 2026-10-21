@@ -4,7 +4,7 @@
       <section class="sect">
         <div class="sect-head">
           <h3>{{ $t('message.lighting.mixer.fader.title') }}</h3>
-          <button type="button" class="link" @click="applyFaderToAll()">{{ $t('message.lighting.channel.applyFaders') }}</button>
+          <AppButton variant="link" @click="applyFaderToAll()">{{ $t('message.lighting.channel.applyFaders') }}</AppButton>
         </div>
         <div class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.fader.style') }}</span>
@@ -39,17 +39,16 @@
           <ColourPicker inline :title="$t('message.lighting.mixer.screen.backgroundColour')" :color-value="getScreenColour()"
                         @colour-changed="onScreenColourChange"/>
         </div>
-        <label class="row">
+        <div class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.screen.icons') }}</span>
           <span class="inline-controls">
-            <select :value="getSelectedIcon() || ''" @change="onIconSelectionChange($event.target.value || null)">
-              <option v-for="option in getIconOptions()" :key="option.id || 'none'" :value="option.id || ''">{{ option.label }}</option>
-            </select>
+            <SelectMenu class="icon-select" :options="getIconOptions()" :selected="getSelectedIcon()"
+                        @select="onIconSelectionChange" :label="$t('message.lighting.mixer.screen.icons')"/>
             <button type="button" class="small-button" @click="openIcons" :title="$t('message.lighting.channel.openIcons')">
               <font-awesome-icon icon="fa-solid fa-folder"/>
             </button>
           </span>
-        </label>
+        </div>
         <label class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.screen.options.text') }}</span>
           <input type="text" class="text-input" v-model="textValue" @blur="applyUpdate" @keyup.enter="applyUpdate"
@@ -75,7 +74,7 @@
       <section class="sect">
         <div class="sect-head">
           <h3>{{ $t('message.lighting.mixer.mute.title') }}</h3>
-          <button type="button" class="link" @click="applyMuteToAll()">{{ $t('message.lighting.channel.applyMutes') }}</button>
+          <AppButton variant="link" @click="applyMuteToAll()">{{ $t('message.lighting.channel.applyMutes') }}</AppButton>
         </div>
         <ButtonLighting flat :active-colour="getMuteActiveColour()" :inactive-colour="getMuteInactiveColour()"
                         :off-style="selectedMuteInactiveOption()"
@@ -102,11 +101,11 @@
       </div>
       <div class="preview-row">
         <div class="preview-item">
-          <div class="mute" :style="{ backgroundColor: getMuteActiveColour() }">MUTE</div>
+          <div class="mute" :style="{ backgroundColor: getMuteActiveColour() }">{{ $t('message.lighting.channel.previewMute') }}</div>
           <span>{{ $t('message.lighting.channel.previewActive') }}</span>
         </div>
         <div class="preview-item">
-          <div class="mute" :style="getRestStyle()">MUTE</div>
+          <div class="mute" :style="getRestStyle()">{{ $t('message.lighting.channel.previewMute') }}</div>
           <span>{{ $t('message.lighting.channel.previewRest') }}</span>
         </div>
       </div>
@@ -115,12 +114,14 @@
 </template>
 
 <script>
-import LightingMixer from "@/components/sections/lighting/subTabs/LightingMixer.vue";
+import AppButton from "@/components/design/AppButton.vue";
+import lightingMixer from "@/mixins/lightingMixer";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 import Toggle from "@/components/design/Toggle.vue";
 import {store} from "@/store";
-import {getBaseHTTPAddress} from "@/util/sockets";
+import {getBaseHTTPAddress, websocket} from "@/util/sockets";
 
 // As on the device (and the visualiser): 15 LEDs, lit up to the fader position
 const LED_COUNT = 15;
@@ -135,10 +136,18 @@ function mix(a, b, t) {
 // The settings and their commands are the Lighting section's (LightingMixer), fixed on one fader.
 export default {
   name: "ChannelLighting",
-  extends: LightingMixer,
-  components: {ColourPicker, ButtonLighting, Toggle},
+  extends: lightingMixer,
+  components: {AppButton, SelectMenu, ColourPicker, ButtonLighting, Toggle},
 
   methods: {
+    // Only sends the screen text when it changed (leaving the field unchanged must not write
+    // an older text back)
+    applyUpdate(event) {
+      const value = event.target.value;
+      if (value === this.getBottomText()) return;
+      websocket.send_command(store.getActiveSerial(), {"SetScribbleText": [this.activeChannel, value]});
+    },
+
     // What each style does with the two colours
     getStyleHint() {
       const gradient = this.styleContains('Gradient'), meter = this.styleContains('Meter');
@@ -220,18 +229,7 @@ export default {
   color: var(--c-muted);
 }
 
-.link {
-  border: none;
-  background: transparent;
-  color: var(--c-accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
-.link:hover {
-  text-decoration: underline;
-}
 
 .row {
   display: grid;
@@ -277,14 +275,14 @@ export default {
 
 select, .text-input {
   padding: 6px 8px;
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--c-field-border);
   border-radius: 6px;
   background-color: var(--c-raised);
   color: var(--c-text);
   font-size: 12px;
 }
 
-select {
+.icon-select {
   min-width: 180px;
 }
 
@@ -309,7 +307,7 @@ select {
   font-size: 12px;
 }
 
-.chip:focus-visible, .link:focus-visible, select:focus-visible, .text-input:focus, .small-button:focus-visible {
+.chip:focus-visible, select:focus-visible, .text-input:focus, .small-button:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 1px;
 }

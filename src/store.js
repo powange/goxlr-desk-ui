@@ -11,6 +11,14 @@ export const store = reactive({
 
     pausedPaths: [],
 
+    // True while the sample assign dialog adds samples, so the Sampler page doesn't open its own
+    // progress and error dialogs for them.
+    sampleAssignBusy: false,
+
+    // Messages shown in the corner (see Toasts.vue): {id, type: "error" | "ok", message}
+    toasts: [],
+    toastCounter: 0,
+
     on_connected: [],
     on_disconnected: [],
 
@@ -35,13 +43,9 @@ export const store = reactive({
         this.on_disconnected(func);
     },
 
+    // The interface and its data stay as they were while reconnecting (it's shown as such), so a
+    // short drop doesn't send the user back to the device list.
     socketDisconnected() {
-        this.activeSerial = "";
-        this.status = {
-            "mixers": {},
-            "files": {}
-        };
-
         this.is_connected = false;
         for (let func of this.on_disconnected) {
             func();
@@ -93,6 +97,25 @@ export const store = reactive({
 
     setActiveSerial(serial) {
         this.activeSerial = serial;
+        if (serial !== "") {
+            try {
+                localStorage.setItem("lastSerial", serial);
+            } catch (e) {
+                // Only remembered for this session
+            }
+        }
+    },
+
+    // Selects the device used last time when it's back (after a reconnection or a restart).
+    restoreSerial() {
+        if (this.activeSerial !== "") return;
+        let last = undefined;
+        try {
+            last = localStorage.getItem("lastSerial");
+        } catch (e) {
+            return;
+        }
+        if (last && this.status.mixers[last] !== undefined) this.activeSerial = last;
     },
 
     getActiveDevice() {
@@ -136,6 +159,10 @@ export const store = reactive({
         return this.status.files.sample_trash || [];
     },
 
+    getProfileTrash() {
+        return this.status.files.profile_trash || [];
+    },
+
     getIconFiles() {
         return this.status.files.icons;
     },
@@ -145,6 +172,7 @@ export const store = reactive({
             Object.assign(this.status, json.Status);
             this.have_device = true;
             this.validateActive();
+            this.restoreSerial();
         }
     },
 
@@ -181,6 +209,7 @@ export const store = reactive({
                 applyOperation(this.status, patch, true, true, false);
             }
             this.validateActive();
+            this.restoreSerial();
         }
     },
 
@@ -210,5 +239,20 @@ export const store = reactive({
     },
     setAccessibilityNotification(type, message) {
         this.a11y.notifications[type] = message;
+    },
+
+    // Errors stay until closed, confirmations go after a few seconds. The same message isn't
+    // shown twice at once.
+    addToast(type, message) {
+        message = String(message);
+        if (this.toasts.some(toast => toast.message === message)) return;
+        const id = ++this.toastCounter;
+        this.toasts.push({id, type, message});
+        if (type !== "error") setTimeout(() => this.removeToast(id), 4000);
+        if (this.toasts.length > 4) this.toasts.shift();
+    },
+
+    removeToast(id) {
+        this.toasts = this.toasts.filter(toast => toast.id !== id);
     }
 });

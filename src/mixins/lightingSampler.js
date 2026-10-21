@@ -1,26 +1,10 @@
-<script>
-import GroupContainer from "@/components/containers/GroupContainer.vue";
-import ContentContainer from "@/components/containers/ContentContainer.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
-import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
-import CenteredContainer from "@/components/containers/CenteredContainer.vue";
-
+// Shared logic (data, methods) of the former LightingSampler page, used by the components
+// that replaced it. It has no template of its own.
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import {getLightingInactiveOptions, LightingInactiveOptions} from "@/util/mixerMapping";
 
 export default {
-  emits: ["nav-updated"],
-  name: "LightingSampler",
-  components: {
-    ButtonLighting,
-    CenteredContainer,
-    ContentContainer,
-    GroupContainer,
-    RadioSelection,
-    ColourPicker
-  },
 
   data() {
     return {
@@ -69,7 +53,6 @@ export default {
 
     onButtonSelectionChange(id) {
       this.selectedButtonOption = id
-      this.$emit("nav-updated");
     },
 
     onInactiveSelectionChange(id) {
@@ -117,46 +100,3 @@ export default {
     }
   }
 }
-</script>
-
-<template>
-  <CenteredContainer>
-    <ContentContainer style="padding-top: 15px; ; padding-bottom: 20px">
-      <GroupContainer :title="$t('message.lighting.sampler.title')">
-        <template #right>
-          <button class="applyToAll" @click="applyToAll()">{{ $t('message.lighting.common.applyToAll') }}</button>
-        </template>
-        <RadioSelection :title="$t('message.lighting.sampler.buttonsTitle')" group="lighting_sampler_buttons"
-                        :options="getButtonOptions()" :selected="this.selectedButtonOption"
-                        @selection-changed="onButtonSelectionChange"/>
-        <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
-                        :active-label="$t('message.lighting.sampler.active')"
-                        @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
-                        @off-style-changed="onInactiveSelectionChange">
-          <div class="row">
-            <span class="row-label">{{ $t('message.lighting.sampler.empty') }}</span>
-            <ColourPicker inline :title="$t('message.lighting.sampler.empty')" :color-value="emptyColor()"
-                          @colour-changed="onEmptyColourChange"/>
-          </div>
-        </ButtonLighting>
-      </GroupContainer>
-    </ContentContainer>
-  </CenteredContainer>
-</template>
-
-
-<style scoped>
-button {
-  border: 0;
-  margin: 0;
-  padding: 5px 24px;
-  color: var(--c-text);
-  font-family: var(--f-body);
-  font-size: 12px;
-  background-color: var(--c-raised-2);
-}
-
-button:hover {
-  background-color: var(--c-hover-strong);
-}
-</style>

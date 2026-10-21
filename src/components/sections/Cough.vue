@@ -1,10 +1,11 @@
 <template>
     <GroupContainer :title="$t('message.configuration.cough.title')">
       <template #right>
-        <button ref="lightingButton" type="button" class="lighting-button" @click="openLighting">
+        <MicMuteButton/>
+        <AppButton ref="lightingButton" @click="openLighting">
           <font-awesome-icon icon="fa-solid fa-lightbulb"/>
-          <span>{{ $t('message.configuration.cough.lighting') }}</span>
-        </button>
+          <span>{{ $t('message.common.lighting') }}</span>
+        </AppButton>
       </template>
       <RadioSelection :title="$t('message.configuration.cough.behaviourTitle')" :options="getButtonBehaviours()"
                       group="cough_button_behaviour" @selection-changed="behaviorPressed" :selected="getCough()" />
@@ -13,13 +14,16 @@
                       :selected="getActiveMute()" />
     </GroupContainer>
 
-    <AccessibleModal ref="lightingModal" id="coughLighting" width="min(560px, 94vw)" body-padding="0">
+    <AccessibleModal ref="lightingModal" id="coughLighting" width="min(560px, 94vw)" body-padding="0"
+                     @modal-close="lightingOpen = false">
       <template v-slot:title>{{ $t('message.configuration.cough.lightingTitle') }}</template>
       <CoughLighting v-if="lightingOpen"/>
     </AccessibleModal>
 </template>
 
 <script>
+import MicMuteButton from "@/components/MicMuteButton.vue";
+import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
@@ -30,7 +34,7 @@ import { driverMix2, driverPreVOD, driverVOD, firmwareSupportsMix2, isDeviceMini
 
 export default {
   name: "CoughButtonSettings",
-  components: {CoughLighting, AccessibleModal, GroupContainer, RadioSelection},
+  components: {MicMuteButton, AppButton, CoughLighting, AccessibleModal, GroupContainer, RadioSelection},
 
   data() {
     return {
@@ -127,27 +131,5 @@ export default {
 </script>
 
 <style scoped>
-.lighting-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 10px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.lighting-button:hover {
-  border-color: var(--c-line-strong);
-}
-
-.lighting-button:focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 2px;
-}
-
 
 </style>

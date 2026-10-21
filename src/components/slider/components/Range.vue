@@ -41,7 +41,7 @@ export default {
     id: {type: String, required: false, default: ""},
 
     colour: {type: String, required: false, default: "var(--c-accent-light)"},
-    backgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
+    backgroundColour: {type: String, required: false, default: 'var(--c-track)'},
 
     title: {type: String, required: false, default: ''},
     reportedValue: {type: String, required: false, default: ''}

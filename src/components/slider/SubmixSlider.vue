@@ -99,7 +99,7 @@ export default {
     },
 
     getLabelColour() {
-      return (this.dimmed) ? "var(--c-faint)" : "var(--c-text)";
+      return (this.dimmed) ? "var(--c-muted)" : "var(--c-text)";
     },
 
     getTextValue(id) {

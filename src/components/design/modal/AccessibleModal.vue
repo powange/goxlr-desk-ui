@@ -7,7 +7,7 @@
   <div v-else v-show=is_visible class="modal-mask">
     <div class="modal-wrapper">
       <div ref="dialog" class="modal-container" role="dialog" aria-modal="true" :aria-labelledby="`${id}_label`"
-           :aria-describedby="`${id}_body`" @keyup.esc.prevent="closeModalEsc">
+           :aria-describedby="`${id}_body`" @keydown.esc.stop.prevent="closeModalEsc">
         <div class="modal-header" tabindex="0">
           <div :id="`${id}_label`" role="heading" aria-level="2" >
             <slot name="title" ref="title"></slot>

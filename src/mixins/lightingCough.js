@@ -1,25 +1,10 @@
-<script>
-import ContentContainer from "@/components/containers/ContentContainer.vue";
-import GroupContainer from "@/components/containers/GroupContainer.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
-import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
-
+// Shared logic (data, methods) of the former LightingCough page, used by the components
+// that replaced it. It has no template of its own.
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import {getLightingInactiveOptions, LightingInactiveOptions} from "@/util/mixerMapping";
-import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 
 export default {
-  name: "LightingCough",
-  components: {
-    ButtonLighting,
-    CenteredContainer,
-    ContentContainer,
-    GroupContainer,
-    RadioSelection,
-    ColourPicker
-  },
 
   data() {
     return {
@@ -81,19 +66,3 @@ export default {
     }
   }
 }
-</script>
-
-<template>
-  <CenteredContainer>
-    <ContentContainer style="padding-top: 15px; padding-bottom: 20px">
-      <GroupContainer :title="$t('message.lighting.cough.title')">
-        <RadioSelection :title="$t('message.lighting.cough.buttonsTitle')" group="lighting_cough_buttons"
-                        :options="getButtonOptions()" :selected="this.selectedButtonOption"
-                        @selection-changed="onButtonSelectionChange"/>
-        <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
-                    @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
-                    @off-style-changed="onInactiveSelectionChange"/>
-      </GroupContainer>
-    </ContentContainer>
-  </CenteredContainer>
-</template>

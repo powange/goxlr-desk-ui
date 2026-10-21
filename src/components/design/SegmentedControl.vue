@@ -1,7 +1,7 @@
 <template>
   <div class="segmented" role="radiogroup" :aria-label="label" @keydown="onKeydown">
     <button v-for="option in options" :key="option.id" ref="buttons" type="button" role="radio"
-            :aria-checked="option.id === selected" :tabindex="option.id === selected ? 0 : -1"
+            :aria-checked="option.id === selected" :tabindex="option.id === selected ? 0 : -1" :aria-label="option.ariaLabel"
             :class="{ on: option.id === selected }" :disabled="disabled" @click="select(option.id)">
       {{ option.label }}
     </button>
@@ -15,7 +15,7 @@ export default {
   name: "SegmentedControl",
   emits: ["selection-changed"],
   props: {
-    options: {type: Array, required: true},   // [{id, label}]
+    options: {type: Array, required: true},   // [{id, label, ariaLabel (when the label is a symbol)}]
     selected: {type: String, required: false, default: undefined},
     label: {type: String, required: true},
     disabled: {type: Boolean, default: false},

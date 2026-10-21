@@ -9,37 +9,38 @@
       </button>
     </div>
 
-    <label class="field">
+    <div class="field">
       <span class="field-label">{{ $t('message.mixer.strip.source') }}</span>
-      <select :value="getActiveSource()" @change="sourceChanged($event.target.value)"
-              :aria-label="$t('message.configuration.faders.sourceLabel', { channel: getFaderName() })">
-        <option v-for="option in getSourceOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-      </select>
-    </label>
+      <SelectMenu :options="getSourceOptions()" :selected="getActiveSource()" @select="sourceChanged"
+                  :label="$t('message.configuration.faders.sourceLabel', { channel: getFaderName() })"/>
+    </div>
 
     <div class="strip-slider">
       <slot></slot>
     </div>
 
-    <button type="button" class="mute" :class="{ muted: isMuted() }" :aria-pressed="isMuted()" @click="toggleMute">
+    <!-- Click: the mute function below. Right click or a long press: mute for everyone, like a
+         long press on the device. -->
+    <button type="button" class="mute" :class="{ muted: isMuted() }" :aria-pressed="isMuted()"
+            :aria-describedby="`mute-target-${fader}`" :title="$t('message.mixer.strip.muteAllHint')"
+            @click="onMuteClick" @contextmenu.prevent="muteToAll" @keydown.shift.enter.prevent="muteToAll"
+            @pointerdown="startHold" @pointerup="cancelHold" @pointerleave="cancelHold" @pointercancel="cancelHold">
       <font-awesome-icon :icon="isMuted() ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high'"/>
-      <span>{{ isMuted() ? $t('message.mixer.strip.muted') : $t('message.mixer.strip.mute') }}</span>
+      <span>{{ $t('message.mixer.strip.mute') }}</span>
     </button>
+    <span :id="`mute-target-${fader}`" class="mute-target" :class="{ muted: isMuted() }">{{ muteTarget() }}</span>
 
-    <label class="field">
+    <div class="field">
       <span class="field-label">{{ $t('message.mixer.strip.muteFunction') }}</span>
-      <select :value="getActiveMuteBehaviour()" @change="muteFunctionChanged($event.target.value)"
-              :aria-label="$t('message.configuration.muteBehaviourLabel', { channel: getFaderName() })">
-        <option v-for="option in getMuteBehaviour()" :key="option.id" :value="option.id" :disabled="option.disabled">
-          {{ option.label }}
-        </option>
-      </select>
-    </label>
+      <SelectMenu :options="getMuteBehaviour()" :selected="getActiveMuteBehaviour()" @select="muteFunctionChanged"
+                  :label="$t('message.configuration.muteBehaviourLabel', { channel: getFaderName() })"/>
+    </div>
   </div>
 </template>
 
 <script>
-import Faders from "@/components/sections/Faders.vue";
+import faders from "@/mixins/faders";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 
@@ -47,7 +48,8 @@ import {websocket} from "@/util/sockets";
 // mute function rules come from the Faders component, applied to this fader.
 export default {
   name: "FaderStrip",
-  extends: Faders,
+  extends: faders,
+  components: {SelectMenu},
   emits: ["lighting"],
 
   props: {
@@ -71,6 +73,43 @@ export default {
 
     isMuted() {
       return store.getActiveDevice().fader_status[this.fader].mute_state !== "Unmuted";
+    },
+
+    // Who doesn't hear the channel: nobody, everyone, or the mute function's target
+    muteTarget() {
+      const state = store.getActiveDevice().fader_status[this.fader].mute_state;
+      if (state === "Unmuted") return this.$t('message.mixer.strip.notMuted');
+      if (state === "MutedToAll" || this.getActiveMuteBehaviour() === "All") return this.$t('message.mixer.strip.mutedAll');
+      const option = this.getMuteBehaviour().find(option => option.id === this.getActiveMuteBehaviour());
+      return option ? option.label : "";
+    },
+
+    startHold() {
+      this.cancelHold();
+      this.holdTimer = setTimeout(() => {
+        this.holdTimer = undefined;
+        this.held = true;
+        this.muteToAll();
+      }, 600);
+    },
+
+    cancelHold() {
+      clearTimeout(this.holdTimer);
+      this.holdTimer = undefined;
+    },
+
+    onMuteClick() {
+      // The click that ends a long press doesn't toggle again
+      if (this.held) {
+        this.held = false;
+        return;
+      }
+      this.toggleMute();
+    },
+
+    muteToAll() {
+      this.cancelHold();
+      websocket.send_command(store.getActiveSerial(), {SetFaderMuteState: [this.fader, "MutedToAll"]});
     },
 
     toggleMute() {
@@ -163,6 +202,17 @@ export default {
 .strip-slider {
   display: flex;
   justify-content: center;
+}
+
+.mute-target {
+  margin-top: -6px;
+  font-size: 11px;
+  color: var(--c-muted);
+  text-align: center;
+}
+
+.mute-target.muted {
+  color: var(--c-danger);
 }
 
 .mute {

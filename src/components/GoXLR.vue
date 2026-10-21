@@ -1,6 +1,10 @@
 <template>
   <div id="main">
     <DeviceSelector v-if="!isDeviceSet()"/>
+    <!-- The interface stays in place, covered, until the connection comes back -->
+    <div v-if="isDeviceSet() && isReconnecting()" class="reconnecting" role="alert">
+      <span>{{ $t('message.deviceSelector.reconnecting') }}</span>
+    </div>
     <template v-if="isDeviceSet()">
       <Tabs ref="device-tabs" vertical shortcuts @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
         <template #nav-top>
@@ -10,6 +14,11 @@
           </div>
         </template>
         <template #nav-bottom>
+          <AppButton variant="link" class="shortcuts-link" @click="$refs.shortcuts.$refs.help.openModal(undefined, $event.currentTarget)">
+            <font-awesome-icon icon="fa-solid fa-keyboard"/>
+            <span>{{ $t('message.shortcuts.title') }}</span>
+            <kbd class="key">?</kbd>
+          </AppButton>
           <div class="theme-switch">
             <SegmentedControl :options="getThemeOptions()" :selected="themeMode" @selection-changed="changeTheme"
                               :label="$t('message.theme.label')"/>
@@ -62,6 +71,9 @@
             <Panel :title="$t('message.microphone.profiles.title')">
               <MicProfileHandler bare/>
             </Panel>
+            <Panel :title="$t('message.profileManager.trashTitle')">
+              <ProfileTrash/>
+            </Panel>
           </div>
         </Tab>
 
@@ -75,6 +87,9 @@
     <VersionCheck @firmware-click="onFirmwareClicked" />
     <Language v-if="!utilitySupportsLanguages()" />
     <A11yNotifications/>
+    <AppToasts/>
+    <AppShortcuts v-if="isDeviceSet()" ref="shortcuts"/>
+    <SetupWizard v-if="isDeviceSet() && !isReconnecting()" ref="setupWizard" @open-section="id => $refs['device-tabs'].selectTabById(id)"/>
 
     <AccessibleModal id="firmware_update_progress_modal" ref="firmware_update_progress_modal" width="620px" :show_footer=false :show_close=false>
       <template v-slot:title>{{$t('message.system.firmwareUpdate.title')}}</template>
@@ -89,8 +104,8 @@
         />
 
         <div class="modalButtonBox">
-          <button @click="continueFirmwareUpdate">{{$t('message.modalButtons.continue')}}</button>
-          <button @click="completeFirmwareUpdate" class="cancel">{{$t('message.modalButtons.cancel')}}</button>
+          <AppButton variant="primary" @click="continueFirmwareUpdate">{{$t('message.modalButtons.continue')}}</AppButton>
+          <AppButton variant="danger" @click="completeFirmwareUpdate">{{$t('message.modalButtons.cancel')}}</AppButton>
         </div>
       </div>
 
@@ -104,12 +119,14 @@
         />
 
         <div class="modalButtonBox">
-          <button @click="completeFirmwareUpdate" class="close">{{$t('message.modalButtons.close')}}</button>
+          <AppButton @click="completeFirmwareUpdate">{{$t('message.modalButtons.close')}}</AppButton>
         </div>
       </div>
 
       <div v-else-if="getFirmwareUpdateState() == 'Failed'">
         {{ $t('message.system.firmwareUpdate.failed') }}
+        <p v-if="firmwareError()" class="firmware-error">{{ firmwareError() }}</p>
+        <p class="firmware-hint">{{ $t('message.system.firmwareUpdate.seeLogs') }}</p>
 
         <ProgressBar
             :progress="getUpdateProgress()"
@@ -118,7 +135,7 @@
         />
 
         <div class="modalButtonBox">
-          <button @click="completeFirmwareUpdate" class="close">{{$t('message.modalButtons.close')}}</button>
+          <AppButton @click="completeFirmwareUpdate">{{$t('message.modalButtons.close')}}</AppButton>
         </div>
       </div>
 
@@ -142,8 +159,12 @@
 
 <script>
 import A11yNotifications from "./A11yNotifications.vue";
+import AppToasts from "./Toasts.vue";
+import AppShortcuts from "./Shortcuts.vue";
+import SetupWizard from "./SetupWizard.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
+import AppButton from "@/components/design/AppButton.vue";
 import Tab from "@/components/tabs/Tab.vue";
 import Routing from "@/components/sections/Routing.vue";
 import Mic from "@/components/sections/Mic.vue";
@@ -157,13 +178,13 @@ import {getThemeMode, setThemeMode} from "@/util/theme";
 import Panel from "@/components/design/Panel.vue";
 import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
 import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
+import ProfileTrash from "@/components/profiles/ProfileTrash.vue";
 import SampleHandler from "@/components/sections/files/SampleHandler.vue";
 import EffectsTab from "@/components/sections/EffectsTab.vue";
 import {isDeviceMini} from "@/util/util";
 import SamplerTab from "@/components/sections/SamplerTab.vue";
 import SampleAssignModal from "@/components/sections/sampler/SampleAssignModal.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
-import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 import GoXLRVisualiser from "@/components/visualisation/GoXLRVisualiser.vue";
 import VersionCheck from "@/components/VersionCheck.vue";
 import {HighlightArea} from "@/components/visualisation/VisualiserHelper";
@@ -181,19 +202,22 @@ function loadVisualiserOpen() {
 }
 
 // The device zone shown on the top bar map for each section.
-const SECTION_ZONES = {mixer: "faders", configuration: "faders", mic: "mic", effects: "effects", sampler: "sampler"};
+const SECTION_ZONES = {mixer: "faders", mic: "mic", effects: "effects", sampler: "sampler"};
 
 export default {
   name: "GoXLR",
   expose: ['openFirmwareUpdateProgressModal'],
   components: {
+    AppButton,
     ProgressBar,
     AccessibleModal,
     Language,
     VersionCheck,
     GoXLRVisualiser,
     A11yNotifications,
-    CenteredContainer,
+    AppToasts,
+    AppShortcuts,
+    SetupWizard,
     ContentContainer,
     SamplerTab,
     SampleAssignModal,
@@ -203,6 +227,7 @@ export default {
     Panel,
     ProfileHandler,
     MicProfileHandler,
+    ProfileTrash,
     SampleHandler,
     SystemComponent,
     DeviceSelector,
@@ -214,8 +239,8 @@ export default {
   },
 
   computed: {
-    HighlightArea() {
-      return HighlightArea
+    deviceShown() {
+      return this.isDeviceSet();
     },
     firmwareUpdateStatus() {
       const updateState = store.status.firmware;
@@ -302,20 +327,26 @@ export default {
       return store.getConfig().hasOwnProperty("locale");
     },
 
+    // Stays true while reconnecting, the interface is then covered by a notice
     isDeviceSet() {
-      let ready = store.hasActiveDevice() && store.isConnected();
-      return ready;
+      return store.hasActiveDevice() && (store.isConnected() || store.hasConnected());
+    },
+
+    isReconnecting() {
+      return !store.isConnected() && store.hasConnected();
     },
 
     onTabChange(tab) {
       let id = tab.id;
+      if (id) {
+        try {
+          localStorage.setItem("activeTab", id);
+        } catch (e) {
+          // Only remembered for this session
+        }
+      }
       this.activeZone = SECTION_ZONES[id] || "none";
-      if (id === "configuration") {
-        this.visualiserHighlightAreas = [
-          HighlightArea.COUGH,
-          HighlightArea.CHANNEL_A
-        ];
-      } else if (id === "effects") {
+      if (id === "effects") {
         // This one comes initially from the store...
         this.visualiserHighlightAreas = [
           HighlightArea[`EFFECTS_PRESET${this.$refs.effects.getActivePreset().slice(-1)}`]
@@ -334,9 +365,6 @@ export default {
       this.$refs.sampleAssign.open(drop.button, drop.paths, drop.bank);
     },
 
-    onFaderChannelChange(activeChannel) {
-      this.visualiserHighlightAreas[this.visualiserHighlightAreas.length - 1] = HighlightArea[`CHANNEL_${activeChannel}`];
-    },
 
     onEffectPresetChange(activePreset) {
       this.visualiserHighlightAreas = [HighlightArea[`EFFECTS_PRESET${activePreset.slice(-1)}`]];
@@ -472,11 +500,27 @@ export default {
       this.$refs['device-tabs'].selectTabById("system");
     },
 
+    // The device being updated: the active one when it is, otherwise the first one updating.
+    firmwareSerial() {
+      const firmware = store.status.firmware || {};
+      return firmware[store.getActiveSerial()] !== undefined ? store.getActiveSerial() : Object.keys(firmware)[0];
+    },
+
+    firmwareDevice() {
+      const serial = this.firmwareSerial();
+      return serial === undefined ? undefined : store.status.firmware[serial];
+    },
+
+    firmwareError() {
+      const device = this.firmwareDevice();
+      return device && device.error ? device.error : "";
+    },
+
     getFirmwareUpdateState() {
       if (this.firmwareUpdateStatus === undefined)
         return false;
 
-      const firstDevice = Object.values(store.status.firmware)[0];
+      const firstDevice = this.firmwareDevice();
       if (firstDevice === undefined)
         return false;
 
@@ -497,7 +541,7 @@ export default {
       if (this.firmwareUpdateStatus  === undefined)
         return false;
 
-      const firstDeviceSerial = Object.keys(store.status.firmware)[0];
+      const firstDeviceSerial = this.firmwareSerial();
       websocket.continue_firmware_update(firstDeviceSerial);
     },
 
@@ -505,7 +549,7 @@ export default {
       if (this.firmwareUpdateStatus  === undefined)
         return false;
 
-      const firstDeviceSerial = Object.keys(store.status.firmware)[0];
+      const firstDeviceSerial = this.firmwareSerial();
       websocket.clear_firmware_state(firstDeviceSerial);
     },
 
@@ -516,7 +560,7 @@ export default {
       if (this.getFirmwareUpdateState() === "Complete")
         return 100;
 
-      const firstDevice = Object.values(store.status.firmware)[0];
+      const firstDevice = this.firmwareDevice();
       if (firstDevice === undefined)
         return 0;
 
@@ -530,7 +574,7 @@ export default {
       if (this.getFirmwareUpdateState() !== "Pause")
         return this.$t('message.common.unknown');
 
-      const firstDevice = Object.values(store.status.firmware)[0];
+      const firstDevice = this.firmwareDevice();
       const firmwareInfo = firstDevice.state["Pause"];
       return firmwareInfo.version.join('.');
     }
@@ -538,6 +582,27 @@ export default {
 
   created() {
     runWebsocket();
+  },
+
+  watch: {
+    // The section opened last time comes back with the interface
+    deviceShown: {
+      handler(shown) {
+        if (!shown) return;
+        let id = undefined;
+        try {
+          id = localStorage.getItem("activeTab");
+        } catch (e) {
+          return;
+        }
+        this.$nextTick(() => {
+          const tabs = this.$refs["device-tabs"];
+          const tab = tabs && tabs.tabs.find(tab => tab.id === id && !tab.hidden);
+          if (tab && !tab.isActive) tabs.selectTab(tab);
+        });
+      },
+      immediate: true,
+    },
   },
 
   mounted() {
@@ -633,7 +698,7 @@ export default {
   flex-wrap: wrap;
   align-items: stretch;
   gap: 16px;
-  padding: 24px;
+  padding: var(--page-gutter);
 }
 
 #main .sampler-library {
@@ -658,12 +723,60 @@ export default {
   box-sizing: border-box;
 }
 
+.firmware-error {
+  margin: 8px 0 0;
+  color: var(--c-danger);
+  white-space: pre-line;
+}
+
+.firmware-hint {
+  margin: 4px 0 0;
+  color: var(--c-muted);
+  font-size: 13px;
+}
+
+.shortcuts-link {
+  margin: 0 16px 8px;
+  justify-content: flex-start;
+  font-size: 12px;
+  color: var(--c-muted);
+}
+
+.shortcuts-link .key {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  padding: 0 5px;
+  border: 1px solid var(--c-field-border);
+  border-radius: 3px;
+}
+
+.reconnecting {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+  background-color: var(--c-shadow);
+}
+
+.reconnecting span {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--c-warn);
+  background-color: var(--c-panel);
+  color: var(--c-text);
+  font-weight: 600;
+  box-shadow: 0 8px 24px var(--c-shadow);
+}
+
 #main .system-wrap {
-  padding: 24px;
+  padding: var(--page-gutter);
 }
 
 #main .library {
-  padding: 24px;
+  padding: var(--page-gutter);
   display: grid;
   gap: 16px;
   max-width: 640px;
@@ -677,34 +790,5 @@ export default {
   justify-content: right;
   gap: 5px;
 
-  button {
-    padding: 5px;
-    color: var(--c-text-soft);
-    border: 1px solid var(--c-line-strong);
-    background-color: transparent;
-    padding: 4px 8px;
-    cursor: pointer;
-
-    &:hover {
-      color: var(--c-text);
-      border-color: var(--c-text);
-    }
-
-    &.cancel {
-      border-color: var(--c-danger);
-
-      &:hover {
-        border-color: var(--c-danger);
-      }
-    }
-
-    &.close {
-      border-color: var(--c-accent-muted);
-
-      &:hover {
-        border-color: var(--c-accent);
-      }
-    }
-  }
 }
 </style>

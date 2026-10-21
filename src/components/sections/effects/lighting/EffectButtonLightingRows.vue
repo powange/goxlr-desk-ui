@@ -13,13 +13,13 @@
 </template>
 
 <script>
-import LightingEffectsEffects from "@/components/sections/lighting/subTabs/effects/LightingEffectsEffects.vue";
+import lightingEffectsEffects from "@/mixins/lightingEffectsEffects";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 
 // The lighting of one effect button (Megaphone, Robot, Hardtune, FX), starting on `initial`.
 export default {
   name: "EffectButtonLightingRows",
-  extends: LightingEffectsEffects,
+  extends: lightingEffectsEffects,
   components: {ButtonLighting},
 
   props: {

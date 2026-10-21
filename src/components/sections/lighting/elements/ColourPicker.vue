@@ -178,12 +178,14 @@ export default {
     },
 
     // Arrow keys move around the wheel (hue left / right, saturation up / down)
+    // Escape only closes the popup, never the dialog the picker sits in.
+    closePopupToSwatch() {
+      this.closePopup();
+      this.$refs.swatch.focus();
+    },
+
     onWheelKey(event) {
-      if (event.key === "Escape") {
-        this.closePopup();
-        this.$refs.swatch.focus();
-        return;
-      }
+      if (event.key === "Escape") return; // handled by the popup
       const moves = {ArrowLeft: [-5, 0], ArrowRight: [5, 0], ArrowUp: [0, 0.05], ArrowDown: [0, -0.05]};
       const move = moves[event.key];
       if (!move) return;
@@ -225,7 +227,7 @@ export default {
         </button>
       </div>
 
-      <div v-if="open" class="popup" :style="popupStyle" role="dialog" :aria-label="title" @keydown.esc="closePopup">
+      <div v-if="open" class="popup" :style="popupStyle" role="dialog" :aria-label="title" @keydown.esc.stop="closePopupToSwatch">
         <div class="wheel" ref="wheel" tabindex="0" role="slider" :aria-label="$t('message.lighting.common.pickColour')"
              :aria-valuetext="previewHex" @keydown="onWheelKey">
           <canvas ref="canvas" :width="size" :height="size"
@@ -283,7 +285,7 @@ input[type=text] {
   min-width: 0;
   flex: 1;
   padding: 6px 8px;
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--c-field-border);
   border-radius: 6px;
   background-color: var(--c-panel);
   color: var(--c-text);

@@ -31,8 +31,39 @@
  * The websocket class will abstract away the need to build a complete message.
  */
 import {store} from "@/store";
+import {recordForUndo} from "@/util/undo";
 
-// TODO: Error checking and handling!
+// The text of an error from the daemon (websocket {Error: ".."}, or a string from HTTP).
+export function errorMessage(error) {
+    if (error && error.Error !== undefined) return String(error.Error);
+    return String(error);
+}
+
+// Sends a command over HTTP and tells the user how it went: `ok` as a confirmation toast and
+// `a11y` to screen readers on success, the daemon's error as a toast otherwise. Resolves with
+// whether it worked.
+export function runCommand(serial, command, {ok, a11y} = {}) {
+    return sendHttpCommand(serial, command).then(() => {
+        if (ok) store.addToast("ok", ok);
+        if (a11y || ok) store.setAccessibilityNotification("polite", a11y || ok);
+        return true;
+    }).catch(error => {
+        store.addToast("error", errorMessage(error));
+        return false;
+    });
+}
+
+// Errors from the daemon that no code handles (a command sent without a .catch) are shown to the
+// user instead of only reaching the console.
+window.addEventListener("unhandledrejection", event => {
+    const reason = event.reason;
+    const fromDaemon = (reason && reason.Error !== undefined) || (typeof reason === "string");
+    if (!fromDaemon) return;
+    event.preventDefault();
+    console.log("Unhandled error from the daemon: ", reason);
+    store.addToast("error", errorMessage(reason));
+});
+
 export class Websocket {
     #connection_promise = [];
     #disconnect_callback = undefined;
@@ -58,6 +89,8 @@ export class Websocket {
             } else if (message_data["MicLevel"] !== undefined) {
                 self.#fulfill_promise(message_id, message_data, true);
             } else if (message_data["SampleUsage"] !== undefined) {
+                self.#fulfill_promise(message_id, message_data, true);
+            } else if (message_data["NetworkAccess"] !== undefined) {
                 self.#fulfill_promise(message_id, message_data, true);
             } else if (message_data === "Ok") {
                 self.#fulfill_promise(message_id, message_data, true);
@@ -129,6 +162,12 @@ export class Websocket {
         return this.#sendRequest({"GetSampleUsage": path});
     }
 
+    // The links other machines use to reach the interface (with the access token).
+    // Resolves with { NetworkAccess: { enabled, urls } }. Only answered on this computer.
+    get_network_access() {
+        return this.#sendRequest("GetNetworkAccess");
+    }
+
     send_daemon_command(command) {
         let request = {
             "Daemon":
@@ -139,6 +178,7 @@ export class Websocket {
     }
 
     send_command(serial, command) {
+        recordForUndo(serial, command);
         let request = {
             "Command": [
                 serial,

@@ -7,10 +7,11 @@
                           :label="$t('message.sampler.banks.bankTitle')"/>
       </div>
 
-      <div class="pads" role="radiogroup" :aria-label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})">
-        <button v-for="option in getButtonOptions()" :key="option.id" type="button" role="radio" class="pad"
-                :aria-checked="option.id === activeButton"
-                :class="{ selected: option.id === activeButton, filled: getPadSamples(option.id).length > 0, drop: dropButton === option.id }"
+      <div class="pads" role="group" :aria-label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})">
+        <div v-for="option in getButtonOptions()" :key="option.id" class="pad-wrap">
+        <button type="button" class="pad"
+                :aria-pressed="option.id === activeButton"
+                :class="{ selected: option.id === activeButton, filled: getPadSamples(option.id).length > 0, drop: dropButton === option.id, playing: isPlaying(option.id) }"
                 @click="setActiveButton(option.id)"
                 @dragover="onPadDragOver($event, option.id)" @dragleave="onPadDragLeave(option.id)"
                 @drop="onPadDrop($event, option.id)">
@@ -21,15 +22,29 @@
           </span>
           <span class="pad-tip" v-if="dropButton === option.id">{{ $t('message.sampler.pads.dropHere') }}</span>
         </button>
+        <!-- Plays the pad like the device's button does (its function and play order) -->
+        <button v-if="getPadSamples(option.id).length > 0" type="button" class="pad-play"
+                :aria-label="isPlaying(option.id) ? $t('message.sampler.pads.stop', {button: option.label}) : $t('message.sampler.pads.play', {button: option.label})"
+                :title="isPlaying(option.id) ? $t('message.sampler.pads.stop', {button: option.label}) : $t('message.sampler.pads.play', {button: option.label})"
+                @click="togglePlay(option.id)">
+          <font-awesome-icon :icon="isPlaying(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-play'"/>
+        </button>
+        <!-- An empty pad records, as holding it on the device does (with the pre-record buffer) -->
+        <button v-else type="button" class="pad-play record" :class="{ recording: isRecording(option.id) }"
+                :aria-label="isRecording(option.id) ? $t('message.sampler.pads.stopRecording', {button: option.label}) : $t('message.sampler.pads.record', {button: option.label})"
+                :title="isRecording(option.id) ? $t('message.sampler.pads.stopRecording', {button: option.label}) : $t('message.sampler.pads.record', {button: option.label})"
+                @click="toggleRecord(option.id)">
+          <font-awesome-icon :icon="isRecording(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-circle'"/>
+        </button>
+        </div>
       </div>
 
-      <label class="pad-row">
+      <div class="pad-row">
         <span class="field-label">{{ $t('message.sampler.banks.functionTitle') }}</span>
-        <select class="pad-select" :value="getActiveFunction()" @change="setActiveFunction($event.target.value)"
-                :aria-label="$t('message.sampler.banks.functionLabel', {activeButton: activeButton, activeBank: activeBank})">
-          <option v-for="option in getFunctionOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-        </select>
-      </label>
+        <SelectMenu class="pad-select" :options="getFunctionOptions()" :selected="getActiveFunction()"
+                    @select="setActiveFunction"
+                    :label="$t('message.sampler.banks.functionLabel', {activeButton: activeButton, activeBank: activeBank})"/>
+      </div>
 
       <div class="pad-row">
         <span class="field-label">{{ $t('message.sampler.banks.playOrderTitle') }}</span>
@@ -39,10 +54,10 @@
 
       <div class="pad-row">
         <span class="field-label">{{ $t('message.sampler.lighting.label') }}</span>
-        <button ref="lightingButton" type="button" class="lighting-button" @click="openLighting">
+        <AppButton ref="lightingButton" @click="openLighting">
           <font-awesome-icon icon="fa-solid fa-lightbulb"/>
-          <span>{{ $t('message.sampler.lighting.customise') }}</span>
-        </button>
+          <span>{{ $t('message.common.lighting') }}</span>
+        </AppButton>
       </div>
     </div>
   </GroupContainer>
@@ -81,7 +96,8 @@
     />
   </GroupContainer>
 
-  <AccessibleModal ref="lightingModal" id="samplerLighting" width="min(560px, 94vw)" body-padding="0">
+  <AccessibleModal ref="lightingModal" id="samplerLighting" width="min(560px, 94vw)" body-padding="0"
+                   @modal-close="lightingOpen = false">
     <template v-slot:title>{{ $t('message.sampler.lighting.title') }}</template>
     <SamplerLighting v-if="lightingOpen" :bank="activeBank"/>
   </AccessibleModal>
@@ -162,7 +178,9 @@
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import AudioVisualiser from "@/components/sections/sampler/AudioVisualiser.vue";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import GroupContainer from "@/components/containers/GroupContainer.vue";
@@ -180,7 +198,7 @@ export default {
   emits: ["on-sample-bank-change", "sample-drop"],
 
   name: "SamplerTab",
-  components: {
+  components: {AppButton, SelectMenu, 
     Slider,
     SegmentedControl,
     SamplerLighting,
@@ -198,7 +216,10 @@ export default {
     return {
       last_error: undefined,
 
-      activeBank: "A",
+      // The bank shown follows the one active on the device
+      activeBank: store.getActiveDevice().sampler.active_bank,
+      // The sample being added from the Add dialog, for the announcement once it's done
+      addedName: undefined,
       activeButton: "TopLeft",
       activeSample: "-1",
       // The pad samples are being dragged over
@@ -305,6 +326,28 @@ export default {
       return samples;
     },
 
+    isPlaying(button) {
+      return store.getActiveDevice().sampler.banks[this.activeBank][button].is_playing;
+    },
+
+    isRecording(button) {
+      return store.getActiveDevice().sampler.banks[this.activeBank][button].is_recording;
+    },
+
+    toggleRecord(button) {
+      const command = this.isRecording(button)
+          ? {StopSampleRecording: [this.activeBank, button]}
+          : {StartSampleRecording: [this.activeBank, button]};
+      websocket.send_command(store.getActiveSerial(), command);
+    },
+
+    togglePlay(button) {
+      const command = this.isPlaying(button)
+          ? {StopSamplePlayback: [this.activeBank, button]}
+          : {PlayNextSample: [this.activeBank, button]};
+      websocket.send_command(store.getActiveSerial(), command);
+    },
+
     setActiveBank(bank) {
       this.activeBank = bank;
       this.activeSample = "-1";
@@ -365,6 +408,7 @@ export default {
 
     addSample() {
       let name = this.$refs.sample_selector.getSelectedSampleName();
+      this.addedName = name;
 
       // If we're adding a sample, we need to drop the return focus...
       this.$refs.add_sample_modal.returnFocus = undefined;
@@ -490,11 +534,25 @@ export default {
 
     sampleProgress() {
       return store.getActiveDevice().sampler.processing_state.progress;
-    }
+    },
+
+    deviceBank() {
+      return store.getActiveDevice().sampler.active_bank;
+    },
   },
 
   watch: {
+    deviceBank(bank) {
+      if (bank !== this.activeBank) {
+        this.activeBank = bank;
+        this.activeSample = "-1";
+      }
+    },
+
     sampleProgress(newValue, oldValue) {
+      // The assign dialog shows its own progress
+      if (store.sampleAssignBusy) return;
+
       // If we're going from null to not null, open the dialog..
       if ((oldValue === null) && (newValue !== null)) {
         // We need to open the Progress Dialog..
@@ -520,8 +578,8 @@ export default {
 
         store.setAccessibilityNotification(
             "polite",
-            this.$t('message.sampler.accessibilityAdded', {
-              name: name,
+            this.$t('message.sampler.samples.accessibilityAdded', {
+              name: this.addedName || "",
               activeButton: this.activeButton,
               activeBank: this.activeBank
             })
@@ -531,6 +589,8 @@ export default {
 
     hasError: {
       handler(newValue) {
+        // The assign dialog shows and clears its own errors
+        if (store.sampleAssignBusy) return;
         if (this.$refs.add_sample_error === undefined && newValue === true) {
           // We've picked up a cached error of some description, clear it.
           websocket.send_command(store.getActiveSerial(), {
@@ -572,39 +632,9 @@ export default {
   color: var(--c-muted);
 }
 
-.pad-panel .lighting-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 6px 12px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.pad-panel .lighting-button:hover {
-  border-color: var(--c-line-strong);
-}
-
-.pad-panel .lighting-button:focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 2px;
-}
-
 .pad-select {
   flex: 1;
   max-width: 220px;
-  padding: 6px 8px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
 }
 
 .pads {
@@ -635,6 +665,54 @@ export default {
 
 .pad-panel .pad:hover {
   background-color: var(--c-hover);
+}
+
+.pad-wrap {
+  position: relative;
+  display: grid;
+}
+
+/* Room for the play button */
+.pad-panel .pad-wrap .pad {
+  padding-right: 46px;
+}
+
+.pad-panel .pad.playing {
+  border-color: var(--c-ok);
+}
+
+.pad-play {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--c-field-border);
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
+  cursor: pointer;
+}
+
+.pad-play.record {
+  color: var(--c-danger);
+}
+
+.pad-play.recording {
+  background-color: var(--c-danger);
+  border-color: var(--c-danger);
+  color: var(--c-on-danger);
+}
+
+.pad-play:hover {
+  background-color: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-on-accent);
+}
+
+.pad-play:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 .pad-panel .pad.selected {

@@ -1,6 +1,7 @@
 <template>
   <div class="system-page">
-    <nav class="system-menu" role="tablist" aria-orientation="vertical" :aria-label="$t('message.system.title')">
+    <!-- A menu of pages: the current one is marked with aria-current -->
+    <nav class="system-menu" :aria-label="$t('message.system.title')">
       <template v-for="item in getItems()" :key="item.id">
         <a v-if="item.href" class="menu-item" :href="item.href" target="_blank" rel="noopener">
           <font-awesome-icon :icon="item.icon" fixed-width/>
@@ -8,7 +9,8 @@
           <font-awesome-icon icon="fa-solid fa-up-right-from-square" class="external"/>
         </a>
         <button v-else type="button" class="menu-item" :class="{ active: item.id === selected }"
-                :role="item.action ? undefined : 'tab'" :aria-selected="item.action ? undefined : item.id === selected"
+                :id="item.action ? undefined : `system-menu-${item.id}`"
+                :aria-current="!item.action && item.id === selected ? 'page' : undefined"
                 @click="choose(item)">
           <font-awesome-icon :icon="item.icon" fixed-width/>
           <span>{{ item.label }}</span>
@@ -16,7 +18,7 @@
       </template>
     </nav>
 
-    <div class="system-content" role="tabpanel">
+    <div class="system-content" role="region" :aria-labelledby="`system-menu-${selected}`">
       <component :is="getSelected().component" :key="selected" inline/>
     </div>
   </div>
@@ -30,6 +32,7 @@ import PowerButton from "@/components/sections/system/modals/PowerButton.vue";
 import DeviceSettingsButton from "@/components/sections/system/modals/DeviceSettingsButton.vue";
 import FirmwareUpdateButton from "@/components/sections/system/modals/FirmwareUpdateButton.vue";
 import SwitchDeviceButton from "@/components/sections/system/modals/SwitchDeviceButton.vue";
+import IntegrationsPage from "@/components/sections/system/pages/IntegrationsPage.vue";
 import {store} from "@/store";
 import {markRaw} from "vue";
 
@@ -51,8 +54,10 @@ export default {
         {id: "settings", icon: "fa-solid fa-gear", label: this.$t('message.system.settingsButton'), component: markRaw(SettingsButton)},
         {id: "power", icon: "fa-solid fa-power-off", label: this.$t('message.system.powerButton'), component: markRaw(PowerButton)},
         {id: "firmware", icon: "fa-solid fa-download", label: this.$t('message.system.menu.firmware'), component: markRaw(FirmwareUpdateButton)},
+        {id: "integrations", icon: "fa-solid fa-link", label: this.$t('message.integrations.title'), component: markRaw(IntegrationsPage)},
         {id: "about", icon: "fa-solid fa-circle-info", label: this.$t('message.system.aboutButton'), component: markRaw(AboutButton)},
         {id: "licenses", icon: "fa-solid fa-book-open", label: this.$t('message.system.licenses'), component: markRaw(LicenseButton)},
+        {id: "wizard", icon: "fa-solid fa-wand-magic-sparkles", label: this.$t('message.setupWizard.menu'), action: () => window.dispatchEvent(new Event("open-setup-wizard"))},
         {id: "help", icon: "fa-solid fa-circle-question", label: this.$t('message.system.help'), href: "https://discord.gg/BRBjkkbvmZ"},
       ];
       if (store.getDeviceCount() > 1) {

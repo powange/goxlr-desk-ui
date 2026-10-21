@@ -1,24 +1,7 @@
-<template>
-  <GroupContainer :title="$t('message.configuration.faders.title')">
-    <RadioSelection :title="$t('message.configuration.faders.channelTitle')" group="faders_channel"
-                    :options="getFaderOptions()" :selected="activeChannel" @selection-changed="channelChanged" />
-
-    <RadioSelection :title="$t('message.configuration.faders.sourceTitle')" group="faders_source"
-                    :options="getSourceOptions()" :selected="getActiveSource()" @selection-changed="sourceChanged"
-                    :label="$t('message.configuration.faders.sourceLabel', { channel: getActiveChannelName() })" />
-
-    <RadioSelection :title="$t('message.configuration.muteBehaviourTitle')" group="faders_mute"
-                    :options="getMuteBehaviour()" :selected="getActiveMuteBehaviour()"
-                    @selection-changed="muteFunctionChanged"
-                    :label="$t('message.configuration.muteBehaviourLabel', { channel: getActiveChannelName() })" />
-  </GroupContainer>
-</template>
-
-<script>
+// Shared logic (data, methods) of the former Faders page, used by the components
+// that replaced it. It has no template of its own.
 import { store } from "@/store";
 import { websocket } from "@/util/sockets";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import GroupContainer from "@/components/containers/GroupContainer.vue";
 import { driverMix2, driverPreVOD, driverVOD, firmwareSupportsMix2, isDeviceMini, isStreamNoMusic, isWindowsDriver, versionNewerOrEqualTo } from "@/util/util";
 
 export default {
@@ -26,9 +9,6 @@ export default {
    * Everything here focuses around the 'Channel' input,
    */
 
-  emits: ["on-fader-channel-change"],
-  components: { GroupContainer, RadioSelection },
-  name: "MicFaders",
 
   data() {
     return {
@@ -68,26 +48,25 @@ export default {
 
       // This one is going to depend on the Firmware AND the driver...
       if (firmwareSupportsMix2()) {
-        let channelName = "Stream Mixes 1 + 2";
+        let channelName = `${this.$t('message.channels.StreamMix1')} + 2`;
 
         if (!isWindowsDriver() || !driverPreVOD()) {
-          if (driverVOD()) channelName = "Stream Mix + VOD";
+          if (driverVOD()) channelName = `${this.$t('message.channels.StreamMix')} + ${this.$t('message.channels.VOD')}`;
 
           behaviours.push({ id: "ToStream2", label: this.$t('message.configuration.mute_behaviour.base', { channel: this.getNameForChannel("StreamMix2") })});
           behaviours.push({ id: "ToStreams", label: this.$t('message.configuration.mute_behaviour.base', { channel: channelName })});
         }
       }
 
-      behaviours.push({ id: "ToVoiceChat", label: this.$t('message.configuration.mute_behaviour.base', { channel: "Chat Mic" })});
-      behaviours.push({ id: "ToPhones", label: this.$t('message.configuration.mute_behaviour.base', { channel: "Headphones" })});
-      behaviours.push({ id: "ToLineOut", label: this.$t('message.configuration.mute_behaviour.base', { channel: "Line Out" })});
+      behaviours.push({ id: "ToVoiceChat", label: this.$t('message.configuration.mute_behaviour.base', { channel: this.$t('message.channels.ChatMic') })});
+      behaviours.push({ id: "ToPhones", label: this.$t('message.configuration.mute_behaviour.base', { channel: this.$t('message.channels.Headphones') })});
+      behaviours.push({ id: "ToLineOut", label: this.$t('message.configuration.mute_behaviour.base', { channel: this.$t('message.channels.LineOut') })});
       
       return behaviours;
     },
 
     channelChanged: function (id) {
       this.activeChannel = id;
-      this.$emit("on-fader-channel-change", id);
     },
 
     sourceChanged: function (channelName) {
@@ -176,16 +155,16 @@ export default {
 
     getNameForChannel(name) {
       if (name === "StreamMix2") {
-        let vod = "VOD";
-        let mix2 = "Stream Mix 2";
+        let vod = this.$t('message.channels.VOD');
+        let mix2 = this.$t('message.channels.StreamMix2');
 
         if (isWindowsDriver() && driverVOD()) return vod;
         return mix2;
       }
 
       if (name === "BroadcastMix") {
-        let streamMix = "Stream Mix";
-        let streamMix1 = "Stream Mix 1";
+        let streamMix = this.$t('message.channels.StreamMix');
+        let streamMix1 = this.$t('message.channels.StreamMix1');
 
         if (firmwareSupportsMix2()) {
           if (isWindowsDriver() && !driverMix2()) return streamMix;
@@ -197,6 +176,3 @@ export default {
     },
   },
 }
-</script>
-
-<style scoped></style>
