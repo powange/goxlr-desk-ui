@@ -4,7 +4,7 @@ import DropMenu from "@/components/design/DropMenu.vue";
 
 export default {
   name: "RadioList",
-  emits: ['selection-changed', 'menu-opened', 'menu-selected'],
+  emits: ['selection-changed', 'menu-opened', 'menu-selected', 'item-dragstart', 'item-dragend', 'item-dblclick'],
   components: { DropMenu, RadioItem },
 
   props: {
@@ -18,6 +18,9 @@ export default {
     scrollTop: { type: Function, optional: true, default: () => { return 0; } },
     padding: {type: String, required: false, default: "8px"},
     background: {type: String, required: false, default: "#3b413f" },
+
+    // Lets options be dragged (emits item-dragstart / item-dragend with the option id)
+    draggable: {type: Boolean, required: false, default: false},
   },
 
   methods: {
@@ -62,9 +65,16 @@ export default {
     <div class="list" role="radiogroup" :aria-label="label">
       <RadioItem v-for="option in options" :key="option.id" :id="getUniqueId(option.id)" :ref="getUniqueId(option.id)"
         :group="group" :text="option.label" :selected="selected === option.id" :disabled="option.disabled"
-        @radio-selected="select(option.id)" :icon="option.icon" :background="background" :padding="padding">
-        <template v-if="this.menu !== undefined" #right>
-          <button :aria-label="`${option.label} Options`" :id="getButtonId(option.id)" aria-haspopup="menu"
+        @radio-selected="select(option.id)" :icon="option.icon" :background="background" :padding="padding"
+        :detail="option.detail" :badge="option.badge" :badge-label="option.badgeLabel"
+        :draggable="draggable ? 'true' : null"
+        @dragstart="draggable && $emit('item-dragstart', $event, option.id)"
+        @dragend="draggable && $emit('item-dragend')"
+        @dblclick="$emit('item-dblclick', option.id)">
+        <template v-if="this.menu !== undefined || this.$slots['item-actions'] !== undefined" #right>
+          <!-- Extra per item buttons, shown before the menu button -->
+          <slot name="item-actions" :option="option"></slot>
+          <button v-if="this.menu !== undefined" :aria-label="`${option.label} Options`" :id="getButtonId(option.id)" aria-haspopup="menu"
             :aria-controls="this.menu_id" @click.prevent.stop="menuOpened($event, getButtonId(option.id), option.id)">
             <font-awesome-icon icon="fa-solid fa-ellipsis-vertical" />
           </button>

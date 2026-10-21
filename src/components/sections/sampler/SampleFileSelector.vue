@@ -153,37 +153,41 @@ export default {
     },
 
     getSamplePaths() {
-      if (store.getSampleFiles() === undefined) {
-        return {};
+      let files = store.getSampleFiles();
+      if (files === undefined) {
+        return [];
       }
 
-      return Object.keys(store.getSampleFiles()).reduce(function (acc, value) {
-        value = value.replace(/\\/g, '/');
+      // Builds a tree of nested '{ name: [...] }' objects (folders) and strings (files).
+      let root = [];
+      let descend = function (fields) {
+        let current = root;
+        for (let element of fields) {
+          let subDirectory = current.find(function (field) {
+            return typeof field == 'object' && field[element];
+          });
 
-        let fields = value.split("/");
-        let currentDirectory = acc;
-
-        fields.forEach(function (element, index) {
-          if (index !== fields.length - 1) {
-            // We're not at the end yet, look for a subdir..
-            let subDirectory = currentDirectory.filter(function (field) {
-              return typeof field == 'object' && field[element];
-            })[0];
-
-            // Couldn't find an existing SubDirectory, create it..
-            if (!subDirectory) {
-              subDirectory = Object.create(null);
-              subDirectory[element] = [];
-              currentDirectory.push(subDirectory);
-            }
-            currentDirectory = subDirectory[element];
-          } else {
-            currentDirectory.push(element);
+          // Couldn't find an existing SubDirectory, create it..
+          if (!subDirectory) {
+            subDirectory = Object.create(null);
+            subDirectory[element] = [];
+            current.push(subDirectory);
           }
-        });
+          current = subDirectory[element];
+        }
+        return current;
+      };
 
-        return acc;
-      }, []);
+      for (let value of Object.keys(files)) {
+        let fields = value.replace(/\\/g, '/').split("/");
+        descend(fields.slice(0, -1)).push(fields[fields.length - 1]);
+      }
+
+      // Folders without samples only appear in the folder list.
+      for (let folder of store.getSampleFolders()) {
+        descend(folder.replace(/\\/g, '/').split("/").filter((part) => part.length > 0));
+      }
+      return root;
     },
 
     focus() {

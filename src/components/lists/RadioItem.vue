@@ -3,8 +3,11 @@
     <input ref="check" :name=group :id=id type="radio" @change="change" :value=id :checked="selected"
            :disabled="disabled" :aria-labelledby="`label_${id}`" class="screenreader-only"/>
     <label ref="label" :id="`label_${id}`" :for="id" :class="{ selected: this.selected, disabled: this.disabled }">
+      <span v-if="detail !== undefined" class="detail">{{ detail }}</span>
       <font-awesome-icon v-if="icon !== undefined" :icon="icon"/>
       {{ text }}
+      <span v-if="badge !== undefined" class="badge" :title="badgeLabel"><font-awesome-icon :icon="badge"/></span>
+      <span v-if="badgeLabel !== undefined" class="screenreader-only">{{ badgeLabel }}</span>
     </label>
     <div ref="right_ref" class="right_side" :class="{ selected: this.selected, disabled: this.disabled }">
       <slot name="right"></slot>
@@ -31,6 +34,11 @@ export default {
 
     padding: {type: String, required: false, default: "8px"},
     background: {type: String, required: false, default: "#3b413f" },
+
+    // Optional extra information shown on the right of the text, and a small icon after it
+    detail: {type: String, required: false},
+    badge: {type: String, required: false},
+    badgeLabel: {type: String, required: false},
   },
 
   data: function () {
@@ -54,24 +62,36 @@ export default {
     focus() {
       this.$refs.label.focus();
     }
-  },
-
-  computed: {
-    right_width: function () {
-      if (this.$refs.right_ref.clientWidth === 0) {
-        return "0px";
-      }
-
-      return (this.$refs.right_ref.clientWidth - 12) + "px";
-    },
   }
 }
 </script>
 
 <style scoped>
+.detail {
+  float: right;
+  margin-left: 10px;
+  font-size: 0.85em;
+  color: #a5a7a6;
+}
+
+label.selected .detail {
+  color: #353937;
+}
+
+.badge {
+  margin-left: 6px;
+  font-size: 0.8em;
+  color: #59b1b6;
+}
+
+label.selected .badge {
+  color: #353937;
+}
+
 .wrapper {
   display: flex;
   flex-direction: row;
+  align-items: stretch;
 }
 
 /* We're going to try and make the label look and behave like a legacy 'Button' */
@@ -79,7 +99,9 @@ label {
   display: block;
   box-sizing: border-box;
 
-  width: calc(100% - v-bind(right_width));
+  /* Takes whatever the buttons on the right leave */
+  flex: 1 1 auto;
+  min-width: 0;
   margin: auto 0 auto auto;
   background-color: v-bind(background);
 
@@ -92,8 +114,13 @@ label {
   color: #fff;
 }
 
+/* Buttons on the right (menu, play..), side by side, on the same background as the item */
 .right_side {
-  background-color: #3b413f;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 0 0 auto;
+  background-color: v-bind(background);
   margin-right: auto;
   color: #fff;
 }

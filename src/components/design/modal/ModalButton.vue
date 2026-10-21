@@ -25,7 +25,9 @@ export default {
   padding: 8px 30px;
   border: none;
   margin: 8px;
-  width: 120px;
+  /* At least 120px, wider for longer labels rather than wrapping them */
+  min-width: 120px;
+  white-space: nowrap;
 }
 
 .modal-button:disabled {
