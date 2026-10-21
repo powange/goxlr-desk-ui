@@ -862,6 +862,18 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        sampleAssign: {
+            title: "Assign to {bank} · {button}",
+            bank: "Bank",
+            empty: "This button has no samples yet.",
+            current: "This button already has {count} sample(s):",
+            add: "Add",
+            replace: "Replace",
+            removing: "Removing the current samples…",
+            adding: "Adding {index} of {total}: {name}…",
+            done: "{count} sample(s) assigned to {bank} · {button}",
+            timeout: "{name}: the daemon took too long to add this sample",
+        },
         sampleManager: {
             newFolder: "New Folder",
             openFolder: "Open the Samples Folder",
