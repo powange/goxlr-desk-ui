@@ -530,6 +530,17 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Apply to all faders",
+                applyMutes: "Apply to all mute buttons",
+                openIcons: "Open the icons folder",
+                display: "Display",
+                preview: "Preview",
+                previewFader: "fader",
+                previewScreen: "screen",
+                previewActive: "active",
+                previewRest: "at rest",
+            },
             // These are some common strings that are used in multiple places
             common: {
                 colour: "Colour",
@@ -547,6 +558,9 @@ export default {
 
                 applyToAll: "Apply to All",
                 pickColour: "pick a colour",
+                restLabel: "At rest",
+                restColour: "Rest colour",
+                restDimmedHint: "The button shows its active colour, dimmed: no colour to pick.",
                 brightness: "Brightness",
             },
 

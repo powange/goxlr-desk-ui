@@ -60,9 +60,9 @@
       </GroupContainer>
     </CenteredContainer>
 
-    <AccessibleModal ref="lightingModal" id="faderLighting" width="min(760px, 94vw)" body-padding="0">
+    <AccessibleModal ref="lightingModal" id="faderLighting" width="min(900px, 94vw)" body-padding="0">
       <template v-slot:title>{{ $t('message.mixer.strip.lightingTitle', { channel: lightingFader ? $t(`message.faders.${lightingFader}`) : '' }) }}</template>
-      <LightingMixer v-if="lightingFader" :key="lightingFader" :fixed-channel="lightingFader"/>
+      <ChannelLighting v-if="lightingFader" :key="lightingFader" :fixed-channel="lightingFader"/>
     </AccessibleModal>
   </div>
 </template>
@@ -86,11 +86,11 @@ import MixAssignment from "@/components/sections/mixer/MixAssignment.vue";
 import FaderStrip from "@/components/sections/mixer/FaderStrip.vue";
 import Toggle from "@/components/design/Toggle.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
-import LightingMixer from "@/components/sections/lighting/subTabs/LightingMixer.vue";
+import ChannelLighting from "@/components/sections/lighting/subTabs/ChannelLighting.vue";
 
 export default {
   name: "MixerTop",
-  components: {LightingMixer, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
+  components: {ChannelLighting, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
 
   data() {
     return {

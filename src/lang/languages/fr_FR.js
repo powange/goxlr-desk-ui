@@ -506,6 +506,17 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Appliquer à tous les faders",
+                applyMutes: "Appliquer à tous les boutons muet",
+                openIcons: "Ouvrir le dossier des icônes",
+                display: "Affichage",
+                preview: "Aperçu",
+                previewFader: "fader",
+                previewScreen: "écran",
+                previewActive: "actif",
+                previewRest: "au repos",
+            },
             // These are some common strings that are used in multiple places
             common: {
                 colour: "Couleur",
@@ -523,6 +534,9 @@ export default {
 
                 applyToAll: "Appliquer à tout",
                 pickColour: "choisir une couleur",
+                restLabel: "Au repos",
+                restColour: "Couleur au repos",
+                restDimmedHint: "Le bouton reprend sa couleur active, en moins lumineux : pas de couleur à choisir.",
                 brightness: "Luminosité",
             },
 

@@ -38,6 +38,8 @@ export default {
   props: {
     title: String,
     colorValue: String,
+    // Just the field (swatch, value, clear), without the titled card, for use in a form row
+    inline: {type: Boolean, default: false},
   },
 
   data() {
@@ -210,7 +212,7 @@ export default {
 </script>
 
 <template>
-  <WidgetContainer :title="title" height="auto">
+  <component :is="inline ? 'div' : 'WidgetContainer'" v-bind="inline ? { class: 'inline' } : { title, height: 'auto' }">
     <slot>
       <div class="controls">
         <button ref="swatch" type="button" class="swatch" :style="{ backgroundColor: previewHex }"
@@ -240,7 +242,7 @@ export default {
         </div>
       </div>
     </slot>
-  </WidgetContainer>
+  </component>
 </template>
 
 <style scoped>
@@ -251,6 +253,16 @@ export default {
   width: 100%;
   box-sizing: border-box;
   padding: 4px 10px 12px;
+}
+
+.inline .controls {
+  padding: 0;
+  width: auto;
+}
+
+.inline input[type=text] {
+  flex: none;
+  width: 7em;
 }
 
 .swatch {

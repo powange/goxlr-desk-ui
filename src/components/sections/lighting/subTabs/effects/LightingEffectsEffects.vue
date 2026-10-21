@@ -2,6 +2,7 @@
 import GroupContainer from "@/components/containers/GroupContainer.vue";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
+import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
@@ -10,6 +11,7 @@ import {getLightingInactiveOptions, LightingInactiveOptions} from "@/util/mixerM
 export default {
   name: "LightingEffectsEffects",
   components: {
+    ButtonLighting,
     GroupContainer,
     RadioSelection,
     ColourPicker
@@ -103,23 +105,9 @@ export default {
         :selected="selectedEffect"
         @selection-changed="onButtonSelectionChange"
     />
-    <ColourPicker
-        :title="$t('message.lighting.common.activeColour')"
-        :color-value="activeColor()"
-        @colour-changed="onActiveColourChange"
-    />
-    <RadioSelection
-        :title="$t('message.lighting.common.inactiveOption')"
-        group="lighting_effects_effects_inactive_behaviour"
-        :options="getLightingInactiveOptions($t)"
-        :selected="selectedInactiveOption()"
-        @selection-changed="onInactiveSelectionChange"
-    />
-    <ColourPicker
-        :title="$t('message.lighting.common.inactiveColour')"
-        :color-value="inactiveColor()"
-        @colour-changed="onInactiveColourChange"
-    />
+    <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
+                    @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
+                    @off-style-changed="onInactiveSelectionChange"/>
   </GroupContainer>
 </template>
 
