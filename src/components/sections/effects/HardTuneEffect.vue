@@ -1,5 +1,5 @@
 <template>
-  <ExpandoGroupContainer :title="$t('message.effects.hardTune.title')" @expando-clicked="is_expanded = !is_expanded"
+  <ExpandoGroupContainer :collapsible="false" :title="$t('message.effects.hardTune.title')" @expando-clicked="is_expanded = !is_expanded"
                          :expanded="is_expanded">
     <RadioSelection :title="$t('message.effects.hardTune.style')" group="effects_hardtune_style"
                     :options="getHardTuneStyles()" :selected="getActiveStyle()" @selection-changed="stylePressed"/>
@@ -31,7 +31,8 @@ export default {
   components: {ExpandoGroupContainer, RadioSelection, SliderInput},
   data() {
     return {
-      is_expanded: false,
+      // Each effect has its own panel in the Effects section, so everything is shown
+      is_expanded: true,
     }
   },
 

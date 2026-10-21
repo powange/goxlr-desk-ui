@@ -1,5 +1,5 @@
 <template>
-  <ExpandoGroupContainer :title="$t('message.effects.echo.title')" :expanded="is_expanded"
+  <ExpandoGroupContainer :collapsible="false" :title="$t('message.effects.echo.title')" :expanded="is_expanded"
                          @expando-clicked="is_expanded = !is_expanded">
     <RadioSelection :title="$t('message.effects.echo.style')" group="effects_echo_style" :options="getEchoStyles()"
                     :selected="getActiveStyle()" @selection-changed="stylePressed"/>
@@ -67,7 +67,8 @@ export default {
   components: {ExpandoGroupContainer, RadioSelection, SliderInput},
   data() {
     return {
-      is_expanded: false,
+      // Each effect has its own panel in the Effects section, so everything is shown
+      is_expanded: true,
     }
   },
 

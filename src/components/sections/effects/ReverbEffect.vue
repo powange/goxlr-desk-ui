@@ -1,5 +1,5 @@
 <template>
-  <ExpandoGroupContainer :title="$t('message.effects.reverb.title')" @expando-clicked="is_expanded = !is_expanded"
+  <ExpandoGroupContainer :collapsible="false" :title="$t('message.effects.reverb.title')" @expando-clicked="is_expanded = !is_expanded"
                          :expanded="is_expanded">
     <RadioSelection :title="$t('message.effects.reverb.style')" group="effects_reverb_style"
                     :options="getReverbStyles()" :selected="getActiveStyle()" @selection-changed="stylePressed"/>
@@ -55,7 +55,8 @@ export default {
   data() {
     return {
       decay_map: [],
-      is_expanded: false,
+      // Each effect has its own panel in the Effects section, so everything is shown
+      is_expanded: true,
     }
   },
 

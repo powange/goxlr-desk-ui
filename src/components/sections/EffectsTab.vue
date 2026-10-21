@@ -413,6 +413,7 @@ export default {
 /* The device face, then the selected effect's settings */
 .effects-page {
   display: grid;
+  grid-template-columns: minmax(0, 1fr);
   gap: 16px;
   padding: 16px 40px 40px;
 }
@@ -421,6 +422,20 @@ export default {
   display: grid;
   gap: 10px;
   justify-items: start;
+  min-width: 0;
+}
+
+/* The selected effect's settings wrap onto several rows rather than widening the page */
+.effect-settings :deep(.container) {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.effect-settings :deep(.content) {
+  flex-wrap: wrap;
+  row-gap: 10px;
+  width: auto;
+  justify-content: flex-start;
 }
 
 .settings-head {

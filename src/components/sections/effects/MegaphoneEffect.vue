@@ -1,5 +1,5 @@
 <template>
-  <ExpandoGroupContainer :title="$t('message.effects.megaphone.title')" @expando-clicked="is_expanded = !is_expanded"
+  <ExpandoGroupContainer :collapsible="false" :title="$t('message.effects.megaphone.title')" @expando-clicked="is_expanded = !is_expanded"
                          :expanded="is_expanded">
     <RadioSelection :title="$t('message.effects.megaphone.style')" group="effects_megaphone_style"
                     :options="getMegaphoneStyles()" :selected="getActiveStyle()" @selection-changed="stylePressed"/>
@@ -26,7 +26,8 @@ export default {
   components: {ExpandoGroupContainer, RadioSelection, SliderInput},
   data() {
     return {
-      is_expanded: false,
+      // Each effect has its own panel in the Effects section, so everything is shown
+      is_expanded: true,
     }
   },
 

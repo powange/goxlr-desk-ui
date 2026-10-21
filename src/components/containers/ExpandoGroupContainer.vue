@@ -8,6 +8,8 @@ export default {
   props: {
     title: String,
     expanded: Boolean,
+    // Without the arrow, when the content is always shown
+    collapsible: {type: Boolean, default: true},
   }
 }
 </script>
@@ -18,7 +20,7 @@ export default {
       <template #right><slot name="right"></slot></template>
       <slot></slot>
     </GroupContainer>
-    <ExpandoBox @expando-clicked="$emit('expando-clicked')" :expanded="expanded"/>
+    <ExpandoBox v-if="collapsible" @expando-clicked="$emit('expando-clicked')" :expanded="expanded"/>
   </div>
 
 </template>
