@@ -40,11 +40,6 @@ export default {
           display: "message.navigation.lightingGlobal",
         },
         {
-          id: "mixer",
-          type: LightingMixer,
-          display: "message.navigation.lightingMixer",
-        },
-        {
           id: "effects",
           type: LightingEffects,
           display: "message.navigation.lightingEffects",

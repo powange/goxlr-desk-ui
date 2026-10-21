@@ -23,9 +23,14 @@ export default {
     ContentContainer,
   },
 
+  props: {
+    // Shows one fader's lighting only, without the fader choice
+    fixedChannel: {type: String, required: false, default: undefined},
+  },
+
   data() {
     return {
-      activeChannel: "A",
+      activeChannel: this.fixedChannel || "A",
       textValue: null,
     }
   },
@@ -321,8 +326,8 @@ export default {
 
 <template>
   <div style="display: flex">
-    <ContentContainer style="padding-top: 15px; padding-bottom: 20px">
-      <GroupContainer :title="$t('message.lighting.mixer.faders.title')">
+    <ContentContainer :class="{ wrapped: fixedChannel }" style="padding-top: 15px; padding-bottom: 20px">
+      <GroupContainer v-if="!fixedChannel" :title="$t('message.lighting.mixer.faders.title')">
         <RadioSelection :title="$t('message.lighting.mixer.faders.channelTitle')" group="lighting_mixer_channel_select"
                         :options="getButtonOptions()" :selected="selectedChannel()"
                         @selection-changed="onChannelSelectionChange"/>
@@ -391,6 +396,12 @@ export default {
 </template>
 
 <style scoped>
+/* In the Mixer's lighting dialog, the groups wrap instead of scrolling sideways */
+.wrapped.wrapped {
+  flex-wrap: wrap;
+  overflow-x: visible;
+}
+
 input[type=text] {
   font-family: var(--f-body);
   background-color: var(--c-raised-2);

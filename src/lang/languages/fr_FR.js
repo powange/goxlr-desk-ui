@@ -185,11 +185,14 @@ export default {
                 mute: "Couper",
                 muted: "Coupé",
                 muteFunction: "Coupe vers",
+                lighting: "Éclairage de {channel}",
+                lightingTitle: "Éclairage · {channel}",
             },
             mixAssignment: "Assignation de mixage",
 
             // Submix Checkbox
             submix: "Sous-mixages",
+            submixHint: "Un second mix (Mix B) pour chaque canal, faders compris, pour envoyer des niveaux différents vers certaines sorties.",
 
             // Mix Assignment
             channelA: "A",
@@ -519,6 +522,8 @@ export default {
                 },
 
                 applyToAll: "Appliquer à tout",
+                pickColour: "choisir une couleur",
+                brightness: "Luminosité",
             },
 
             global: {

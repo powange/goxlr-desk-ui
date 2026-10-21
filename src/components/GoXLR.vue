@@ -29,7 +29,7 @@
 
         <Tab id="mixer" icon="fa-solid fa-sliders" :name="$t('message.navigation.mixer')" selected>
           <ContentContainer>
-            <Mixer/>
+            <Mixer ref="mixer"/>
           </ContentContainer>
         </Tab>
         <Tab id="mic" icon="fa-solid fa-microphone-lines" :name="$t('message.navigation.microphone')">
@@ -392,6 +392,13 @@ export default {
     },
 
     onAreaClicked(area) {
+      const faderAreas = {[HighlightArea.CHANNEL_A]: "A", [HighlightArea.CHANNEL_B]: "B", [HighlightArea.CHANNEL_C]: "C", [HighlightArea.CHANNEL_D]: "D"};
+      if (area.alt && faderAreas[area.area] !== undefined) {
+        // Fader lighting lives in the Mixer now
+        this.$refs["device-tabs"].selectTabById("mixer");
+        this.$nextTick(() => this.$refs.mixer.openLighting(faderAreas[area.area]));
+        return;
+      }
       if (area.alt) {
         // All right click behaviour is handled by the Lighting Tab (saves sub-tab headaches)
         this.$refs["device-tabs"].selectTabById("lighting");

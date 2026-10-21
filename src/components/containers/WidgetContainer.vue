@@ -3,7 +3,8 @@ export default {
     name: "WidgetContainer",
     props: {
         title: String,
-        maxWidth: { type: String, default: "fit-content"}
+        maxWidth: { type: String, default: "fit-content"},
+        height: { type: String, default: "220px"}
     }
 }
 </script>
@@ -28,7 +29,7 @@ export default {
     flex-direction: column;
     align-items: center;
 
-    height: 220px;
+    height: v-bind(height);
     min-width: 200px;
     max-width: v-bind(maxWidth);
 

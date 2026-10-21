@@ -2,6 +2,11 @@
   <div class="strip" role="group" :aria-label="getFaderName()" :style="{ '--strip': getStripColour() }">
     <div class="strip-head">
       <span class="fader-name">{{ getFaderName() }}</span>
+      <button type="button" class="lighting" @click="$emit('lighting', fader)"
+              :title="$t('message.mixer.strip.lighting', { channel: getFaderName() })"
+              :aria-label="$t('message.mixer.strip.lighting', { channel: getFaderName() })">
+        <font-awesome-icon icon="fa-solid fa-lightbulb"/>
+      </button>
     </div>
 
     <label class="field">
@@ -43,6 +48,7 @@ import {websocket} from "@/util/sockets";
 export default {
   name: "FaderStrip",
   extends: Faders,
+  emits: ["lighting"],
 
   props: {
     fader: {type: String, required: true},
@@ -105,6 +111,25 @@ export default {
   letter-spacing: .04em;
   text-transform: uppercase;
   color: var(--c-text);
+}
+
+.lighting {
+  padding: 4px 6px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--c-muted);
+  cursor: pointer;
+}
+
+.lighting:hover {
+  border-color: var(--c-line);
+  color: var(--strip);
+}
+
+.lighting:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 1px;
 }
 
 .field {

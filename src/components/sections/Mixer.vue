@@ -1,8 +1,17 @@
 <template>
   <div class="mixer-page">
+    <!-- Options that apply to the whole mixer -->
+    <div v-if="isSubMixSupported()" class="options">
+      <label class="option">
+        <Toggle :model-value="submixEnabled()" @update:model-value="setSubmixEnabled" :label="$t('message.mixer.submix')"/>
+        <span>{{ $t('message.mixer.submix') }}</span>
+      </label>
+      <span class="option-hint">{{ $t('message.mixer.submixHint') }}</span>
+    </div>
+
     <!-- The four physical faders -->
     <div class="strips">
-      <FaderStrip v-for="fader in faders" :key="fader" :fader="fader">
+      <FaderStrip v-for="fader in faders" :key="fader" :fader="fader" @lighting="openLighting">
         <SubmixSlider v-if="submixEnabled() && inputMixer.includes(faderChannel(fader))" :id=channelNames.indexOf(faderChannel(fader))
                       :title="getChannelName(faderChannel(fader))" :slider-min-value=0 :slider-max-value=255
                       :text-min-value=0 :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')"
@@ -23,10 +32,6 @@
       <MixAssignment v-if="submixEnabled()"/>
 
       <GroupContainer v-if="!submixEnabled()" :title="$t('message.mixer.otherInputs')">
-        <template v-if="isSubMixSupported()" #right>
-          <label for="submix_enabled">{{ $t('message.mixer.submix' )}}</label>
-          <input id="submix_enabled" type="checkbox" :checked="submixEnabled()" @change="setSubmixEnabled"/>
-        </template>
         <Slider v-for="item in otherInputs()" :key=item :id=channelNames.indexOf(item) :title="getChannelName(item)"
                 :slider-min-value=0 :slider-max-value=255 :text-min-value=0 :text-max-value=100
                 :text-suffix="$t('message.suffixes.percentage')" :slider-value="getValue(item)"
@@ -34,10 +39,6 @@
         />
       </GroupContainer>
       <GroupContainer v-else :title="$t('message.mixer.otherInputs')">
-        <template v-if="isSubMixSupported()" #right>
-          <label for="submix_enabled">{{ $t('message.mixer.submix' )}}</label>
-          <input id="submix_enabled" type="checkbox" :checked="submixEnabled()" @change="setSubmixEnabled"/>
-        </template>
         <SubmixSlider v-for="item in otherInputs()" :key=item :id=channelNames.indexOf(item)
                       :title="getChannelName(item)" :slider-min-value=0 :slider-max-value=255 :text-min-value=0
                       :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')"
@@ -58,6 +59,11 @@
         />
       </GroupContainer>
     </CenteredContainer>
+
+    <AccessibleModal ref="lightingModal" id="faderLighting" width="min(760px, 94vw)" body-padding="0">
+      <template v-slot:title>{{ $t('message.mixer.strip.lightingTitle', { channel: lightingFader ? $t(`message.faders.${lightingFader}`) : '' }) }}</template>
+      <LightingMixer v-if="lightingFader" :key="lightingFader" :fixed-channel="lightingFader"/>
+    </AccessibleModal>
   </div>
 </template>
 
@@ -78,10 +84,13 @@ import SubmixSlider from "@/components/slider/SubmixSlider.vue";
 import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 import MixAssignment from "@/components/sections/mixer/MixAssignment.vue";
 import FaderStrip from "@/components/sections/mixer/FaderStrip.vue";
+import Toggle from "@/components/design/Toggle.vue";
+import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import LightingMixer from "@/components/sections/lighting/subTabs/LightingMixer.vue";
 
 export default {
   name: "MixerTop",
-  components: {FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
+  components: {LightingMixer, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
 
   data() {
     return {
@@ -92,6 +101,8 @@ export default {
       channelNames: ChannelName,
 
       faders: ["A", "B", "C", "D"],
+      // The fader whose lighting dialog is open
+      lightingFader: undefined,
       isVisible: false,
       updatesPaused: false,
       volumes: [],
@@ -221,9 +232,15 @@ export default {
       return store.getActiveDevice().levels.submix !== null;
     },
 
-    setSubmixEnabled(e) {
+    // Opens the lighting settings of one fader (its lights, screen and mute button)
+    openLighting(fader) {
+      this.lightingFader = fader;
+      this.$refs.lightingModal.openModal();
+    },
+
+    setSubmixEnabled(enabled) {
       let command = {
-        "SetSubMixEnabled": e.target.checked
+        "SetSubMixEnabled": enabled
       };
 
       websocket.send_command(store.getActiveSerial(), command);
@@ -258,6 +275,30 @@ label {
   flex-direction: column;
   gap: 20px;
   margin: 0 auto;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 14px;
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.option-hint {
+  color: var(--c-muted);
+  font-size: 12px;
 }
 
 .strips {

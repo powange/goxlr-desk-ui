@@ -203,11 +203,14 @@ export default {
                 mute: "Mute",
                 muted: "Muted",
                 muteFunction: "Mute to",
+                lighting: "{channel} lighting",
+                lightingTitle: "Lighting · {channel}",
             },
             mixAssignment: "Mix Assignment",
 
             // Submix Checkbox
             submix: "Submixes",
+            submixHint: "A second mix (Mix B) for every channel, faders included, to send different levels to some outputs.",
 
             // Mix Assignment
             channelA: "A",
@@ -543,6 +546,8 @@ export default {
                 },
 
                 applyToAll: "Apply to All",
+                pickColour: "pick a colour",
+                brightness: "Brightness",
             },
 
             global: {
