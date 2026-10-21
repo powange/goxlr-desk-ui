@@ -9,11 +9,14 @@
 
     <!-- Access from other devices on the network (Stream Deck on another PC, a phone..) -->
     <SettingsCard :title="$t('message.integrations.networkTitle')">
-      <BooleanSetting :label="$t('message.system.pages.integrations.allowNetwork')" :enabled="allowNetworkAccess()" restart
+      <!-- From another machine, network access is managed on the utility's computer only -->
+      <SettingRow v-if="remote" :label="$t('message.system.pages.integrations.allowNetwork')"
+                  :help="$t('message.system.pages.integrations.managedHere')"/>
+      <BooleanSetting v-else :label="$t('message.system.pages.integrations.allowNetwork')" :enabled="allowNetworkAccess()" restart
                       :help="$t('message.system.pages.integrations.allowNetworkHelp')"
                       @change="setAllowNetworkAccess"
                       :description="$t('message.system.settings.allowNetworkAccessAccessibility')"/>
-      <div v-if="allowNetworkAccess()" class="card-body">
+      <div v-if="allowNetworkAccess() && !remote" class="card-body">
         <NetworkAccessLinks :key="String(allowNetworkAccess())"/>
       </div>
     </SettingsCard>
@@ -88,7 +91,13 @@ export default {
   props: {inline: {type: Boolean, default: true}},
 
   data() {
-    return {copied: undefined, recorder: apiRecorder};
+    return {copied: undefined, recorder: apiRecorder, remote: false};
+  },
+
+  mounted() {
+    // The daemon only tells the computer it runs on about network access: a refusal means
+    // this page is open on another machine
+    websocket.get_network_access().catch(() => this.remote = true);
   },
 
   methods: {

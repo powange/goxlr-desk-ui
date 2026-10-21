@@ -889,6 +889,7 @@ export default {
                 },
                 integrations: {
                     allowNetwork: "Allow other devices",
+                    managedHere: "Managed on the computer the utility runs on: open this page there to turn it on or off, or change the link.",
                     allowNetworkHelp: "A tablet, a phone or another PC on your network.",
                     api: "The API"
                 },
@@ -928,6 +929,7 @@ export default {
                 copy: "Copy",
                 copied: "Copied",
                 regenerate: "New link (the previous links stop working)",
+                regenerateConfirm: "Click again: the current links will stop working",
             },
             title: "System",
             menu: {

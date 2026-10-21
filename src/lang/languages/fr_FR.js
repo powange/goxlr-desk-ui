@@ -909,6 +909,7 @@ export default {
                 },
                 integrations: {
                     allowNetwork: "Autoriser les autres appareils",
+                    managedHere: "Se gère depuis l'ordinateur où tourne l'utilitaire : ouvrez cette page là-bas pour activer, désactiver ou changer le lien.",
                     allowNetworkHelp: "Une tablette, un téléphone ou un autre PC de votre réseau.",
                     api: "L'API"
                 },
@@ -954,6 +955,7 @@ export default {
                 copy: "Copier",
                 copied: "Copié",
                 regenerate: "Nouveau lien (les liens précédents ne marchent plus)",
+                regenerateConfirm: "Cliquer encore : les liens actuels ne marcheront plus",
             },
             firmwareUpdate: {
                 newVersionAvailable: "Une version plus récente du firmware ({latestVersion}) est disponible pour votre appareil.\nVoulez-vous mettre à jour l'appareil maintenant ?",
