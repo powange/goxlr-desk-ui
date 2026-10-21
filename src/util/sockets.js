@@ -59,6 +59,8 @@ export class Websocket {
                 self.#fulfill_promise(message_id, message_data, true);
             } else if (message_data["SampleUsage"] !== undefined) {
                 self.#fulfill_promise(message_id, message_data, true);
+            } else if (message_data["NetworkAccess"] !== undefined) {
+                self.#fulfill_promise(message_id, message_data, true);
             } else if (message_data === "Ok") {
                 self.#fulfill_promise(message_id, message_data, true);
             } else {
@@ -127,6 +129,12 @@ export class Websocket {
     // samples folder. Resolves with { SampleUsage: { files, profiles } }.
     get_sample_usage(path) {
         return this.#sendRequest({"GetSampleUsage": path});
+    }
+
+    // The links other machines use to reach the interface (with the access token).
+    // Resolves with { NetworkAccess: { enabled, urls } }. Only answered on this computer.
+    get_network_access() {
+        return this.#sendRequest("GetNetworkAccess");
     }
 
     send_daemon_command(command) {

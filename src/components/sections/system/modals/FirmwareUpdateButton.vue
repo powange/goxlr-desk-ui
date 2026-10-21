@@ -21,8 +21,11 @@
         {{ $t('message.system.firmwareUpdate.betaWarning') }}
       </p>
 
-      <p v-if="customFirmware">
+      <p v-if="customFirmware && !inline">
         {{ $t('message.system.firmwareUpdate.customFirmware') }}
+      </p>
+      <p v-else-if="!isLatestFirmwareAvailable()">
+        {{ $t('message.system.firmwareUpdate.noInfo', { currentVersion: getCurrentFirmwareVersion() }) }}
       </p>
       <p v-else-if="compareCurrentFirmwareToLatest() < 0">
         {{ $t('message.system.firmwareUpdate.newVersionAvailable', { latestVersion: getLatestFirmwareInfo().version.join('.') }) }}
@@ -44,10 +47,31 @@
         </p>
       </p>
 
-      <div class="modalButtonBox">
+      <!-- As a page (System menu): explicit actions, each confirmed before flashing -->
+      <div v-if="inline" class="modalButtonBox">
+        <button v-if="isLatestFirmwareAvailable() && compareCurrentFirmwareToLatest() < 0" class="primary" @click="confirmFlash(false)">
+          {{ $t('message.system.firmwareUpdate.updateTo', { version: getLatestFirmwareInfo().version.join('.') }) }}
+        </button>
+        <button v-else-if="isLatestFirmwareAvailable()" @click="confirmFlash(false)">
+          {{ $t('message.system.firmwareUpdate.reinstall', { version: getLatestFirmwareInfo().version.join('.') }) }}
+        </button>
+        <button @click="confirmFlash(true)">{{ $t('message.system.firmwareUpdate.customButton') }}</button>
+      </div>
+      <div v-else class="modalButtonBox">
         <button @click="startFirmwareUpdate">{{$t('message.modalButtons.continue')}}</button>
         <button class="cancel" @click="$refs.firmware_update_modal.closeModal()">{{$t('message.modalButtons.cancel')}}</button>
       </div>
+    </AccessibleModal>
+
+    <AccessibleModal v-if="inline" ref="flashConfirm" id="firmware_flash_confirm" :show_close="false">
+      <template v-slot:title>{{ $t('message.system.firmwareUpdate.confirmTitle') }}</template>
+      <template v-slot:default>
+        <p>{{ customFirmware ? $t('message.system.firmwareUpdate.confirmCustom') : $t('message.system.firmwareUpdate.confirmText') }}</p>
+      </template>
+      <template v-slot:footer>
+        <ModalButton ref="flashOk" @click="$refs.flashConfirm.closeModal(); startFirmwareUpdate()">{{ $t('message.modalButtons.continue') }}</ModalButton>
+        <ModalButton @click="$refs.flashConfirm.closeModal()">{{ $t('message.modalButtons.cancel') }}</ModalButton>
+      </template>
     </AccessibleModal>
   </div>
 </template>
@@ -58,6 +82,7 @@ import {isDeviceMini, versionNewerOrEqualTo} from "@/util/util";
 import {uploadFirmwareBlob, websocket} from "@/util/sockets";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
+import ModalButton from "@/components/design/modal/ModalButton.vue";
 
 export default {
   props: {
@@ -65,7 +90,7 @@ export default {
     inline: {type: Boolean, default: false},
   },
   name: "FirmwareUpdateButton",
-  components: {BigButton, AccessibleModal},
+  components: {ModalButton, BigButton, AccessibleModal},
 
   data() {
     return {
@@ -200,6 +225,12 @@ export default {
       return store.getActiveDevice().hardware.versions.firmware.join('.');
     },
 
+    // Asks before flashing: the latest firmware, or a file chosen next (custom)
+    confirmFlash(custom) {
+      this.customFirmware = custom;
+      this.$refs.flashConfirm.openModal(this.$refs.flashOk);
+    },
+
     startFirmwareUpdate() {
       if (store.getConfig() === undefined || store.getActiveDevice() === undefined)
         return false;
@@ -247,6 +278,12 @@ export default {
   flex-direction: row;
   justify-content: right;
   gap: 5px;
+
+  button.primary {
+    background-color: var(--c-accent);
+    border-color: var(--c-accent);
+    color: var(--c-on-accent);
+  }
 
   button {
     padding: 5px;

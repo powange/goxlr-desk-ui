@@ -39,6 +39,7 @@
         <BooleanSetting :label="$t('message.system.settings.allowNetworkAccess')" :enabled="get_allow_network_access()"
                         @change="set_allow_network_access"
                         :description="$t('message.system.settings.allowNetworkAccessAccessibility')"/>
+        <NetworkAccessLinks v-if="get_allow_network_access()" :key="String(get_allow_network_access())"/>
 
         <BooleanSetting :label="$t('message.system.settings.autoStart')" :enabled="isAutostart()"
                         @change="setAutoStart" :description="$t('message.system.settings.autoStartAccessibility')"/>
@@ -102,6 +103,7 @@
 
 <script>
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
@@ -124,7 +126,7 @@ export default {
       return store
     }
   },
-  components: {ModalButton, ListSetting, BooleanSetting, BigButton, AccessibleModal},
+  components: {NetworkAccessLinks, ModalButton, ListSetting, BooleanSetting, BigButton, AccessibleModal},
 
   data() {
     return {

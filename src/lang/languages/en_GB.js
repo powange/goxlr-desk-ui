@@ -758,6 +758,15 @@ export default {
         },
 
         system: {
+            networkAccess: {
+                title: "Network access",
+                explain: "On another device of your network (tablet, phone, computer), open one of these links once. It remembers the access afterwards.",
+                restart: "Restart the GoXLR Utility to reach it from your network. The links will then show here.",
+                noAddress: "No network address was found for this computer.",
+                copy: "Copy",
+                copied: "Copied",
+                regenerate: "New link (the previous links stop working)",
+            },
             title: "System",
             menu: {
                 firmware: "Firmware update",
@@ -895,6 +904,13 @@ export default {
                 custom: "Custom Firmware",
             },
             firmwareUpdate: {
+                noInfo: "The update servers didn't answer, so the latest version isn't known. This GoXLR runs {currentVersion}.",
+                updateTo: "Update to {version}",
+                reinstall: "Reinstall {version}",
+                customButton: "Custom firmware…",
+                confirmTitle: "Flash the firmware?",
+                confirmText: "The GoXLR restarts during the update. Don't unplug it or close the utility until it's done.",
+                confirmCustom: "You'll pick a firmware file (.bin) next. Only use a file you trust: a wrong file can leave the GoXLR unusable. Don't unplug it during the update.",
                 newVersionAvailable: "A newer firmware version ({latestVersion}) is available for your device.\nDo you want to update device now?",
                 currentVersionIsNewer: "Your current firmware version ({currentVersion}) is newer than the latest available firmware version ({latestVersion}) for your device.\nDo you want to downgrade to the latest firmware version?",
                 currentIsUpToDate: "Your firmware is already up to date.\nDo you want to reinstall the current firmware version?",

@@ -733,6 +733,24 @@ export default {
         },
 
         system: {
+            networkAccess: {
+                title: "Accès depuis le réseau",
+                explain: "Sur un autre appareil de votre réseau (tablette, téléphone, ordinateur), ouvrez une fois l'un de ces liens. L'accès est ensuite mémorisé.",
+                restart: "Redémarrez GoXLR Utility pour y accéder depuis votre réseau. Les liens s'afficheront alors ici.",
+                noAddress: "Aucune adresse réseau n'a été trouvée pour cet ordinateur.",
+                copy: "Copier",
+                copied: "Copié",
+                regenerate: "Nouveau lien (les liens précédents ne marchent plus)",
+            },
+            firmwareUpdate: {
+                noInfo: "Les serveurs de mise à jour n'ont pas répondu : la dernière version n'est pas connue. Cette GoXLR est en {currentVersion}.",
+                updateTo: "Mettre à jour vers {version}",
+                reinstall: "Réinstaller {version}",
+                customButton: "Firmware personnalisé…",
+                confirmTitle: "Flasher le firmware ?",
+                confirmText: "La GoXLR redémarre pendant la mise à jour. Ne la débranchez pas et ne fermez pas l'utilitaire avant la fin.",
+                confirmCustom: "Vous allez choisir un fichier de firmware (.bin). N'utilisez qu'un fichier de confiance : un mauvais fichier peut rendre la GoXLR inutilisable. Ne la débranchez pas pendant la mise à jour.",
+            },
             title: "Système",
             menu: {
                 firmware: "Mise à jour du firmware",
