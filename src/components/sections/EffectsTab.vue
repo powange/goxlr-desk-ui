@@ -1,6 +1,6 @@
 <template>
-  <div style="display: flex">
-    <div style="padding: 40px 20px 40px 40px;">
+  <div class="effects-page">
+    <div>
       <GroupContainer :title="$t('message.effects.preset.title')">
         <RadioSelection
             :title="$t('message.effects.preset.group')"
@@ -16,15 +16,13 @@
         />
       </GroupContainer>
     </div>
-    <ContentContainer :no-left-pad="true">
-      <ReverbEffect/>
-      <EchoEffect/>
-      <PitchEffect/>
-      <GenderEffect/>
-      <MegaphoneEffect/>
-      <RobotEffect/>
-      <HardTuneEffect/>
-    </ContentContainer>
+    <ReverbEffect/>
+    <EchoEffect/>
+    <PitchEffect/>
+    <GenderEffect/>
+    <MegaphoneEffect/>
+    <RobotEffect/>
+    <HardTuneEffect/>
   </div>
 
   <!-- Modals -->
@@ -112,7 +110,6 @@ import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import ModalInput from "@/components/design/modal/ModalInput.vue";
-import ContentContainer from "@/components/containers/ContentContainer.vue";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import GroupContainer from "@/components/containers/GroupContainer.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
@@ -127,7 +124,6 @@ export default {
     AccessibleModal,
     GroupContainer,
     RadioSelection,
-    ContentContainer,
     ModalInput,
     ModalButton,
     HardTuneEffect,
@@ -322,6 +318,15 @@ export default {
 </script>
 
 <style scoped>
+/* The cards wrap onto several rows instead of one long scrolling row */
+.effects-page {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 24px 40px 40px;
+}
+
 button {
   background-color: transparent;
   color: var(--c-text);
