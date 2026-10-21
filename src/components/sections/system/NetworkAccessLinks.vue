@@ -94,10 +94,7 @@ export default {
 
 .network-access {
   display: grid;
-  gap: 8px;
-  padding: 10px 12px;
-  border-left: 3px solid var(--c-accent);
-  background-color: var(--c-raised);
+  gap: 10px;
   color: var(--c-text);
 }
 

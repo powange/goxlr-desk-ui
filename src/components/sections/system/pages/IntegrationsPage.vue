@@ -1,78 +1,73 @@
 <template>
   <!-- How other software (Stream Deck, OBS, scripts) drives the utility: the HTTP API, with
        examples ready to copy for this device -->
-  <section class="integrations">
-    <h2 class="title">{{ $t('message.integrations.title') }}</h2>
-    <p class="intro">{{ $t('message.integrations.intro') }}</p>
+  <section class="integrations settings-page" aria-labelledby="integrations-title">
+    <div>
+      <h2 id="integrations-title" class="title">{{ $t('message.integrations.title') }}</h2>
+      <p class="page-intro">{{ $t('message.integrations.intro') }}</p>
+    </div>
 
     <!-- Access from other devices on the network (Stream Deck on another PC, a phone..) -->
-    <h3>{{ $t('message.integrations.networkTitle') }}</h3>
-    <div class="network">
-      <BooleanSetting :label="$t('message.system.settings.allowNetworkAccess')" :enabled="allowNetworkAccess()"
+    <SettingsCard :title="$t('message.integrations.networkTitle')">
+      <BooleanSetting :label="$t('message.system.pages.integrations.allowNetwork')" :enabled="allowNetworkAccess()" restart
+                      :help="$t('message.system.pages.integrations.allowNetworkHelp')"
                       @change="setAllowNetworkAccess"
                       :description="$t('message.system.settings.allowNetworkAccessAccessibility')"/>
-      <NetworkAccessLinks v-if="allowNetworkAccess()" :key="String(allowNetworkAccess())"/>
-    </div>
-
-    <dl class="endpoints">
-      <dt>{{ $t('message.integrations.commandUrl') }}</dt>
-      <dd><code>POST {{ baseUrl() }}api/command</code></dd>
-      <dt>{{ $t('message.integrations.statusUrl') }}</dt>
-      <dd><code>GET {{ baseUrl() }}api/get-devices</code></dd>
-      <dt>{{ $t('message.integrations.websocketUrl') }}</dt>
-      <dd><code>{{ websocketUrl() }}</code></dd>
-    </dl>
-    <p class="note">{{ $t('message.integrations.format') }}</p>
-
-    <h3>{{ $t('message.integrations.examples') }}</h3>
-    <div v-for="example in examples()" :key="example.label" class="example">
-      <div class="example-head">
-        <span>{{ example.label }}</span>
-        <AppButton variant="link" @click="copy(example.curl)">
-          {{ copied === example.curl ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyCurl') }}
-        </AppButton>
-        <AppButton variant="link" @click="copy(example.json)">
-          {{ copied === example.json ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyJson') }}
-        </AppButton>
+      <div v-if="allowNetworkAccess()" class="card-body">
+        <NetworkAccessLinks :key="String(allowNetworkAccess())"/>
       </div>
-      <pre><code>{{ example.curl }}</code></pre>
-    </div>
-    <p class="note">{{ $t('message.integrations.more') }}</p>
+    </SettingsCard>
+
+    <SettingsCard :title="$t('message.system.pages.integrations.api')">
+      <dl class="endpoints">
+        <div><dt>{{ $t('message.integrations.commandUrl') }}</dt><dd><code><span class="method">POST</span>{{ baseUrl() }}api/command</code></dd></div>
+        <div><dt>{{ $t('message.integrations.statusUrl') }}</dt><dd><code><span class="method">GET</span>{{ baseUrl() }}api/get-devices</code></dd></div>
+        <div><dt>{{ $t('message.integrations.websocketUrl') }}</dt><dd><code><span class="method">WS</span>{{ websocketUrl() }}</code></dd></div>
+        <div><dt>{{ $t('message.integrations.schemaUrl') }}</dt><dd><a :href="baseUrl() + 'api/schema'" target="_blank" rel="noopener"><code><span class="method">GET</span>{{ baseUrl() }}api/schema</code></a></dd></div>
+      </dl>
+      <p class="card-note">{{ $t('message.integrations.format') }} {{ $t('message.integrations.schemaIntro') }}</p>
+    </SettingsCard>
+
+    <SettingsCard :title="$t('message.integrations.examples')">
+      <div v-for="example in examples()" :key="example.label" class="example">
+        <div class="example-head">
+          <span>{{ example.label }}</span>
+          <AppButton variant="link" @click="copy(example.curl)">
+            {{ copied === example.curl ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyCurl') }}
+          </AppButton>
+          <AppButton variant="link" @click="copy(example.json)">
+            {{ copied === example.json ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyJson') }}
+          </AppButton>
+        </div>
+        <pre><code>{{ example.json }}</code></pre>
+      </div>
+      <p class="card-note">{{ $t('message.integrations.more') }}</p>
+    </SettingsCard>
 
     <!-- Any control as an API command: record, move it, copy -->
-    <h3>{{ $t('message.integrations.recordTitle') }}</h3>
-    <p class="note">{{ $t('message.integrations.recordIntro') }}</p>
-    <div class="record">
-      <span class="record-toggle">
+    <SettingsCard :title="$t('message.integrations.recordTitle')">
+      <SettingRow :label="$t('message.integrations.record')" :help="$t('message.integrations.recordIntro')">
+        <AppButton v-if="recorder.commands.length" variant="link" @click="clearCommands()">
+          {{ $t('message.integrations.clear') }}
+        </AppButton>
         <Toggle v-model="recorder.enabled" :label="$t('message.integrations.record')"/>
-        <span @click="recorder.enabled = !recorder.enabled">{{ $t('message.integrations.record') }}</span>
-      </span>
-      <AppButton v-if="recorder.commands.length" variant="link" @click="clearCommands()">
-        {{ $t('message.integrations.clear') }}
-      </AppButton>
-    </div>
-    <p v-if="recorder.enabled && !recorder.commands.length" class="note" aria-live="polite">
-      {{ $t('message.integrations.recordEmpty') }}
-    </p>
-    <div v-for="(entry, index) in recorder.commands" :key="index + entry.json" class="example">
-      <div class="example-head">
-        <span>{{ entry.name }}</span>
-        <AppButton variant="link" @click="copy(curl(entry.json))">
-          {{ copied === curl(entry.json) ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyCurl') }}
-        </AppButton>
-        <AppButton variant="link" @click="copy(entry.json)">
-          {{ copied === entry.json ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyJson') }}
-        </AppButton>
+      </SettingRow>
+      <p v-if="recorder.enabled && !recorder.commands.length" class="card-note" aria-live="polite">
+        {{ $t('message.integrations.recordEmpty') }}
+      </p>
+      <div v-for="(entry, index) in recorder.commands" :key="index + entry.json" class="example">
+        <div class="example-head">
+          <span>{{ entry.name }}</span>
+          <AppButton variant="link" @click="copy(curl(entry.json))">
+            {{ copied === curl(entry.json) ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyCurl') }}
+          </AppButton>
+          <AppButton variant="link" @click="copy(entry.json)">
+            {{ copied === entry.json ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyJson') }}
+          </AppButton>
+        </div>
+        <pre><code>{{ entry.json }}</code></pre>
       </div>
-      <pre><code>{{ entry.json }}</code></pre>
-    </div>
-
-    <h3>{{ $t('message.integrations.schemaTitle') }}</h3>
-    <p class="note">{{ $t('message.integrations.schemaIntro') }}</p>
-    <dl class="endpoints">
-      <dt>{{ $t('message.integrations.schemaUrl') }}</dt>
-      <dd><a :href="baseUrl() + 'api/schema'" target="_blank" rel="noopener"><code>GET {{ baseUrl() }}api/schema</code></a></dd>
-    </dl>
+    </SettingsCard>
   </section>
 </template>
 
@@ -81,13 +76,15 @@ import AppButton from "@/components/design/AppButton.vue";
 import Toggle from "@/components/design/Toggle.vue";
 import BooleanSetting from "@/components/sections/system/modals/settings/BooleanSetting.vue";
 import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
+import SettingsCard from "@/components/sections/system/settings/SettingsCard.vue";
+import SettingRow from "@/components/sections/system/settings/SettingRow.vue";
 import {store} from "@/store";
 import {apiRecorder, clearApiCommands} from "@/util/apiRecorder";
 import {websocket} from "@/util/sockets";
 
 export default {
   name: "IntegrationsPage",
-  components: {AppButton, Toggle, BooleanSetting, NetworkAccessLinks},
+  components: {AppButton, Toggle, BooleanSetting, NetworkAccessLinks, SettingsCard, SettingRow},
   props: {inline: {type: Boolean, default: true}},
 
   data() {
@@ -154,15 +151,12 @@ export default {
 
 <style scoped>
 .integrations {
-  display: grid;
-  gap: 12px;
-  padding: 4px 0;
   color: var(--c-text);
   user-select: text;
 }
 
 .title {
-  margin: 0;
+  margin: 0 0 6px;
   font-family: var(--f-title);
   font-weight: normal;
   letter-spacing: .1em;
@@ -170,45 +164,63 @@ export default {
   font-size: 18px;
 }
 
-h3 {
-  margin: 8px 0 0;
-  font-size: 14px;
+.card-body {
+  padding: 4px 20px 16px;
 }
 
-.intro, .note {
+.card-note {
   margin: 0;
-  color: var(--c-text-soft);
-  font-size: 13px;
-  max-width: 70ch;
-}
-
-.endpoints {
-  display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
-  gap: 6px 14px;
-  margin: 0;
-  font-size: 13px;
-}
-
-.endpoints dt {
+  padding: 12px 20px 16px;
   color: var(--c-muted);
-}
-
-.endpoints dd {
-  margin: 0;
-  overflow-wrap: anywhere;
+  font-size: 12.5px;
 }
 
 code {
   font-family: var(--f-mono);
-  font-size: 12px;
+  font-size: 12.5px;
+}
+
+.endpoints {
+  margin: 0;
+}
+
+.endpoints div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  padding: 11px 20px;
+  border-top: 1px solid var(--c-line);
+}
+
+.endpoints div:first-child {
+  border-top: none;
+}
+
+.endpoints dt {
+  width: 200px;
+  flex: none;
+  color: var(--c-muted);
+}
+
+.endpoints dd {
+  flex: 1 1 260px;
+  margin: 0;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.endpoints a {
+  color: var(--c-text);
+}
+
+.method {
+  display: inline-block;
+  width: 44px;
+  color: var(--c-accent);
 }
 
 .example {
-  border: 1px solid var(--c-line);
-  border-radius: 8px;
-  background-color: var(--c-raised);
-  padding: 8px 12px;
+  padding: 12px 20px;
 }
 
 .example-head {
@@ -217,40 +229,19 @@ code {
   align-items: center;
   gap: 4px 12px;
   font-size: 13px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .example-head > span {
   flex: 1;
 }
 
-.network {
-  display: grid;
-  gap: 8px;
-  max-width: 70ch;
-}
-
-.record {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 16px;
-  font-size: 13px;
-}
-
-.record-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-}
-
-a {
-  color: inherit;
-}
-
 pre {
-  margin: 6px 0 0;
+  margin: 8px 0 0;
+  padding: 10px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-bg);
   white-space: pre-wrap;
   overflow-wrap: anywhere;
   color: var(--c-text-soft);

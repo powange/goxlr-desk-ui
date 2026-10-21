@@ -6,9 +6,12 @@
     </BigButton>
     <AccessibleModal :inline="inline" ref="shutdownModal" width="630px" id="shutdown_modal" :show_footer=false>
       <template v-slot:title>{{ $t('message.system.powerButton') }}</template>
-      <PowerShutdown :title="$t('message.system.power.shutdownTitle')" :is_sleep="false" />
-      <PowerShutdown :title="$t('message.system.power.sleepTitle')" :is_sleep="true" />
-      <PowerWake/>
+      <div class="settings-page">
+        <p class="page-intro">{{ $t('message.system.pages.power.intro') }}</p>
+        <PowerShutdown :title="$t('message.system.power.shutdownTitle')" :is_sleep="false" />
+        <PowerShutdown :title="$t('message.system.power.sleepTitle')" :is_sleep="true" />
+        <PowerWake/>
+      </div>
     </AccessibleModal>
   </div>
 </template>

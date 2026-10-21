@@ -17,36 +17,49 @@
     >
       <template v-slot:title>{{ $t('message.system.deviceButton') }}</template>
 
-      <div class="settingList" role="region" :aria-label="$t('message.system.deviceButton')">
-        <ListSetting v-if="isDeviceMini() || (!isDeviceMini() && firmwareSupportsMix2())" :value="getVodMode()" :options="getVodModeKeys()"
-                     :description="`Sets ${getKeyForMix2()} behaviour`"
-                     :label="`${getKeyForMix2()} Behaviour`" @change="setVodMode"/>
+      <div class="settings-page" role="region" :aria-label="$t('message.system.deviceButton')">
+        <p class="page-intro">{{ $t('message.system.pages.device.intro', {serial: getSerial()}) }}</p>
 
-        <NumberSetting :value="getHold()" :min="0" :max="5000" suffix="ms" @change="updateHold"
-                       :label="$t('message.system.device.holdDuration')"
-                       :description="$t('message.system.device.holdDurationAccessibility')"/>
+        <SettingsCard :title="$t('message.system.pages.device.mute')">
+          <NumberSetting :value="getHold()" :min="0" :max="5000" suffix="ms" @change="updateHold"
+                         :label="$t('message.system.pages.device.hold')" :help="$t('message.system.pages.device.holdHelp')"
+                         :description="$t('message.system.device.holdDurationAccessibility')"/>
+          <BooleanSetting :label="$t('message.system.pages.device.voiceDeafen')" :enabled="get_vcmaammtcm()"
+                          :help="$t('message.system.pages.device.voiceDeafenHelp')"
+                          @change="set_vcmaammtcm" :description="$t('message.system.device.voiceDeafenAccessibility')"/>
+          <BooleanSetting v-if="!isDeviceMini()" :label="$t('message.system.pages.device.lockFaders')"
+                          :help="$t('message.system.pages.device.lockFadersHelp')"
+                          :enabled="get_locked_faders()" @change="set_locked_faders"
+                          :description="$t('message.system.device.lockFadersAccessibility')"/>
+        </SettingsCard>
 
-        <NumberSetting v-if="!isDeviceMini()" :value="getSamplerPreRecord()" :min="0" :max="30" suffix="s"
-                       @change="updateSamplerPreRecord" :label="$t('message.system.device.sampleBuffer')"
-                       :description="$t('message.system.device.sampleBufferAccessibility')"/>
+        <SettingsCard v-if="!isDeviceMini()" :title="$t('message.system.pages.device.mic')">
+          <BooleanSetting :label="$t('message.system.pages.device.monitorWithFx')"
+                          :help="$t('message.system.pages.device.monitorWithFxHelp')"
+                          :enabled="get_mic_monitor_with_fx()" @change="set_mic_monitor_with_fx"
+                          :description="$t('message.system.device.monitorWithFxAccessibility')"/>
+        </SettingsCard>
 
-        <NumberSetting v-if="!isDeviceMini()" :value="getSamplerFadeDuration()" :min="0" :max="20000" suffix="ms"
-                       @change="updateSamplerFadeDuration" :label="$t('message.system.device.samplerFadeDuration')"
-                       :description="$t('message.system.device.samplerFadeDurationAccessibility')"/>
+        <SettingsCard v-if="!isDeviceMini()" :title="$t('message.system.pages.device.sampler')">
+          <NumberSetting :value="getSamplerPreRecord()" :min="0" :max="30" suffix="s"
+                         @change="updateSamplerPreRecord" :label="$t('message.system.pages.device.preRecord')"
+                         :help="$t('message.system.pages.device.preRecordHelp')"
+                         :description="$t('message.system.device.sampleBufferAccessibility')"/>
+          <NumberSetting :value="getSamplerFadeDuration()" :min="0" :max="20000" suffix="ms"
+                         @change="updateSamplerFadeDuration" :label="$t('message.system.pages.device.fade')"
+                         :help="$t('message.system.pages.device.fadeHelp')"
+                         :description="$t('message.system.device.samplerFadeDurationAccessibility')"/>
+          <BooleanSetting :label="$t('message.system.pages.device.resetOnClear')"
+                          :help="$t('message.system.pages.device.resetOnClearHelp')"
+                          :enabled="get_reset_sample_function()" @change="set_reset_sample_function"
+                          :description="$t('message.system.device.resetSampleFunctionOnClearAccessibility')"/>
+        </SettingsCard>
 
-        <BooleanSetting :label="$t('message.system.device.voiceDeafen')" :enabled="get_vcmaammtcm()"
-                        @change="set_vcmaammtcm" :description="$t('message.system.device.voiceDeafenAccessibility')"/>
-
-        <BooleanSetting v-if="!isDeviceMini()" :label="$t('message.system.device.monitorWithFx')"
-                        :enabled="get_mic_monitor_with_fx()" @change="set_mic_monitor_with_fx"
-                        :description="$t('message.system.device.monitorWithFxAccessibility')"/>
-        <BooleanSetting v-if="!isDeviceMini()" :label="$t('message.system.device.resetSampleFunctionOnClear')"
-                        :enabled="get_reset_sample_function()" @change="set_reset_sample_function"
-                        :description="$t('message.system.device.resetSampleFunctionOnClearAccessibility')"/>
-        <BooleanSetting v-if="!isDeviceMini()" :label="$t('message.system.device.lockFaders')"
-                        :enabled="get_locked_faders()" @change="set_locked_faders"
-                        :description="$t('message.system.device.lockFadersAccessibility')"/>
-
+        <SettingsCard v-if="isDeviceMini() || (!isDeviceMini() && firmwareSupportsMix2())" :title="getKeyForMix2()">
+          <ListSetting :value="getVodMode()" :options="getVodModeKeys()"
+                       :description="`Sets ${getKeyForMix2()} behaviour`"
+                       :label="`${getKeyForMix2()} Behaviour`" @change="setVodMode"/>
+        </SettingsCard>
       </div>
 
     </AccessibleModal>
@@ -56,6 +69,7 @@
 
 <script>
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import SettingsCard from "@/components/sections/system/settings/SettingsCard.vue";
 import SimpleNumberInput from "@/components/design/SimpleNumberInput.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
@@ -82,6 +96,7 @@ export default {
   },
   name: "DeviceSettingsButton",
   components: {
+    SettingsCard,
     ListSetting,
     NumberSetting,
     BooleanSetting,
@@ -94,6 +109,9 @@ export default {
   methods: {
     firmwareSupportsMix2,
     isDeviceMini,
+    getSerial() {
+      return store.getActiveSerial();
+    },
     getHold() {
       return store.getActiveDevice().settings.mute_hold_duration;
     },
@@ -218,12 +236,4 @@ export default {
 </script>
 
 <style scoped>
-.settingList > :nth-child(odd) {
-  background-color: var(--c-raised);
-}
-
-.settingList > :nth-child(even) {
-  background-color: var(--c-bg);
-}
-
 </style>

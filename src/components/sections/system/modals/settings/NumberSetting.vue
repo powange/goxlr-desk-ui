@@ -1,5 +1,8 @@
 <script>
+import SettingRow from "@/components/sections/system/settings/SettingRow.vue";
+
 export default {
+  components: {SettingRow},
   emits: ['change'],
 
   name: "NumberSetting",
@@ -9,6 +12,7 @@ export default {
     value: {type: Number, required: true},
 
     suffix: {type: String, required: false, default: ""},
+    help: {type: String, default: ""},
 
     min: {type: Number, required: true},
     max: {type: Number, required: true}
@@ -64,74 +68,29 @@ export default {
 </script>
 
 <template>
-  <div class="setting">
-    <label :for="getElementId()" class="label">{{ label }}</label>
-    <div class="input">
-      <input :id="getElementId()" type="number" :value="value" :aria-label="label" :aria-description="description"
-             @blur="onChange" @keydown="validate"/>
-      <span>{{ suffix }}</span>
-    </div>
-  </div>
+  <SettingRow :label="label" :help="help" :for-id="getElementId()">
+    <input :id="getElementId()" class="setting-field" type="number" :value="value" :min="min" :max="max"
+           :aria-description="description" @blur="onChange" @keydown="validate"/>
+    <span class="unit">{{ suffix }}</span>
+  </SettingRow>
 </template>
 
 <style scoped>
-.setting {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  min-height: 20px;
-  padding: 10px;
-  color: var(--c-text-soft);
-}
-
-.setting:focus-within {
+.setting-field {
+  width: 90px;
+  padding: 7px 10px;
+  border: 1px solid var(--c-field-border);
+  border-radius: 6px;
+  background-color: var(--c-bg);
   color: var(--c-text);
-}
-
-.label {
-  margin: auto;
-  width: 100%;
-}
-
-.input {
-  white-space: nowrap;
-  margin: auto;
-
-  border: 1px solid var(--c-line-strong);
-  padding: 2px;
-  width: 70px;
-
-  text-align: right;
-}
-
-.input:hover {
-  color: var(--c-text);
-  border-color: var(--c-text);
-}
-
-.input input {
-  margin: auto;
-  text-align: right;
-  outline: none;
-  background-color: transparent;
   font-family: var(--f-body);
-  color: var(--c-text-soft);
-  border: 0;
-  -moz-appearance: textfield;
-  width: 40px;
+  font-size: 13px;
+  text-align: right;
 }
 
-.input input:focus {
-  color: var(--c-text);
-}
-
-.input:focus-within {
-  border: 1px solid var(--c-text);
-  color: var(--c-text);
-}
-
-.input input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+.unit {
+  min-width: 24px;
+  color: var(--c-muted);
+  font-size: 12.5px;
 }
 </style>

@@ -57,67 +57,54 @@ export default {
 </script>
 
 <template>
-  <div class="setting">
-    <div class="input">
-      <Toggle :model-value="checked" @update:model-value="onCheckChange" :label="label" :aria-description="description"/>
-    </div>
-    <div class="label" @click="onCheckChange">{{ label }}</div>
-
-    <div class="input">
-      <select ref="selection" @change="onSelectChange">
-        <option v-for="option of options" :key="option.key" :value="option.key" :selected="option.key === selected">
+  <div class="power-row" :class="{ off: !checked }">
+    <Toggle :model-value="checked" @update:model-value="onCheckChange" :label="label" :aria-description="description"/>
+    <span class="power-label" aria-hidden="true" @click="onCheckChange">{{ label }}</span>
+    <select ref="selection" class="power-select" :disabled="!checked" :aria-label="label" @change="onSelectChange">
+      <option v-for="option of options" :key="option.key" :value="option.key" :selected="option.key === selected">
           {{ option.value }}
         </option>
-      </select>
-    </div>
+    </select>
   </div>
 </template>
 
 <style scoped>
-.setting {
-  cursor: pointer;
+.power-row {
   display: flex;
-  gap: 5px;
-  height: 18px;
-  padding: 5px;
-  color: var(--c-text-soft);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 20px;
 }
 
-.setting:focus-within {
+.power-label {
+  flex: 1 1 200px;
   color: var(--c-text);
-}
-
-.setting:hover {
   cursor: pointer;
+}
+
+.power-row.off .power-label {
+  color: var(--c-muted);
+}
+
+.power-select {
+  width: 220px;
+  padding: 6px 10px;
+  border: 1px solid var(--c-field-border);
+  border-radius: 6px;
+  background-color: var(--c-bg);
   color: var(--c-text);
-}
-
-.label {
-  margin: auto;
-  width: 100%;
-}
-
-.input {
-  max-width: fit-content;
-  font-size: 16px;
-  margin: auto;
-}
-
-.input select {
-  text-align: right;
-  border: 0;
-  background-color: transparent;
   font-family: var(--f-body);
-  color: var(--c-text-soft);
-}
-
-.input select:hover {
-  color: var(--c-text);
+  font-size: 13px;
   cursor: pointer;
 }
 
-.input select option {
+.power-select:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+.power-select option {
   background-color: var(--c-panel);
-  text-align: left;
 }
 </style>

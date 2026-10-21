@@ -841,6 +841,90 @@ export default {
         },
 
         system: {
+            // The System pages: intros, card titles, and the help under each setting
+            pages: {
+                settings: {
+                    intro: "Comment l'utilitaire démarre, s'affiche et se met à jour. Ces réglages valent pour tous les appareils.",
+                    startup: "Démarrage et affichage",
+                    accessibility: "Accessibilité",
+                    updates: "Mises à jour et diagnostic",
+                    reset: "Réinitialisation",
+                    autoStartHelp: "L'utilitaire se lance à l'ouverture de session.",
+                    showOnLaunchHelp: "Sinon, l'utilitaire démarre discrètement dans la barre d'état.",
+                    showTray: "Icône dans la barre d'état",
+                    showTrayHelp: "Accès rapide aux profils, à la sourdine du micro et à l'interface.",
+                    uiHandlerHelp: "L'application de bureau, ou le navigateur par défaut.",
+                    ttsHelp: "Une voix lit l'action quand on appuie sur un bouton de la GoXLR.",
+                    firmwareSourceHelp: "Stable pour tout le monde, Bêta pour essayer les nouveautés.",
+                    logLevel: "Niveau des journaux",
+                    logLevelHelp: "Plus détaillé aide à diagnostiquer un problème.",
+                    openLogs: "Ouvrir les journaux",
+                    downloadHelp: "Réglages, profils, profils micro, préréglages et icônes, dans un .zip.",
+                    downloadButton: "Télécharger",
+                    restoreHelp: "Les fichiers remplacés sont d'abord mis de côté ; les dossiers et l'accès réseau de cet ordinateur sont conservés.",
+                    restoreButton: "Choisir un .zip…",
+                    history: "Historique des profils",
+                    historyHelp: "Chaque profil enregistré garde ses 20 dernières versions dans le dossier des sauvegardes.",
+                    recoverHelp: "Remet ceux fournis avec l'utilitaire qui manquent. Vos fichiers ne sont pas modifiés.",
+                    shutdownHelp: "La GoXLR garde son état actuel jusqu'au prochain démarrage."
+                },
+                device: {
+                    intro: "Comment cette GoXLR réagit aux boutons et au sampler. Enregistré pour cet appareil ({serial}).",
+                    mute: "Sourdine",
+                    mic: "Micro",
+                    sampler: "Sampler",
+                    hold: "Maintien pour tout couper",
+                    holdHelp: "Garder un bouton de sourdine appuyé aussi longtemps coupe le canal partout.",
+                    voiceDeafen: "Couper le chat vocal coupe aussi le micro vers le chat",
+                    voiceDeafenHelp: "Pour ne pas être entendu pendant qu'on n'écoute pas.",
+                    lockFaders: "Bloquer les faders pendant une sourdine générale",
+                    lockFadersHelp: "Les faders motorisés ne bougent plus tant que tout est coupé.",
+                    monitorWithFx: "Retour micro avec les effets",
+                    monitorWithFxHelp: "Le retour au casque fait entendre la voix avec les effets appliqués.",
+                    preRecord: "Pré-enregistrement",
+                    preRecordHelp: "Un enregistrement commence ce nombre de secondes avant l'appui. 0 pour désactiver.",
+                    fade: "Durée du fondu",
+                    fadeHelp: "Pour les modes de lecture avec fondu.",
+                    resetOnClear: "Remettre le mode de lecture par défaut quand on vide un bouton",
+                    resetOnClearHelp: "Sinon, le bouton garde son mode et son ordre de lecture."
+                },
+                power: {
+                    intro: "Ce que l'utilitaire fait tout seul quand il s'arrête, quand l'ordinateur se met en veille et quand il se réveille. La liste à droite ne s'active que si l'action est cochée."
+                },
+                firmware: {
+                    intro: "Le logiciel interne de la GoXLR. Le canal (Stable ou Bêta) se choisit dans les paramètres de l'utilitaire.",
+                    state: {
+                        current: "Votre firmware est à jour",
+                        outdated: "Une mise à jour est disponible",
+                        newer: "Votre firmware est plus récent que la dernière version publiée",
+                        unknown: "Pas d'information de mise à jour pour l'instant"
+                    },
+                    full: "GoXLR",
+                    mini: "GoXLR Mini",
+                    installed: "Installé",
+                    latest: "Dernière version",
+                    channel: "Canal",
+                    hintUpdate: "Ne débranchez pas la GoXLR pendant la mise à jour.",
+                    hintReinstall: "Rien à installer. Vous pouvez réinstaller la même version si l'appareil se comporte mal."
+                },
+                integrations: {
+                    allowNetwork: "Autoriser les autres appareils",
+                    allowNetworkHelp: "Une tablette, un téléphone ou un autre PC de votre réseau.",
+                    api: "L'API"
+                },
+                about: {
+                    intro: "Les versions à donner quand on demande de l'aide.",
+                    device: "Appareil",
+                    software: "Logiciel",
+                    utility: "Utilitaire",
+                    driver: "Pilote",
+                    shareHint: "Ces informations en un clic, pour un rapport de bug ou une demande d'aide.",
+                    copy: "Copier les versions"
+                },
+                licences: {
+                    intro: "L'utilitaire et les éléments qu'il utilise, avec leur licence. Cliquez pour lire le texte complet."
+                }
+            },
             backup: {
                 title: "Sauvegarde",
                 withSamples: "Inclure les sons",
@@ -914,25 +998,25 @@ export default {
 
             powerButton: "Actions d'alimentation",
             power: {
-                shutdownTitle: "Actions d'arrêt",
+                shutdownTitle: "À l'arrêt de l'utilitaire",
                 shutdownDescription: "Ces actions seront exécutées lorsque l'utilitaire GoXLR sera arrêté en toute sécurité.",
 
-                sleepTitle: "Actions de mise en veille.",
+                sleepTitle: "À la mise en veille",
                 sleepDescription: "Ces actions seront exécutées lorsque votre système va entrer en mode veille.",
 
-                wakeTitle: "Actions de réveil.",
+                wakeTitle: "Au réveil",
                 wakeDescription: "Ces actions seront exécutées lorsque votre système se réveille de la mise en veille.",
 
                 settingsError: "La configuration semble avoir été modifiée manuellement. Pour éviter tout dommage, l'interface utilisateur ici ne fonctionnera pas. Pour réinitialiser complètement les actions d'arrêt, appuyez sur le bouton ci-dessous.",
-                settingsReset: "Réinitialiser les actions d'arrêt.",
+                settingsReset: "Réinitialiser ces actions",
 
                 power_options: {
-                    reload: "Recharger les paramètres.",
-                    saveProfile: "Enregistrer le profil.",
-                    loadProfile: "Charger le profil complet.",
-                    loadColourProfile: "Charger le profil de couleur.",
-                    saveMicProfile: "Sauvegarder le profil du microphone.",
-                    loadMicProfile: "Charger le profil du microphone",
+                    reload: "Recharger les réglages",
+                    saveProfile: "Enregistrer le profil",
+                    loadProfile: "Charger un profil",
+                    loadColourProfile: "Charger les couleurs d'un profil",
+                    saveMicProfile: "Enregistrer le profil micro",
+                    loadMicProfile: "Charger un profil micro",
                 }
             },
 
@@ -961,6 +1045,7 @@ export default {
 
             settingsButton: "Paramètres de l'Utilitaire",
             settings: {
+                restartPill: "redémarrage",
                 firmwareSource: "Canal de mise à jour du firmware",
                 firmwareSources: {
                     live: "Stable",

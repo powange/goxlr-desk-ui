@@ -380,7 +380,8 @@ export default {
       this.stopPlayback();
       let path = this.pathOf(id);
       this.previewing = path;
-      this.audio_player.src = getBaseHTTPAddress() + "files/samples/" + encodeURIComponent(this.nameOf(path));
+      // Always the file as it is now (it may just have been edited in place)
+      this.audio_player.src = getBaseHTTPAddress() + "files/samples/" + encodeURIComponent(this.nameOf(path)) + "?v=" + Date.now();
       this.audio_player.play();
     },
 

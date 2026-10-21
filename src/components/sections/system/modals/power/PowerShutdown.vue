@@ -1,12 +1,13 @@
 <script>
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
+import SettingsCard from "@/components/sections/system/settings/SettingsCard.vue";
 import PowerBooleanSetting from "@/components/sections/system/modals/power/settings/PowerBooleanSetting.vue";
 import PowerBooleanListSetting from "@/components/sections/system/modals/power/settings/PowerBooleanListSetting.vue";
 
 export default {
   name: "PowerShutdown",
-  components: {PowerBooleanListSetting, PowerBooleanSetting},
+  components: {SettingsCard, PowerBooleanListSetting, PowerBooleanSetting},
 
   props: {
     title: {type: String, required: true},
@@ -188,14 +189,8 @@ export default {
 </script>
 
 <template>
-  <b>{{ this.title }}</b>
-  <hr/>
-  <div v-if="isValid()" style="margin-bottom: 20px;">
-    <div style="padding-bottom: 15px">
-      <span v-if="!this.is_sleep">{{ $t('message.system.power.shutdownDescription') }}</span>
-      <span v-else>{{ $t('message.system.power.sleepDescription') }}</span>
-    </div>
-    <div class="settingList">
+  <SettingsCard :title="title" :description="is_sleep ? $t('message.system.power.sleepDescription') : $t('message.system.power.shutdownDescription')">
+    <template v-if="isValid()">
       <PowerBooleanSetting ref="saveProfile" @check-change="changed" :enabled="isActive('SaveProfile')"
                            :description="$t('message.system.power.power_options.saveProfile')"
                            :label="$t('message.system.power.power_options.saveProfile')"/>
@@ -221,20 +216,21 @@ export default {
                                :enabled="isActive('LoadProfileColours')"
                                :description="$t('message.system.power.power_options.loadColourProfile')"
                                :label="$t('message.system.power.power_options.loadColourProfile')"/>
+    </template>
+    <div v-else class="power-error">
+      <span>{{ $t('message.system.power.settingsError') }}</span>
+      <button type="button" class="settings-action" @click="resetShutdownActions">{{ $t('message.system.power.settingsReset') }}</button>
     </div>
-  </div>
-  <div v-else>
-    {{ $t('message.system.power.settingsError') }}:<br/><br/>
-    <button @click="resetShutdownActions">{{ $t('message.system.power.settingsReset') }}</button>
-  </div>
+  </SettingsCard>
 </template>
 
 <style scoped>
-.settingList > :nth-child(odd) {
-  background-color: var(--c-raised);
-}
-
-.settingList > :nth-child(even) {
-  background-color: var(--c-bg);
+.power-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: var(--c-warn);
 }
 </style>

@@ -4,6 +4,7 @@ import vClickOutside from "click-outside-vue3";
 
 // Colour tokens and the bundled text faces (the app must work offline).
 import "./assets/theme.css";
+import "./assets/settings-pages.css";
 import {initTheme} from "@/util/theme";
 import "@fontsource/ibm-plex-sans/400.css";
 import "@fontsource/ibm-plex-sans/500.css";
@@ -29,7 +30,7 @@ import {
     faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload, faFolderPlus, faPen,
     faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles,
     faSliders, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare,
-    faCircleExclamation, faKeyboard, faCircle,
+    faCircleExclamation, faKeyboard, faCircle, faArrowUp, faQuestion, faTriangleExclamation,
 } from "@fortawesome/free-solid-svg-icons";
 import {createI18n} from "vue-i18n";
 import {messages} from "@/lang/config.js";
@@ -40,7 +41,8 @@ library.add(
     faChevronLeft, faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic,
     faTurnUp, faHeadphones, faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload,
     faFolderPlus, faPen, faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles,
-    faSliders, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare, faCircleExclamation, faKeyboard, faCircle
+    faSliders, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare, faCircleExclamation, faKeyboard, faCircle,
+    faArrowUp, faQuestion, faTriangleExclamation
 );
 
 
