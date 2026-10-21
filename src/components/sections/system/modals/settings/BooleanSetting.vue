@@ -1,5 +1,8 @@
 <script>
+import Toggle from "@/components/design/Toggle.vue";
+
 export default {
+  components: {Toggle},
   emits: ['change'],
 
   name: "BooleanSetting",
@@ -18,13 +21,10 @@ export default {
 </script>
 
 <template>
-  <div class="setting" @click="onChange">
-    <div class="label">{{ label }}</div>
-    <div class="input" @click="onChange" role="checkbox" :aria-valuenow="enabled" :aria-label="label"
-         :aria-description="description" :aria-checked="enabled" @keydown.space="onChange" @keydown.enter="onChange"
-         tabindex="0">
-      <font-awesome-icon v-if="enabled" icon="fa-solid fa-square-check"/>
-      <font-awesome-icon v-else icon="fa-solid fa-square"/>
+  <div class="setting">
+    <div class="label" @click="onChange">{{ label }}</div>
+    <div class="input">
+      <Toggle :model-value="enabled" @update:model-value="onChange" :label="label" :aria-description="description"/>
     </div>
   </div>
 </template>
@@ -33,7 +33,9 @@ export default {
 .setting {
   cursor: pointer;
   display: flex;
-  height: 20px;
+  align-items: center;
+  gap: 16px;
+  min-height: 20px;
   padding: 10px;
   color: var(--c-text-soft);
 }

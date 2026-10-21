@@ -34,7 +34,9 @@ export default {
 <style scoped>
 .setting {
   display: flex;
-  height: 20px;
+  align-items: center;
+  gap: 16px;
+  min-height: 20px;
   padding: 10px;
   color: var(--c-text-soft);
 }

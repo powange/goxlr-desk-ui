@@ -5,6 +5,15 @@
     <h2 class="title">{{ $t('message.integrations.title') }}</h2>
     <p class="intro">{{ $t('message.integrations.intro') }}</p>
 
+    <!-- Access from other devices on the network (Stream Deck on another PC, a phone..) -->
+    <h3>{{ $t('message.integrations.networkTitle') }}</h3>
+    <div class="network">
+      <BooleanSetting :label="$t('message.system.settings.allowNetworkAccess')" :enabled="allowNetworkAccess()"
+                      @change="setAllowNetworkAccess"
+                      :description="$t('message.system.settings.allowNetworkAccessAccessibility')"/>
+      <NetworkAccessLinks v-if="allowNetworkAccess()" :key="String(allowNetworkAccess())"/>
+    </div>
+
     <dl class="endpoints">
       <dt>{{ $t('message.integrations.commandUrl') }}</dt>
       <dd><code>POST {{ baseUrl() }}api/command</code></dd>
@@ -34,10 +43,10 @@
     <h3>{{ $t('message.integrations.recordTitle') }}</h3>
     <p class="note">{{ $t('message.integrations.recordIntro') }}</p>
     <div class="record">
-      <label class="record-toggle">
-        <input type="checkbox" v-model="recorder.enabled"/>
-        <span>{{ $t('message.integrations.record') }}</span>
-      </label>
+      <span class="record-toggle">
+        <Toggle v-model="recorder.enabled" :label="$t('message.integrations.record')"/>
+        <span @click="recorder.enabled = !recorder.enabled">{{ $t('message.integrations.record') }}</span>
+      </span>
       <AppButton v-if="recorder.commands.length" variant="link" @click="clearCommands()">
         {{ $t('message.integrations.clear') }}
       </AppButton>
@@ -69,12 +78,16 @@
 
 <script>
 import AppButton from "@/components/design/AppButton.vue";
+import Toggle from "@/components/design/Toggle.vue";
+import BooleanSetting from "@/components/sections/system/modals/settings/BooleanSetting.vue";
+import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
 import {store} from "@/store";
 import {apiRecorder, clearApiCommands} from "@/util/apiRecorder";
+import {websocket} from "@/util/sockets";
 
 export default {
   name: "IntegrationsPage",
-  components: {AppButton},
+  components: {AppButton, Toggle, BooleanSetting, NetworkAccessLinks},
   props: {inline: {type: Boolean, default: true}},
 
   data() {
@@ -82,6 +95,15 @@ export default {
   },
 
   methods: {
+    allowNetworkAccess() {
+      const config = store.getConfig();
+      return config !== undefined && config.allow_network_access;
+    },
+
+    setAllowNetworkAccess(value) {
+      websocket.send_daemon_command({"SetAllowNetworkAccess": value});
+    },
+
     baseUrl() {
       return `${window.location.protocol}//${window.location.host}/`;
     },
@@ -200,6 +222,12 @@ code {
 
 .example-head > span {
   flex: 1;
+}
+
+.network {
+  display: grid;
+  gap: 8px;
+  max-width: 70ch;
 }
 
 .record {

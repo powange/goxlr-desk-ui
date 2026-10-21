@@ -36,11 +36,6 @@
                         @change="set_macos_aggregate_management"
                         :description="$t('message.system.settings.macosAggregateManagementAccessibility')"/>
 
-        <BooleanSetting :label="$t('message.system.settings.allowNetworkAccess')" :enabled="get_allow_network_access()"
-                        @change="set_allow_network_access"
-                        :description="$t('message.system.settings.allowNetworkAccessAccessibility')"/>
-        <NetworkAccessLinks v-if="get_allow_network_access()" :key="String(get_allow_network_access())"/>
-
         <BooleanSetting :label="$t('message.system.settings.autoStart')" :enabled="isAutostart()"
                         @change="setAutoStart" :description="$t('message.system.settings.autoStartAccessibility')"/>
 
@@ -56,19 +51,21 @@
 
 
         <!-- The whole configuration in one file, to move to another computer or keep aside -->
-        <div class="recoverDefaults" role="group" :aria-label="$t('message.system.backup.title')">
+        <div class="backupRow" role="group" :aria-label="$t('message.system.backup.title')">
           <div class="label">{{ $t('message.system.backup.title') }}</div>
+          <div class="backupContent">
           <div class="backup">
-            <label class="backup-samples">
-              <input type="checkbox" v-model="backupSamples"/>
-              <span>{{ $t('message.system.backup.withSamples') }}</span>
-            </label>
+            <span class="backup-samples">
+              <Toggle v-model="backupSamples" :label="$t('message.system.backup.withSamples')"/>
+              <span @click="backupSamples = !backupSamples">{{ $t('message.system.backup.withSamples') }}</span>
+            </span>
             <a class="backup-link" :href="backupUrl()" download>{{ $t('message.system.backup.download') }}</a>
             <input ref="restoreInput" type="file" accept=".zip" hidden @change="onRestoreChosen"/>
             <button ref="restoreButton" type="button" @click="$refs.restoreInput.click()">{{ $t('message.system.backup.restore') }}</button>
             <button type="button" @click="openBackups()">{{ $t('message.system.backup.openFolder') }}</button>
           </div>
           <div class="backup-hint">{{ $t('message.system.backup.history') }}</div>
+          </div>
         </div>
 
         <div class="recoverDefaults" role="group" :aria-label="$t('message.system.settings.recoverDefaults')">
@@ -136,11 +133,11 @@
 
 <script>
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
-import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 import {store} from "@/store";
 import {errorMessage, getBaseHTTPAddress, websocket} from "@/util/sockets";
 import {languages} from "@/lang/config";
+import Toggle from "@/components/design/Toggle.vue";
 import BooleanSetting from "@/components/sections/system/modals/settings/BooleanSetting.vue";
 import ListSetting from "@/components/sections/system/modals/settings/ListSetting.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -159,7 +156,7 @@ export default {
       return store
     }
   },
-  components: {NetworkAccessLinks, ModalButton, ListSetting, BooleanSetting, BigButton, AccessibleModal},
+  components: {Toggle, ModalButton, ListSetting, BooleanSetting, BigButton, AccessibleModal},
 
   data() {
     return {
@@ -375,17 +372,6 @@ export default {
       websocket.open_path("Logs");
     },
 
-    get_allow_network_access() {
-      if (store.getConfig() === undefined) {
-        return false;
-      }
-      return store.getConfig().allow_network_access;
-    },
-
-    set_allow_network_access(value) {
-      websocket.send_daemon_command({"SetAllowNetworkAccess": value});
-    },
-
     get_macos_aggregate_management() {
       if (store.getConfig() === undefined) {
         return true;
@@ -530,19 +516,52 @@ export default {
 </script>
 
 <style scoped>
+/* The backup has several controls and a note: a row that grows with them */
+.backupRow {
+  display: flex;
+  gap: 16px;
+  padding: 10px;
+}
+
+.backupRow .label {
+  flex: none;
+  color: var(--c-text-soft);
+}
+
+.backupContent {
+  margin-left: auto;
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+  min-width: 0;
+}
+
 .backup {
   display: flex;
   flex-wrap: wrap;
+  justify-content: flex-end;
   align-items: center;
   gap: 10px;
-  padding: 6px 0;
   font-size: 13px;
 }
 
+.backup button {
+  white-space: nowrap;
+  border: 1px solid var(--c-line-strong);
+  background-color: transparent;
+  color: var(--c-text-soft);
+  padding: 3px 8px;
+  cursor: pointer;
+}
+
+.backup button:hover {
+  color: var(--c-text);
+}
+
 .backup-hint {
-  font-size: 0.85em;
-  opacity: 0.8;
-  margin-top: 6px;
+  font-size: 12px;
+  color: var(--c-text-soft);
+  text-align: right;
 }
 
 .backup-samples {
@@ -565,7 +584,9 @@ export default {
 
 .recoverDefaults {
   display: flex;
-  height: 20px;
+  align-items: center;
+  gap: 16px;
+  min-height: 20px;
   padding: 10px;
 }
 
@@ -577,6 +598,8 @@ export default {
 
 .recoverDefaults .buttons {
   display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
   gap: 10px;
 }
 

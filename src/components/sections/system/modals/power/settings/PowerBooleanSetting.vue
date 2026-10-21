@@ -1,5 +1,8 @@
 <script>
+import Toggle from "@/components/design/Toggle.vue";
+
 export default {
+  components: {Toggle},
   emits: ['check-change'],
 
   name: "PowerBooleanSetting",
@@ -35,14 +38,11 @@ export default {
 </script>
 
 <template>
-  <div class="setting" @click="onCheckChange">
-    <div class="input" role="checkbox" :aria-valuenow="checked" :aria-label="label"
-         :aria-description="description" :aria-checked="checked" @keydown.space="onCheckChange" @keydown.enter="onCheckChange"
-         tabindex="0">
-      <font-awesome-icon v-if="checked" icon="fa-solid fa-square-check"/>
-      <font-awesome-icon v-else icon="fa-solid fa-square"/>
+  <div class="setting">
+    <div class="input">
+      <Toggle :model-value="checked" @update:model-value="onCheckChange" :label="label" :aria-description="description"/>
     </div>
-    <div class="label">{{ label }}</div>
+    <div class="label" @click="onCheckChange">{{ label }}</div>
   </div>
 </template>
 

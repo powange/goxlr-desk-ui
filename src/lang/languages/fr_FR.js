@@ -46,7 +46,8 @@ export default {
             examples: "Exemples pour cet appareil",
             copyCurl: "Copier curl",
             copyJson: "Copier le JSON",
-            more: "Depuis un autre ordinateur, l'accès réseau doit être activé et le lien doit porter le jeton d'accès (voir Paramètres de l'utilitaire).",
+            more: "Depuis un autre ordinateur, l'accès réseau doit être activé et le lien doit porter le jeton d'accès (voir Accès réseau ci-dessus).",
+            networkTitle: "Accès réseau",
             exampleMicMute: "Couper le micro",
             exampleVolume: "Mettre le volume Musique à moitié",
             exampleProfile: "Charger le profil {name}",
@@ -1014,9 +1015,9 @@ export default {
 
                 recoverDefaults: "Restaurer les paramètres par défaut",
                 recoverOptions: {
-                    profiles: "Profiles",
+                    profiles: "Profils",
                     micProfiles: "Profils microphone",
-                    icons: "icônes",
+                    icons: "Icônes",
                     presets: "Préréglages"
                 },
 
