@@ -892,6 +892,12 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        theme: {
+            label: "Colour theme",
+            dark: "Dark",
+            light: "Light",
+            system: "Auto",
+        },
         topBar: {
             profile: "Profile",
             profileLabel: "Active profile",

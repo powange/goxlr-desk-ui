@@ -10,6 +10,10 @@
           </div>
         </template>
         <template #nav-bottom>
+          <div class="theme-switch">
+            <SegmentedControl :options="getThemeOptions()" :selected="themeMode" @selection-changed="changeTheme"
+                              :label="$t('message.theme.label')"/>
+          </div>
           <div class="device-status">
             <span class="device-name"><span class="dot" aria-hidden="true"></span>{{ getDeviceName() }}</span>
             <span class="device-detail">{{ getSerial() }}</span>
@@ -158,6 +162,8 @@ import {store} from "@/store";
 import {runWebsocket, websocket} from "@/util/sockets";
 import SystemComponent from "@/components/sections/System.vue";
 import TopBar from "@/components/TopBar.vue";
+import SegmentedControl from "@/components/design/SegmentedControl.vue";
+import {getThemeMode, setThemeMode} from "@/util/theme";
 import Panel from "@/components/design/Panel.vue";
 import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
 import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
@@ -206,6 +212,7 @@ export default {
     LightingTab,
     EffectsTab,
     TopBar,
+    SegmentedControl,
     Panel,
     ProfileHandler,
     MicProfileHandler,
@@ -247,6 +254,7 @@ export default {
       visualiserHighlightAreas: [],
       activeZone: "faders",
       visualiserOpen: loadVisualiserOpen(),
+      themeMode: getThemeMode(),
     }
   },
 
@@ -260,6 +268,19 @@ export default {
       } catch (e) {
         // Storage can be unavailable, the panel just won't be remembered.
       }
+    },
+
+    getThemeOptions() {
+      return [
+        {id: "dark", label: this.$t('message.theme.dark')},
+        {id: "light", label: this.$t('message.theme.light')},
+        {id: "system", label: this.$t('message.theme.system')},
+      ];
+    },
+
+    changeTheme(mode) {
+      this.themeMode = mode;
+      setThemeMode(mode);
     },
 
     getDeviceName() {
@@ -567,8 +588,12 @@ export default {
   border-radius: 3px;
 }
 
-#main .device-status {
+#main .theme-switch {
   margin-top: auto;
+  padding: 10px 4px;
+}
+
+#main .device-status {
   padding: 12px 10px 2px;
   border-top: 1px solid var(--c-line);
   display: grid;

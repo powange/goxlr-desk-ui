@@ -90,7 +90,7 @@ export default {
             lightingGlobal: "Global",
             lightingMixer: "Mixer",
             lightingEffects: "Effets",
-            lightingSampler: "Sons enregistrés",
+            lightingSampler: "Sampler",
             lightingCough: "Toux/Bip",
 
             // Accessibility Messages (these are announced to screen readers)
@@ -792,6 +792,12 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        theme: {
+            label: "Thème de couleurs",
+            dark: "Sombre",
+            light: "Clair",
+            system: "Auto",
+        },
         topBar: {
             profile: "Profil",
             profileLabel: "Profil actif",

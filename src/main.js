@@ -4,6 +4,7 @@ import vClickOutside from "click-outside-vue3";
 
 // Colour tokens and the bundled text faces (the app must work offline).
 import "./assets/theme.css";
+import {initTheme} from "@/util/theme";
 import "@fontsource/ibm-plex-sans/400.css";
 import "@fontsource/ibm-plex-sans/500.css";
 import "@fontsource/ibm-plex-sans/600.css";
@@ -41,6 +42,8 @@ library.add(
     faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh
 );
 
+
+initTheme();
 
 let app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);

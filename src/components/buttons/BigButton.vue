@@ -28,55 +28,51 @@ export default {
 </script>
 
 <style scoped>
-
+/* A tile: icon on top, label below */
 button.content {
-  min-width: 130px;
+  min-width: 136px;
   max-width: min-content;
-  height: 170px;
-  background: var(--c-bg);
-  border: 0;
+  height: 150px;
+  background: var(--c-raised);
+  border: 1px solid var(--c-line);
+  border-radius: 10px;
   margin: 0;
   padding: 0;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 button .img-section {
-  text-align: center;
-  height: 130px;
-  font-size: 80px;
+  flex: 1;
+  font-size: 46px;
   color: var(--c-muted);
 
   display: flex;
   justify-content: center;
   align-items: center;
-
-  display: -webkit-flex;
-  -webkit-align-items: center;
-  -webkit-justify-content: center;
 }
 
 button:hover {
   cursor: pointer;
+  border-color: var(--c-accent);
 }
 
 button:hover .img-section {
-  color: var(--c-text);
-  background-color: var(--c-hover);
+  color: var(--c-accent);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 button .iconTitle {
-  height: 40px;
-  line-height: 40px;
-  background-color: var(--c-raised);
+  padding: 10px 12px 14px;
   color: var(--c-text);
   font-family: var(--f-body);
+  font-weight: 500;
   text-align: center;
   white-space: nowrap;
-  padding: 0px 10px;
 }
-button:hover .iconTitle {
-  background-color: var(--c-hover-strong);
-}
-
-
-
 </style>
