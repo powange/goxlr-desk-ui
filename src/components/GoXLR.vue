@@ -89,6 +89,7 @@
     <A11yNotifications/>
     <AppToasts/>
     <AppShortcuts v-if="isDeviceSet()" ref="shortcuts"/>
+    <SetupWizard v-if="isDeviceSet() && !isReconnecting()" ref="setupWizard" @open-section="id => $refs['device-tabs'].selectTabById(id)"/>
 
     <AccessibleModal id="firmware_update_progress_modal" ref="firmware_update_progress_modal" width="620px" :show_footer=false :show_close=false>
       <template v-slot:title>{{$t('message.system.firmwareUpdate.title')}}</template>
@@ -160,6 +161,7 @@
 import A11yNotifications from "./A11yNotifications.vue";
 import AppToasts from "./Toasts.vue";
 import AppShortcuts from "./Shortcuts.vue";
+import SetupWizard from "./SetupWizard.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
 import AppButton from "@/components/design/AppButton.vue";
@@ -215,6 +217,7 @@ export default {
     A11yNotifications,
     AppToasts,
     AppShortcuts,
+    SetupWizard,
     ContentContainer,
     SamplerTab,
     SampleAssignModal,

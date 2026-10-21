@@ -32,6 +32,7 @@ import PowerButton from "@/components/sections/system/modals/PowerButton.vue";
 import DeviceSettingsButton from "@/components/sections/system/modals/DeviceSettingsButton.vue";
 import FirmwareUpdateButton from "@/components/sections/system/modals/FirmwareUpdateButton.vue";
 import SwitchDeviceButton from "@/components/sections/system/modals/SwitchDeviceButton.vue";
+import IntegrationsPage from "@/components/sections/system/pages/IntegrationsPage.vue";
 import {store} from "@/store";
 import {markRaw} from "vue";
 
@@ -53,8 +54,10 @@ export default {
         {id: "settings", icon: "fa-solid fa-gear", label: this.$t('message.system.settingsButton'), component: markRaw(SettingsButton)},
         {id: "power", icon: "fa-solid fa-power-off", label: this.$t('message.system.powerButton'), component: markRaw(PowerButton)},
         {id: "firmware", icon: "fa-solid fa-download", label: this.$t('message.system.menu.firmware'), component: markRaw(FirmwareUpdateButton)},
+        {id: "integrations", icon: "fa-solid fa-link", label: this.$t('message.integrations.title'), component: markRaw(IntegrationsPage)},
         {id: "about", icon: "fa-solid fa-circle-info", label: this.$t('message.system.aboutButton'), component: markRaw(AboutButton)},
         {id: "licenses", icon: "fa-solid fa-book-open", label: this.$t('message.system.licenses'), component: markRaw(LicenseButton)},
+        {id: "wizard", icon: "fa-solid fa-wand-magic-sparkles", label: this.$t('message.setupWizard.menu'), action: () => window.dispatchEvent(new Event("open-setup-wizard"))},
         {id: "help", icon: "fa-solid fa-circle-question", label: this.$t('message.system.help'), href: "https://discord.gg/BRBjkkbvmZ"},
       ];
       if (store.getDeviceCount() > 1) {

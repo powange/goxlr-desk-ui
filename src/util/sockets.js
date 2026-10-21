@@ -31,6 +31,7 @@
  * The websocket class will abstract away the need to build a complete message.
  */
 import {store} from "@/store";
+import {recordForUndo} from "@/util/undo";
 
 // The text of an error from the daemon (websocket {Error: ".."}, or a string from HTTP).
 export function errorMessage(error) {
@@ -177,6 +178,7 @@ export class Websocket {
     }
 
     send_command(serial, command) {
+        recordForUndo(serial, command);
         let request = {
             "Command": [
                 serial,

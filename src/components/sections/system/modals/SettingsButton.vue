@@ -55,6 +55,20 @@
                         :description="$t('message.system.settings.ttsOnButtonAccessibility')"/>
 
 
+        <!-- The whole configuration in one file, to move to another computer or keep aside -->
+        <div class="recoverDefaults" role="group" :aria-label="$t('message.system.backup.title')">
+          <div class="label">{{ $t('message.system.backup.title') }}</div>
+          <div class="backup">
+            <label class="backup-samples">
+              <input type="checkbox" v-model="backupSamples"/>
+              <span>{{ $t('message.system.backup.withSamples') }}</span>
+            </label>
+            <a class="backup-link" :href="backupUrl()" download>{{ $t('message.system.backup.download') }}</a>
+            <input ref="restoreInput" type="file" accept=".zip" hidden @change="onRestoreChosen"/>
+            <button ref="restoreButton" type="button" @click="$refs.restoreInput.click()">{{ $t('message.system.backup.restore') }}</button>
+          </div>
+        </div>
+
         <div class="recoverDefaults" role="group" :aria-label="$t('message.system.settings.recoverDefaults')">
           <div class="label">{{ $t('message.system.settings.recoverDefaults') }}</div>
           <div class="buttons">
@@ -91,6 +105,14 @@
       </div>
     </AccessibleModal>
     <!-- Restoring only adds the default files that are missing, it never replaces a file -->
+    <AccessibleModal ref="restoreConfirm" id="confirm_restore" :show_close="false">
+      <template v-slot:title>{{ $t('message.system.backup.confirmTitle') }}</template>
+      <template v-slot:default>{{ $t('message.system.backup.confirmMessage', {name: restoreFile ? restoreFile.name : ''}) }}</template>
+      <template v-slot:footer>
+        <ModalButton ref="restoreOk" @click="restoreBackup()">{{ $t('message.system.backup.restore') }}</ModalButton>
+        <ModalButton @click="$refs.restoreConfirm.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
+      </template>
+    </AccessibleModal>
     <AccessibleModal ref="recoverConfirm" id="confirm_recover" :show_close="false">
       <template v-slot:title>{{ $t('message.system.settings.recoverConfirmTitle') }}</template>
       <template v-slot:default>{{ $t('message.system.settings.recoverConfirmMessage', {type: recoverLabel()}) }}</template>
@@ -115,7 +137,7 @@ import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 import {store} from "@/store";
-import {errorMessage, websocket} from "@/util/sockets";
+import {errorMessage, getBaseHTTPAddress, websocket} from "@/util/sockets";
 import {languages} from "@/lang/config";
 import BooleanSetting from "@/components/sections/system/modals/settings/BooleanSetting.vue";
 import ListSetting from "@/components/sections/system/modals/settings/ListSetting.vue";
@@ -141,6 +163,9 @@ export default {
     return {
       // The defaults waiting for confirmation (Profiles, MicProfiles, Icons or Presets)
       pendingRecover: undefined,
+      // Backup: whether the download includes the samples, and the archive to restore
+      backupSamples: false,
+      restoreFile: undefined,
       isShutdown: false,
     }
   },
@@ -422,6 +447,32 @@ export default {
       websocket.send_daemon_command({"SetTTSEnabled": value});
     },
 
+    backupUrl() {
+      return `${getBaseHTTPAddress()}files/backup${this.backupSamples ? "?samples=1" : ""}`;
+    },
+
+    onRestoreChosen(event) {
+      this.restoreFile = event.target.files[0];
+      event.target.value = "";
+      if (this.restoreFile) this.$refs.restoreConfirm.openModal(this.$refs.restoreOk, this.$refs.restoreButton);
+    },
+
+    restoreBackup() {
+      this.$refs.restoreConfirm.closeModal();
+      const form = new FormData();
+      form.append("file", this.restoreFile, this.restoreFile.name);
+      fetch(`${getBaseHTTPAddress()}files/backup-restore`, {method: "POST", body: form})
+          .then(response => response.json())
+          .then(result => {
+            if (result.Error !== undefined) {
+              store.addToast("error", result.Error);
+            } else {
+              store.addToast("ok", this.$t('message.system.backup.restored', result));
+            }
+          })
+          .catch(error => store.addToast("error", String(error)));
+    },
+
     recoverLabel() {
       const keys = {Profiles: "profiles", MicProfiles: "micProfiles", Icons: "icons", Presets: "presets"};
       return this.pendingRecover ? this.$t(`message.system.settings.recoverOptions.${keys[this.pendingRecover]}`) : "";
@@ -474,6 +525,25 @@ export default {
 </script>
 
 <style scoped>
+.backup {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 0;
+  font-size: 13px;
+}
+
+.backup-samples {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.backup-link {
+  color: var(--c-accent);
+}
+
 .settingList > :nth-child(odd) {
   background-color: var(--c-raised);
 }

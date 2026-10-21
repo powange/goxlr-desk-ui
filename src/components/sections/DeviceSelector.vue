@@ -20,7 +20,16 @@
           <Button v-for="(device, key) in getMixers()" :key=key :button-id=key :is-active=false
                   :label="getLabel2(key, device)" @button-pressed="setDevice(key)"/>
         </div>
-        <div v-else class="no-device">{{ $t('message.deviceSelector.noDevices') }}</div>
+        <div v-else class="no-device">
+          {{ $t('message.deviceSelector.noDevices') }}
+          <!-- What usually keeps a GoXLR from being found, for this system -->
+          <ul class="help">
+            <li>{{ $t('message.deviceSelector.helpCable') }}</li>
+            <li v-if="platform() === 'linux'">{{ $t('message.deviceSelector.helpLinux') }}</li>
+            <li v-if="platform() === 'windows'">{{ $t('message.deviceSelector.helpWindows') }}</li>
+            <li v-if="platform() === 'macos'">{{ $t('message.deviceSelector.helpMacos') }}</li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>
@@ -84,7 +93,13 @@ export default {
     },
 
     getLabel2(serial, device) {
-      return "[" + serial + "] GoXLR " + device.hardware.device_type + " connected to USB bus " + device.hardware.usb_device.bus_number + " address " + device.hardware.usb_device.address;
+      const model = device.hardware.device_type === "Mini" ? "GoXLR Mini" : "GoXLR";
+      return this.$t('message.deviceSelector.deviceLabel', {model, serial});
+    },
+
+    platform() {
+      const config = store.getConfig();
+      return config ? config.platform : "";
     },
   },
 
@@ -151,6 +166,20 @@ export default {
 
 .no-device {
   color: var(--c-text);
+}
+
+.help {
+  margin: 12px 0 0;
+  padding-left: 18px;
+  text-align: left;
+  font-size: 13px;
+  font-weight: normal;
+  color: var(--c-text-soft);
+  user-select: text;
+}
+
+.help li + li {
+  margin-top: 6px;
 }
 
 .no-device.disconnected {

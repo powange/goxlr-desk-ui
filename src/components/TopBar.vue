@@ -82,6 +82,7 @@
 import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
 import {runCommand} from "@/util/sockets";
+import {clearUndo} from "@/util/undo";
 import {isDeviceMini} from "@/util/util";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -216,11 +217,13 @@ export default {
     },
 
     loadProfile(name) {
+      clearUndo();
       runCommand(store.getActiveSerial(), {LoadProfile: [name, true]},
           {a11y: this.$t('message.profileManager.accessibilityLoadedProfile', {profileName: name})});
     },
 
     loadMicProfile(name) {
+      clearUndo();
       runCommand(store.getActiveSerial(), {LoadMicProfile: [name, true]});
     },
   }

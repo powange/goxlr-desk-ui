@@ -1,5 +1,6 @@
 <template>
   <div class="mixer-page">
+    <ScenesBar/>
     <!-- Options that apply to the whole mixer -->
     <div v-if="isSubMixSupported()" class="options">
       <label class="option">
@@ -70,6 +71,7 @@
 </template>
 
 <script>
+import ScenesBar from "@/components/sections/mixer/ScenesBar.vue";
 import Slider from "../slider/Slider.vue";
 import {
   ChannelName,
@@ -92,7 +94,7 @@ import ChannelLighting from "@/components/sections/lighting/subTabs/ChannelLight
 
 export default {
   name: "MixerTop",
-  components: {ChannelLighting, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
+  components: {ScenesBar, ChannelLighting, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
 
   data() {
     return {

@@ -18,6 +18,7 @@ import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import {isDeviceMini} from "@/util/util";
+import {undoLast} from "@/util/undo";
 
 const PRESETS = ["Preset1", "Preset2", "Preset3", "Preset4", "Preset5", "Preset6"];
 const BANKS = {F7: "A", F8: "B", F9: "C"};
@@ -38,6 +39,7 @@ export default {
     rows() {
       const rows = [
         {keys: "Ctrl+S", label: this.$t('message.shortcuts.save')},
+        {keys: "Ctrl+Z", label: this.$t('message.shortcuts.undo')},
         {keys: "M", label: this.$t('message.shortcuts.micMute')},
         {keys: "Ctrl+Shift+1…9", label: this.$t('message.shortcuts.sections')},
       ];
@@ -57,6 +59,14 @@ export default {
     },
 
     onKeydown(event) {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "z") {
+        if (this.ignored(event) || !store.hasActiveDevice()) return;
+        event.preventDefault();
+        if (undoLast((serial, command) => websocket.send_command(serial, command))) {
+          store.setAccessibilityNotification("polite", this.$t('message.shortcuts.undone'));
+        }
+        return;
+      }
       if (event.ctrlKey || event.altKey || event.metaKey || event.repeat || !store.hasActiveDevice()) return;
       if (this.ignored(event)) return;
       const serial = store.getActiveSerial();

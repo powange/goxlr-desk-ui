@@ -23,6 +23,52 @@
 
 export default {
     message: {
+        scenes: {
+            title: "Sceny",
+            runHint: "Zastosuj scenę {name} (głośności, wyciszenia, przekierowanie, efekty)",
+            update: "Zastąp {name} bieżącymi ustawieniami",
+            delete: "Usuń scenę {name}",
+            empty: "Zapisz bieżące głośności, wyciszenia, przekierowanie i efekty, aby przywrócić je jednym kliknięciem.",
+            new: "Nowa scena z bieżących ustawień…",
+            newTitle: "Nowa scena",
+            create: "Utwórz",
+            saved: "Zapisano scenę {name}",
+            ran: "Zastosowano scenę {name}",
+            deleted: "Usunięto scenę {name}",
+        },
+        integrations: {
+            title: "Integracje",
+            intro: "Stream Deck, OBS, Touch Portal lub twoje własne skrypty mogą sterować GoXLR przez API HTTP narzędzia, to samo, którego używa ten interfejs.",
+            commandUrl: "Wyślij polecenie",
+            statusUrl: "Odczytaj pełny stan",
+            websocketUrl: "Śledź zmiany (WebSocket)",
+            format: "Polecenie to obiekt JSON, którego pole „Command” zawiera numer seryjny urządzenia i polecenie, jak w poniższych przykładach. Nazwy i argumenty są takie jak w GoXLRCommand w kodzie źródłowym narzędzia (ipc/src/lib.rs).",
+            examples: "Przykłady dla tego urządzenia",
+            copyCurl: "Kopiuj curl",
+            copyJson: "Kopiuj JSON",
+            more: "Z innego komputera dostęp sieciowy musi być włączony, a link musi zawierać token dostępu (zobacz Ustawienia narzędzia).",
+            exampleMicMute: "Wycisz mikrofon",
+            exampleVolume: "Ustaw głośność Music na połowę",
+            exampleProfile: "Wczytaj profil {name}",
+            exampleScene: "Zastosuj scenę {name}",
+            copyFailed: "Nie można skopiować do schowka",
+        },
+        setupWizard: {
+            menu: "Asystent konfiguracji",
+            title: "Pierwsze kroki ({step} z {count})",
+            micTitle: "Twój mikrofon",
+            micText: "Wybierz typ mikrofonu, a następnie zwiększaj wzmocnienie, aż twój normalny głos dojdzie do połowy wskaźnika, nie wchodząc na czerwone.",
+            routingTitle: "Dokąd trafia dźwięk",
+            routingText: "GoXLR dodaje do komputera urządzenia audio. Skieruj każdą aplikację na jej własne urządzenie, aby sterować nią suwakami:",
+            openRouting: "Otwórz tabelę przekierowań",
+            saveTitle: "Zachowaj te ustawienia",
+            saveText: "Zapisz profil i profil mikrofonu: są wczytywane ponownie przy każdym uruchomieniu GoXLR.",
+            saveButton: "Zapisz profil i profil mikrofonu",
+            skip: "Nie pokazuj ponownie",
+            back: "Wstecz",
+            next: "Dalej",
+            finish: "Zakończ",
+        },
         micMute: {
             mute: "Wycisz mikrofon",
             muted: "Mikrofon wyciszony",
@@ -30,6 +76,8 @@ export default {
             holdMode: "Przycisk Mute jest w trybie przytrzymania: wycisza tylko, gdy jest przytrzymany na urządzeniu",
         },
         shortcuts: {
+            undo: "Cofnij ostatnią zmianę (głośności, wyciszenia, przekierowanie, korektor, kolory)",
+            undone: "Cofnięto zmianę",
             title: "Skróty klawiszowe",
             save: "Zapisz profil i profil mikrofonu",
             micMute: "Wycisz lub włącz mikrofon",
@@ -53,6 +101,11 @@ export default {
             tabList: "Lista kart",
         },
         deviceSelector: {
+            deviceLabel: "{model} · {serial}",
+            helpCable: "Sprawdź, czy GoXLR jest włączony, a jego kabel USB podłączony (spróbuj innego portu USB, najlepiej z tyłu komputera).",
+            helpLinux: "W systemie Linux reguły udev (50-goxlr.rules) muszą być zainstalowane w /etc/udev/rules.d. Następnie przeładuj je (udevadm control --reload), odłącz GoXLR i podłącz go ponownie.",
+            helpWindows: "W systemie Windows musi być zainstalowany sterownik GoXLR od TC-Helicon. Po instalacji uruchom ponownie komputer.",
+            helpMacos: "W systemie macOS podłącz GoXLR bezpośrednio, a nie przez hub, i zezwól na działanie narzędzia, jeśli system o to poprosi.",
             reconnecting: "Utracono połączenie z GoXLR Utility, ponowne łączenie…",
             title: "Wybierz Urządzenie",
             connecting: "Próba połączenia z GoXLR Utility..",
@@ -600,6 +653,8 @@ export default {
                 applyBanks: "Zastosuj do wszystkich banków",
             },
             pads: {
+                record: "Nagraj do {button}",
+                stopRecording: "Zatrzymaj nagrywanie {button}",
                 play: "Odtwórz {button}",
                 stop: "Zatrzymaj {button}",
                 title: "Przyciski",
@@ -852,6 +907,33 @@ export default {
         },
 
         routing: {
+            cellLabel: "{input} do {output}",
+            help: {
+                title: "Gdzie kierować aplikacje",
+                obs: "OBS: przechwytuj urządzenie „Broadcast Stream Mix”, to właśnie słyszy twój stream.",
+                discord: "Discord: ustaw „Chat Mic” jako urządzenie wejściowe, a „Chat” jako urządzenie wyjściowe.",
+                apps: "Gry na „Game”, muzyka na „Music”, cała reszta na „System”: każde z nich ma własny suwak i przekierowanie.",
+                hover: "Najedź na nazwę wiersza lub kolumny, aby zobaczyć, czym jest.",
+                chatLoop: "Czat głosowy nie może wracać do Chat Mic, bo twoi rozmówcy słyszeliby samych siebie.",
+                inputs: {
+                    Microphone: "Twój mikrofon po przetworzeniu (bramka, korektor, kompresor, efekty).",
+                    Chat: "Urządzenie audio „Chat” komputera: ustaw je jako wyjście Discorda lub innych aplikacji do czatu głosowego.",
+                    Music: "Urządzenie audio „Music”: ustaw je jako wyjście odtwarzacza muzyki.",
+                    Game: "Urządzenie audio „Game”: ustaw je jako wyjście gier.",
+                    Console: "Wejście konsoli z tyłu GoXLR.",
+                    LineIn: "Wejście liniowe z tyłu GoXLR.",
+                    System: "Urządzenie audio „System”: domyślne wyjście komputera (powiadomienia, przeglądarka…).",
+                    Samples: "Dźwięki odtwarzane przez sampler.",
+                },
+                outputs: {
+                    Headphones: "To, co słyszysz w słuchawkach.",
+                    BroadcastMix: "Urządzenie „Broadcast Stream Mix”: to, co słyszy twój stream lub nagranie (przechwyć je w OBS).",
+                    StreamMix2: "Drugi mix streamu, na przykład dla ścieżki VOD bez muzyki.",
+                    ChatMic: "Urządzenie „Chat Mic”: to, co słyszą osoby na czacie głosowym (ustaw je jako wejście w Discordzie).",
+                    Sampler: "To, co nagrywa sampler, gdy przytrzymujesz pusty przycisk.",
+                    LineOut: "Wyjście liniowe z tyłu GoXLR.",
+                },
+            },
             // There are (frustratingly) some minor differences between how channels appear in the routing table,
             // and how they appear in the Mixer, these changes also fall under the hood at the Utility level, so
             // we'll define all the channels here, and 'fix' anything which needs adjustment.
@@ -882,7 +964,20 @@ export default {
         },
 
         system: {
+            backup: {
+                title: "Kopia zapasowa",
+                withSamples: "Dołącz sample",
+                download: "Pobierz kopię zapasową",
+                restore: "Przywróć kopię zapasową",
+                confirmTitle: "Przywrócić tę kopię zapasową?",
+                confirmMessage: "Profile, profile mikrofonu, presety, ikony i sample z {name} zostaną dodane. Pliki, które zostałyby zastąpione, są najpierw kopiowane do katalogu kopii zapasowych.",
+                restored: "Przywrócono kopię zapasową: dodane {added}, zastąpione {replaced}, bez zmian {unchanged}",
+            },
             networkAccess: {
+                restartNow: "Uruchom narzędzie ponownie teraz",
+                restarting: "Narzędzie uruchamia się ponownie, interfejs połączy się sam.",
+                qr: "Kod QR",
+                qrAlt: "Kod QR do otwarcia {url}",
                 title: "Dostęp sieciowy",
                 explain: "Na innym urządzeniu w twojej sieci (tablet, telefon, komputer) otwórz jeden z tych linków jeden raz. Dostęp zostanie potem zapamiętany.",
                 restart: "Uruchom ponownie GoXLR Utility, aby mieć do niego dostęp z sieci. Linki pojawią się wtedy tutaj.",
@@ -1068,6 +1163,9 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            export: "Eksportuj",
+            import: "Importuj pliki profili",
+            imported: "Zaimportowane pliki profili: {count}",
             menuRename: "Zmień nazwę",
             menuDuplicate: "Duplikuj",
             nameLabel: "Nazwa",

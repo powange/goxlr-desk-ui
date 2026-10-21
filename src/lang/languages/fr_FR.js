@@ -23,6 +23,52 @@
 
 export default {
     message: {
+        scenes: {
+            title: "Scènes",
+            runHint: "Appliquer la scène {name} (volumes, mutes, routage, effets)",
+            update: "Remplacer {name} par les réglages actuels",
+            delete: "Supprimer la scène {name}",
+            empty: "Enregistrez les volumes, mutes, routage et effets actuels pour les retrouver en un clic.",
+            new: "Nouvelle scène à partir des réglages actuels…",
+            newTitle: "Nouvelle scène",
+            create: "Créer",
+            saved: "Scène {name} enregistrée",
+            ran: "Scène {name} appliquée",
+            deleted: "Scène {name} supprimée",
+        },
+        integrations: {
+            title: "Intégrations",
+            intro: "Stream Deck, OBS, Touch Portal ou vos propres scripts peuvent piloter la GoXLR par l'API HTTP de l'utilitaire, celle qu'utilise cette interface.",
+            commandUrl: "Envoyer une commande",
+            statusUrl: "Lire l'état complet",
+            websocketUrl: "Suivre les changements (WebSocket)",
+            format: "Une commande est un objet JSON dont l'entrée « Command » contient le numéro de série de l'appareil et la commande, comme dans les exemples ci-dessous. Les noms et arguments sont ceux de GoXLRCommand dans le code de l'utilitaire (ipc/src/lib.rs).",
+            examples: "Exemples pour cet appareil",
+            copyCurl: "Copier curl",
+            copyJson: "Copier le JSON",
+            more: "Depuis un autre ordinateur, l'accès réseau doit être activé et le lien doit porter le jeton d'accès (voir Paramètres de l'utilitaire).",
+            exampleMicMute: "Couper le micro",
+            exampleVolume: "Mettre le volume Musique à moitié",
+            exampleProfile: "Charger le profil {name}",
+            exampleScene: "Appliquer la scène {name}",
+            copyFailed: "Impossible de copier dans le presse-papiers",
+        },
+        setupWizard: {
+            menu: "Assistant de configuration",
+            title: "Premiers pas ({step} sur {count})",
+            micTitle: "Votre micro",
+            micText: "Choisissez le type de micro, puis montez le gain jusqu'à ce que votre voix normale atteigne le milieu du vumètre, sans aller dans le rouge.",
+            routingTitle: "Où va le son",
+            routingText: "La GoXLR ajoute des périphériques audio à l'ordinateur. Envoyez chaque application vers son périphérique pour la régler avec les faders :",
+            openRouting: "Ouvrir la table de routage",
+            saveTitle: "Garder ces réglages",
+            saveText: "Enregistrez le profil et le profil micro : ils sont rechargés à chaque démarrage de la GoXLR.",
+            saveButton: "Enregistrer le profil et le profil micro",
+            skip: "Ne plus afficher",
+            back: "Retour",
+            next: "Suivant",
+            finish: "Terminer",
+        },
         common: {
             close: "Fermer",
             lighting: "Éclairage",
@@ -54,6 +100,8 @@ export default {
             holdMode: "Le bouton Mute est en mode maintien : il ne coupe que tant qu'on le maintient sur l'appareil",
         },
         shortcuts: {
+            undo: "Annuler la dernière modification (volumes, mutes, routage, égaliseur, couleurs)",
+            undone: "Modification annulée",
             title: "Raccourcis clavier",
             save: "Enregistrer le profil et le profil micro",
             micMute: "Couper ou rétablir le micro",
@@ -63,6 +111,11 @@ export default {
             help: "Afficher ces raccourcis",
         },
         deviceSelector: {
+            deviceLabel: "{model} · {serial}",
+            helpCable: "Vérifiez que la GoXLR est allumée et que son câble USB est branché (essayez un autre port USB, de préférence à l'arrière de l'ordinateur).",
+            helpLinux: "Sous Linux, les règles udev (50-goxlr.rules) doivent être installées dans /etc/udev/rules.d ; rechargez-les (udevadm control --reload) puis débranchez et rebranchez la GoXLR.",
+            helpWindows: "Sous Windows, le pilote GoXLR de TC-Helicon doit être installé ; redémarrez l'ordinateur après l'installation.",
+            helpMacos: "Sous macOS, branchez la GoXLR directement plutôt que sur un hub, et autorisez l'utilitaire si le système le demande.",
             title: "Sélectionner un appareil",
             connecting: "Connexion à l'utilitaire GoXLR en cours…",
             disconnected: "Impossible de se connecter à l'utilitaire GoXLR, vérifiez qu'il est bien lancé.\n\nCette page tentera de se reconnecter automatiquement…",
@@ -468,6 +521,8 @@ export default {
                 applyBanks: "Appliquer à toutes les banques",
             },
             pads: {
+                record: "Enregistrer dans {button}",
+                stopRecording: "Arrêter l'enregistrement de {button}",
                 play: "Jouer {button}",
                 stop: "Arrêter {button}",
                 title: "Boutons",
@@ -720,6 +775,33 @@ export default {
         },
 
         routing: {
+            cellLabel: "{input} vers {output}",
+            help: {
+                title: "Où envoyer vos applications",
+                obs: "OBS : capturez le périphérique « Broadcast Stream Mix », c'est ce qu'entend votre stream.",
+                discord: "Discord : utilisez « Chat Mic » comme périphérique d'entrée et « Chat » comme périphérique de sortie.",
+                apps: "Les jeux sur « Game », la musique sur « Music », le reste sur « System » : chacun a son fader et son routage.",
+                hover: "Survolez le nom d'une ligne ou d'une colonne pour savoir à quoi elle correspond.",
+                chatLoop: "Le chat vocal ne peut pas revenir vers le Chat Mic : vos interlocuteurs s'entendraient eux-mêmes.",
+                inputs: {
+                    Microphone: "Votre micro, après son traitement (gate, égaliseur, compresseur, effets).",
+                    Chat: "Le périphérique audio « Chat » de l'ordinateur : choisissez-le comme sortie de Discord ou des autres applications de chat vocal.",
+                    Music: "Le périphérique audio « Music » : choisissez-le comme sortie de votre lecteur de musique.",
+                    Game: "Le périphérique audio « Game » : choisissez-le comme sortie de vos jeux.",
+                    Console: "L'entrée console à l'arrière de la GoXLR.",
+                    LineIn: "L'entrée ligne à l'arrière de la GoXLR.",
+                    System: "Le périphérique audio « System » : la sortie par défaut de l'ordinateur (notifications, navigateur…).",
+                    Samples: "Les sons joués par le sampler.",
+                },
+                outputs: {
+                    Headphones: "Ce que vous entendez dans le casque.",
+                    BroadcastMix: "Le périphérique « Broadcast Stream Mix » : ce qu'entend votre stream ou votre enregistrement (à capturer dans OBS).",
+                    StreamMix2: "Un second mix de stream, par exemple pour une piste VOD sans musique.",
+                    ChatMic: "Le périphérique « Chat Mic » : ce qu'entendent les personnes du chat vocal (à choisir comme entrée dans Discord).",
+                    Sampler: "Ce qu'enregistre le sampler quand on maintient un pad vide.",
+                    LineOut: "La sortie ligne à l'arrière de la GoXLR.",
+                },
+            },
             // There are (frustratingly) some minor differences between how channels appear in the routing table,
             // and how they appear in the Mixer, these changes also fall under the hood at the Utility level, so
             // we'll define all the channels here, and 'fix' anything which needs adjustment.
@@ -750,6 +832,15 @@ export default {
         },
 
         system: {
+            backup: {
+                title: "Sauvegarde",
+                withSamples: "Inclure les sons",
+                download: "Télécharger une sauvegarde",
+                restore: "Restaurer une sauvegarde",
+                confirmTitle: "Restaurer cette sauvegarde ?",
+                confirmMessage: "Les profils, profils micro, préréglages, icônes et sons de {name} seront ajoutés. Les fichiers qui seraient remplacés sont d'abord copiés dans le dossier des sauvegardes.",
+                restored: "Sauvegarde restaurée : {added} ajoutés, {replaced} remplacés, {unchanged} inchangés",
+            },
             firmwareUpdateButton: {
                 update: "Mettre à jour le firmware",
                 downgrade: "Rétrograder le firmware",
@@ -757,6 +848,10 @@ export default {
                 custom: "Firmware personnalisé",
             },
             networkAccess: {
+                restartNow: "Redémarrer l'utilitaire maintenant",
+                restarting: "L'utilitaire redémarre, l'interface se reconnecte d'elle-même.",
+                qr: "QR code",
+                qrAlt: "QR code pour ouvrir {url}",
                 title: "Accès depuis le réseau",
                 explain: "Sur un autre appareil de votre réseau (tablette, téléphone, ordinateur), ouvrez une fois l'un de ces liens. L'accès est ensuite mémorisé.",
                 restart: "Redémarrez GoXLR Utility pour y accéder depuis votre réseau. Les liens s'afficheront alors ici.",
@@ -1069,6 +1164,9 @@ export default {
         },
 
         profileManager: {
+            export: "Exporter",
+            import: "Importer des fichiers de profil",
+            imported: "Fichiers de profil importés : {count}",
             menuRename: "Renommer",
             menuDuplicate: "Dupliquer",
             nameLabel: "Nom",

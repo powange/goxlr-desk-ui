@@ -1,12 +1,20 @@
 <template>
   <div class="network-access" role="region" :aria-label="$t('message.system.networkAccess.title')">
-    <p v-if="!access.enabled" class="hint">{{ $t('message.system.networkAccess.restart') }}</p>
+    <template v-if="!access.enabled">
+      <p class="hint">{{ $t('message.system.networkAccess.restart') }}</p>
+      <button type="button" class="small" @click="restart">{{ $t('message.system.networkAccess.restartNow') }}</button>
+    </template>
     <template v-else>
       <p class="hint">{{ $t('message.system.networkAccess.explain') }}</p>
       <ul class="links">
         <li v-for="url in access.urls" :key="url">
           <code>{{ url }}</code>
           <button type="button" class="small" @click="copy(url)">{{ copied === url ? $t('message.system.networkAccess.copied') : $t('message.system.networkAccess.copy') }}</button>
+          <button type="button" class="small" :aria-expanded="qrUrl === url" @click="qrUrl = qrUrl === url ? undefined : url">
+            {{ $t('message.system.networkAccess.qr') }}
+          </button>
+          <!-- Scanned with a phone or tablet camera, opens the interface there -->
+          <img v-if="qrUrl === url" class="qr" :src="qrImage(url)" :alt="$t('message.system.networkAccess.qrAlt', {url})"/>
         </li>
       </ul>
       <p v-if="access.urls.length === 0" class="hint">{{ $t('message.system.networkAccess.noAddress') }}</p>
@@ -17,6 +25,8 @@
 
 <script>
 import {websocket} from "@/util/sockets";
+import {store} from "@/store";
+import qrcode from "qrcode-generator";
 
 // The links to open on other devices when network access is on. They carry the access token
 // the daemon asks other machines for.
@@ -27,6 +37,8 @@ export default {
     return {
       access: {enabled: false, urls: []},
       copied: undefined,
+      // The link whose QR code is shown
+      qrUrl: undefined,
     }
   },
 
@@ -35,6 +47,20 @@ export default {
   },
 
   methods: {
+    qrImage(url) {
+      const code = qrcode(0, "M");
+      code.addData(url);
+      code.make();
+      return code.createDataURL(5, 2);
+    },
+
+    // The daemon only listens on the network once restarted; the interface reconnects by itself
+    restart() {
+      // The connection may close before the reply comes
+      websocket.send_daemon_command("RestartDaemon").catch(() => {});
+      store.addToast("ok", this.$t('message.system.networkAccess.restarting'));
+    },
+
     refresh() {
       websocket.get_network_access()
           .then(result => this.access = result.NetworkAccess)
@@ -56,6 +82,16 @@ export default {
 </script>
 
 <style scoped>
+.qr {
+  display: block;
+  margin-top: 8px;
+  width: 180px;
+  height: 180px;
+  image-rendering: pixelated;
+  background-color: #fff;
+  border-radius: 6px;
+}
+
 .network-access {
   display: grid;
   gap: 8px;

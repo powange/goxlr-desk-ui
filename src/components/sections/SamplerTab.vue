@@ -29,6 +29,13 @@
                 @click="togglePlay(option.id)">
           <font-awesome-icon :icon="isPlaying(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-play'"/>
         </button>
+        <!-- An empty pad records, as holding it on the device does (with the pre-record buffer) -->
+        <button v-else type="button" class="pad-play record" :class="{ recording: isRecording(option.id) }"
+                :aria-label="isRecording(option.id) ? $t('message.sampler.pads.stopRecording', {button: option.label}) : $t('message.sampler.pads.record', {button: option.label})"
+                :title="isRecording(option.id) ? $t('message.sampler.pads.stopRecording', {button: option.label}) : $t('message.sampler.pads.record', {button: option.label})"
+                @click="toggleRecord(option.id)">
+          <font-awesome-icon :icon="isRecording(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-circle'"/>
+        </button>
         </div>
       </div>
 
@@ -321,6 +328,17 @@ export default {
 
     isPlaying(button) {
       return store.getActiveDevice().sampler.banks[this.activeBank][button].is_playing;
+    },
+
+    isRecording(button) {
+      return store.getActiveDevice().sampler.banks[this.activeBank][button].is_recording;
+    },
+
+    toggleRecord(button) {
+      const command = this.isRecording(button)
+          ? {StopSampleRecording: [this.activeBank, button]}
+          : {StartSampleRecording: [this.activeBank, button]};
+      websocket.send_command(store.getActiveSerial(), command);
     },
 
     togglePlay(button) {
@@ -674,6 +692,16 @@ export default {
   background-color: var(--c-raised-2);
   color: var(--c-text);
   cursor: pointer;
+}
+
+.pad-play.record {
+  color: var(--c-danger);
+}
+
+.pad-play.recording {
+  background-color: var(--c-danger);
+  border-color: var(--c-danger);
+  color: var(--c-on-danger);
 }
 
 .pad-play:hover {

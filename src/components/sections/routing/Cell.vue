@@ -1,6 +1,6 @@
 <template>
   <td>
-    <div @click="clicked" role="checkbox" :aria-valuenow="enabled" :aria-label="`Routing from ${input} to ${output}`"
+    <div @click="clicked" role="checkbox" :aria-label="label" :title="reason || undefined" :aria-description="reason || undefined"
          :aria-checked="enabled" tabindex="0" :class="{ disabled: cellDisabled }" :aria-disabled="cellDisabled">
       <font-awesome-icon v-if="enabled" icon="fa-solid fa-circle-check"/>
     </div>
@@ -16,7 +16,10 @@ export default {
     output: String,
     enabled: Boolean,
     orange: {type: Boolean, required: false, default: false},
-    cellDisabled: {type: Boolean, required: false, default: false}
+    cellDisabled: {type: Boolean, required: false, default: false},
+    // The cell's name, and why it can't be used when it's disabled
+    label: {type: String, default: ""},
+    reason: {type: String, default: ""},
   },
 
   computed: {

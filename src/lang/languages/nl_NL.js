@@ -23,6 +23,52 @@
 
 export default {
     message: {
+        scenes: {
+            title: "Scènes",
+            runHint: "Scène {name} toepassen (volumes, dempen, routing, effecten)",
+            update: "{name} vervangen door de huidige instellingen",
+            delete: "Scène {name} verwijderen",
+            empty: "Sla de huidige volumes, demping, routing en effecten op om ze met één klik terug te halen.",
+            new: "Nieuwe scène van de huidige instellingen…",
+            newTitle: "Nieuwe scène",
+            create: "Aanmaken",
+            saved: "Scène {name} opgeslagen",
+            ran: "Scène {name} toegepast",
+            deleted: "Scène {name} verwijderd",
+        },
+        integrations: {
+            title: "Integraties",
+            intro: "Stream Deck, OBS, Touch Portal of je eigen scripts kunnen de GoXLR bedienen via de HTTP API van de Utility, dezelfde die deze interface gebruikt.",
+            commandUrl: "Een commando sturen",
+            statusUrl: "De volledige status lezen",
+            websocketUrl: "Wijzigingen volgen (WebSocket)",
+            format: "Een commando is een JSON-object waarvan het veld “Command” het serienummer van het apparaat en het commando bevat, zoals in de voorbeelden hieronder. De namen en argumenten zijn die van GoXLRCommand in de broncode van de Utility (ipc/src/lib.rs).",
+            examples: "Voorbeelden voor dit apparaat",
+            copyCurl: "curl kopiëren",
+            copyJson: "JSON kopiëren",
+            more: "Vanaf een andere computer moet netwerktoegang aan staan en moet de link het toegangstoken bevatten (zie Utility Instellingen).",
+            exampleMicMute: "Microfoon dempen",
+            exampleVolume: "Muziekvolume op de helft zetten",
+            exampleProfile: "Profiel {name} laden",
+            exampleScene: "Scène {name} toepassen",
+            copyFailed: "Kopiëren naar het klembord is mislukt",
+        },
+        setupWizard: {
+            menu: "Installatie-assistent",
+            title: "Aan de slag ({step} van {count})",
+            micTitle: "Je microfoon",
+            micText: "Kies het type microfoon en verhoog dan de versterking tot je normale stem het midden van de meter bereikt, zonder in het rood te komen.",
+            routingTitle: "Waar het geluid heen gaat",
+            routingText: "De GoXLR voegt audioapparaten toe aan de computer. Stuur elke app naar een eigen apparaat om hem met de faders te regelen:",
+            openRouting: "Routingtabel openen",
+            saveTitle: "Deze instellingen bewaren",
+            saveText: "Sla het profiel en het microfoonprofiel op: ze worden elke keer geladen als de GoXLR start.",
+            saveButton: "Profiel en microfoonprofiel opslaan",
+            skip: "Niet meer tonen",
+            back: "Terug",
+            next: "Volgende",
+            finish: "Voltooien",
+        },
         micMute: {
             mute: "Microfoon dempen",
             muted: "Microfoon gedempt",
@@ -30,6 +76,8 @@ export default {
             holdMode: "De Mute-knop staat op vasthouden: hij dempt alleen zolang je hem op het apparaat ingedrukt houdt",
         },
         shortcuts: {
+            undo: "Laatste wijziging ongedaan maken (volumes, dempen, routing, equalizer, kleuren)",
+            undone: "Wijziging ongedaan gemaakt",
             title: "Sneltoetsen",
             save: "Profiel en microfoonprofiel opslaan",
             micMute: "Microfoon dempen of weer aanzetten",
@@ -53,6 +101,11 @@ export default {
             tabList: "Tabbladenlijst",
         },
         deviceSelector: {
+            deviceLabel: "{model} · {serial}",
+            helpCable: "Controleer of de GoXLR aan staat en de USB-kabel is aangesloten (probeer een andere USB-poort, liefst aan de achterkant van de computer).",
+            helpLinux: "Op Linux moeten de udev-regels (50-goxlr.rules) in /etc/udev/rules.d geïnstalleerd zijn. Herlaad ze daarna (udevadm control --reload) en koppel de GoXLR los en weer aan.",
+            helpWindows: "Op Windows moet de GoXLR-driver van TC-Helicon geïnstalleerd zijn. Herstart de computer na de installatie.",
+            helpMacos: "Sluit de GoXLR op macOS direct aan in plaats van via een hub, en sta de Utility toe als het systeem daarom vraagt.",
             reconnecting: "Verbinding met GoXLR Utility verbroken, opnieuw verbinden…",
             title: "Selecteer apparaat",
             connecting: "Verbinding maken met de GoXLR Utility..",
@@ -600,6 +653,8 @@ export default {
                 applyBanks: "Toepassen op alle banken",
             },
             pads: {
+                record: "Opnemen in {button}",
+                stopRecording: "Opname van {button} stoppen",
                 play: "{button} afspelen",
                 stop: "{button} stoppen",
                 title: "Knoppen",
@@ -852,6 +907,33 @@ export default {
         },
 
         routing: {
+            cellLabel: "{input} naar {output}",
+            help: {
+                title: "Waar je apps naartoe sturen",
+                obs: "OBS: neem het apparaat “Broadcast Stream Mix” op, dat is wat je stream hoort.",
+                discord: "Discord: gebruik “Chat Mic” als invoerapparaat en “Chat” als uitvoerapparaat.",
+                apps: "Games op “Game”, muziek op “Music”, al het andere op “System”: elk krijgt een eigen fader en routing.",
+                hover: "Beweeg over de naam van een rij of kolom om te zien wat het is.",
+                chatLoop: "Voicechat kan niet terug naar de Chat Mic, anders horen de mensen met wie je praat zichzelf.",
+                inputs: {
+                    Microphone: "Je microfoon, na de bewerking (gate, equalizer, compressor, effecten).",
+                    Chat: "Het audioapparaat “Chat” van de computer: stel het in als uitvoer van Discord of andere voicechat-apps.",
+                    Music: "Het audioapparaat “Music”: stel het in als uitvoer van je muziekspeler.",
+                    Game: "Het audioapparaat “Game”: stel het in als uitvoer van je games.",
+                    Console: "De console-ingang aan de achterkant van de GoXLR.",
+                    LineIn: "De lijningang aan de achterkant van de GoXLR.",
+                    System: "Het audioapparaat “System”: de standaarduitvoer van de computer (meldingen, browser…).",
+                    Samples: "De geluiden die de sampler afspeelt.",
+                },
+                outputs: {
+                    Headphones: "Wat je in je koptelefoon hoort.",
+                    BroadcastMix: "Het apparaat “Broadcast Stream Mix”: wat je stream of opname hoort (neem het op in OBS).",
+                    StreamMix2: "Een tweede stream mix, bijvoorbeeld voor een VOD-spoor zonder muziek.",
+                    ChatMic: "Het apparaat “Chat Mic”: wat de mensen in de voicechat horen (stel het in als invoer van Discord).",
+                    Sampler: "Wat de sampler opneemt als je een lege knop ingedrukt houdt.",
+                    LineOut: "De lijnuitgang aan de achterkant van de GoXLR.",
+                },
+            },
             // There are (frustratingly) some minor differences between how channels appear in the routing table,
             // and how they appear in the Mixer, these changes also fall under the hood at the Utility level, so
             // we'll define all the channels here, and 'fix' anything which needs adjustment.
@@ -882,7 +964,20 @@ export default {
         },
 
         system: {
+            backup: {
+                title: "Back-up",
+                withSamples: "Samples meenemen",
+                download: "Back-up downloaden",
+                restore: "Back-up terugzetten",
+                confirmTitle: "Deze back-up terugzetten?",
+                confirmMessage: "Profielen, microfoonprofielen, presets, iconen en samples uit {name} worden toegevoegd. Bestanden die vervangen zouden worden, worden eerst naar de back-upmap gekopieerd.",
+                restored: "Back-up teruggezet: {added} toegevoegd, {replaced} vervangen, {unchanged} ongewijzigd",
+            },
             networkAccess: {
+                restartNow: "Herstart de Utility nu",
+                restarting: "De Utility herstart, de interface maakt vanzelf opnieuw verbinding.",
+                qr: "QR-code",
+                qrAlt: "QR-code om {url} te openen",
                 title: "Netwerktoegang",
                 explain: "Open op een ander apparaat in je netwerk (tablet, telefoon, computer) eenmalig een van deze links. Daarna wordt de toegang onthouden.",
                 restart: "Herstart de GoXLR Utility om hem vanaf je netwerk te bereiken. De links verschijnen dan hier.",
@@ -1068,6 +1163,9 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            export: "Exporteren",
+            import: "Profielbestanden importeren",
+            imported: "Profielbestanden geïmporteerd: {count}",
             menuRename: "Hernoemen",
             menuDuplicate: "Dupliceren",
             nameLabel: "Naam",

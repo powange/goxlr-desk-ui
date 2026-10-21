@@ -1,8 +1,14 @@
 <template>
   <div style="height: 30px; text-align: right">
-    <div style="height: 14px; display: inline-block; width: calc(100% - 50px)">
+    <div style="height: 14px; display: inline-block; width: calc(100% - 90px)">
       <hr style="border: 1px solid var(--c-line)" />
     </div>
+    <!-- Profile files from this computer (the daemon's folder may be on another one) -->
+    <input ref="importInput" type="file" accept=".goxlr" multiple hidden @change="onImport"/>
+    <button :aria-label="$t('message.profileManager.import')" :title="$t('message.profileManager.import')"
+            class="openButton" @click="$refs.importInput.click()">
+      <font-awesome-icon icon="fa-solid fa-file-import" />
+    </button>
     <button
       :aria-label="$t('message.profileManager.accessibilityOpenProfileDirectory')"
       class="openButton"
@@ -48,6 +54,7 @@
 <script>
 import { store } from "@/store";
 import { runCommand, websocket } from "@/util/sockets";
+import { exportProfile, importProfiles } from "@/util/profileFiles";
 import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -72,6 +79,7 @@ export default {
         { name: this.$t('message.profileManager.menuLoadProfileColours'), slug: "colours" },
         { name: this.$t('message.profileManager.menuRename'), slug: "rename" },
         { name: this.$t('message.profileManager.menuDuplicate'), slug: "duplicate" },
+        { name: this.$t('message.profileManager.export'), slug: "export" },
         { name: this.$t('message.profileManager.menuDeleteProfile'), slug: "delete" },
       ];
     },
@@ -91,7 +99,17 @@ export default {
       return store.getActiveDevice().profile_name;
     },
 
+    onImport(event) {
+      const files = [...event.target.files];
+      event.target.value = "";
+      if (files.length > 0) importProfiles(files, false, this.$t('message.profileManager.imported', {count: files.length}));
+    },
+
     menuItemPressed(event) {
+      if (event.option.slug === "export") {
+        exportProfile(event.item, false);
+        return;
+      }
       if (event.option.slug === "rename" || event.option.slug === "duplicate") {
         this.nameAction = {slug: event.option.slug, from: event.item};
         const button = this.$refs.manager.$refs[this.$refs.manager.getButtonId(event.item)][0];

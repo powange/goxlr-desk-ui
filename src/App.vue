@@ -41,6 +41,11 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: var(--c-text);
+}
+
+/* Text can be selected (serial numbers, versions, errors to paste in a help request), the
+   controls can't, so dragging them doesn't select the page. */
+button, [role="slider"], [role="switch"], [role="tab"], svg, input[type="range"] {
   user-select: none;
 }
 
