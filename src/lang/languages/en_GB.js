@@ -872,6 +872,7 @@ export default {
             removing: "Removing the current samples…",
             adding: "Adding {index} of {total}: {name}…",
             done: "{count} sample(s) assigned to {bank} · {button}",
+            timeoutRemove: "The daemon took too long to remove the current samples",
             timeout: "{name}: the daemon took too long to add this sample",
         },
         sampleManager: {

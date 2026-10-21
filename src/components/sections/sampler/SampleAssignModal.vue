@@ -42,6 +42,7 @@ import {websocket} from "@/util/sockets";
 
 // How long one sample may take to be added (its gain is calculated first)
 const ADD_TIMEOUT = 120000;
+const REMOVE_TIMEOUT = 10000;
 
 export default {
   name: "SampleAssignModal",
@@ -98,6 +99,10 @@ export default {
           for (let i = this.currentSamples().length; i > 0; i--) {
             await websocket.send_command(serial, {RemoveSampleByIndex: [this.bank, this.button, 0]});
           }
+          // The reply comes before the status update, wait for the list to be empty so the
+          // sample count used by addSample starts from 0.
+          await this.waitFor(() => this.currentSamples().length === 0, REMOVE_TIMEOUT,
+              this.$t('message.sampleAssign.timeoutRemove'));
         }
 
         for (const [index, path] of this.paths.entries()) {
@@ -123,19 +128,23 @@ export default {
       const before = this.getButtonState().samples.length;
       await websocket.send_command(serial, {AddSample: [this.bank, this.button, path]});
 
-      const started = Date.now();
-      while (true) {
+      await this.waitFor(() => {
         const state = store.getActiveDevice().sampler.processing_state;
         if (state.last_error !== null) {
           const message = state.last_error;
           websocket.send_command(serial, {ClearSampleProcessError: []});
           throw `${this.fileName(path)} : ${message}`;
         }
-        if (this.getButtonState().samples.length > before && state.progress === null) {
-          return;
-        }
-        if (Date.now() - started > ADD_TIMEOUT) {
-          throw this.$t('message.sampleAssign.timeout', {name: this.fileName(path)});
+        return this.getButtonState().samples.length > before && state.progress === null;
+      }, ADD_TIMEOUT, this.$t('message.sampleAssign.timeout', {name: this.fileName(path)}));
+    },
+
+    // Polls the store until check() is true, or throws timeoutMessage.
+    async waitFor(check, timeout, timeoutMessage) {
+      const started = Date.now();
+      while (!check()) {
+        if (Date.now() - started > timeout) {
+          throw timeoutMessage;
         }
         await new Promise(resolve => setTimeout(resolve, 100));
       }

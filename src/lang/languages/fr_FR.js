@@ -772,6 +772,7 @@ export default {
             removing: "Retrait des sons actuels…",
             adding: "Ajout {index} sur {total} : {name}…",
             done: "{count} son(s) affecté(s) à {bank} · {button}",
+            timeoutRemove: "Le daemon a mis trop de temps à retirer les sons actuels",
             timeout: "{name} : le daemon a mis trop de temps à ajouter ce son",
         },
         sampleManager: {
