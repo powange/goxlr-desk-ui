@@ -1,11 +1,22 @@
 <template>
     <GroupContainer :title="$t('message.configuration.cough.title')">
+      <template #right>
+        <button ref="lightingButton" type="button" class="lighting-button" @click="openLighting">
+          <font-awesome-icon icon="fa-solid fa-lightbulb"/>
+          <span>{{ $t('message.configuration.cough.lighting') }}</span>
+        </button>
+      </template>
       <RadioSelection :title="$t('message.configuration.cough.behaviourTitle')" :options="getButtonBehaviours()"
                       group="cough_button_behaviour" @selection-changed="behaviorPressed" :selected="getCough()" />
       <RadioSelection :title="$t('message.configuration.muteBehaviourTitle')" :options="getMuteBehaviours()"
                       group="cough_mute_behaviour" @selection-changed="setActiveMuteFunction"
                       :selected="getActiveMute()" />
     </GroupContainer>
+
+    <AccessibleModal ref="lightingModal" id="coughLighting" width="min(560px, 94vw)" body-padding="0">
+      <template v-slot:title>{{ $t('message.configuration.cough.lightingTitle') }}</template>
+      <CoughLighting v-if="lightingOpen"/>
+    </AccessibleModal>
 </template>
 
 <script>
@@ -13,18 +24,30 @@ import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import GroupContainer from "@/components/containers/GroupContainer.vue";
+import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import CoughLighting from "@/components/sections/mic/CoughLighting.vue";
 import { driverMix2, driverPreVOD, driverVOD, firmwareSupportsMix2, isDeviceMini, isStreamNoMusic, isWindowsDriver } from "@/util/util";
 
 export default {
   name: "CoughButtonSettings",
-  components: {GroupContainer, RadioSelection},
+  components: {CoughLighting, AccessibleModal, GroupContainer, RadioSelection},
 
   data() {
     return {
+      lightingOpen: false,
     }
   },
 
   methods: {
+    // The Cough and Bleep lighting (moved here from the Lighting section)
+    openLighting() {
+      this.lightingOpen = false;
+      this.$nextTick(() => {
+        this.lightingOpen = true;
+        this.$refs.lightingModal.openModal(undefined, this.$refs.lightingButton);
+      });
+    },
+
     getButtonBehaviours() {
       return [
         {id: "hold", label: this.$t('message.configuration.cough.behaviour.hold') },
@@ -104,5 +127,27 @@ export default {
 </script>
 
 <style scoped>
+.lighting-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.lighting-button:hover {
+  border-color: var(--c-line-strong);
+}
+
+.lighting-button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 
 </style>

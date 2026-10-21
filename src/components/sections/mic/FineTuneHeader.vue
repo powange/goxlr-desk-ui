@@ -8,7 +8,7 @@
         :current-text-value=getTextValue()
         :current-field-value=fieldValue
         :background-colour="backgroundColour"
-        colour="#fff"
+        colour="var(--c-text)"
         :text-suffix="getTitleSuffix()"
         @value-updated="inputValueUpdated"
     />
@@ -48,9 +48,9 @@ export default {
     title: {type: String, required: true, default: "UNKNOWN"},
     titleSuffix: {type: String, required: true},
 
-    colour: {type: String, required: false, default: "#82CFD0"},
-    backgroundColour: {type: String, required: false, default: '#252927'},
-    rangeBackgroundColour: {type: String, required: false, default: '#252927'},
+    colour: {type: String, required: false, default: "var(--c-accent-light)"},
+    backgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
+    rangeBackgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
 
     step: {type: Number, required: false, default: 1},
 

@@ -164,7 +164,7 @@ export default {
 
 <style scoped>
 table {
-  color: #fff;
+  color: var(--c-text);
   font-stretch: condensed;
   border-spacing: 4px;
   border-collapse: separate;
@@ -176,21 +176,21 @@ th {
 }
 
 thead th:not(.subHeader) {
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
 }
 
 thead .subHeader th {
-  background-color: #353937;
+  background-color: var(--c-raised);
   min-width: 70px;
 }
 
 tr th {
-  background-color: #353937;
+  background-color: var(--c-raised);
 }
 
 
 .rotated {
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
   text-align: center;
   width: 15px;
 }

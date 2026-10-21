@@ -35,16 +35,16 @@ export default {
   display: flex;
   height: 20px;
   padding: 10px;
-  color: #ccc;
+  color: var(--c-text-soft);
 }
 
 .setting:focus-within {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .setting:hover {
   cursor: pointer;
-  color: #fff;
+  color: var(--c-text);
 }
 
 .label {

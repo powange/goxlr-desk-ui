@@ -3,6 +3,7 @@ import ContentContainer from "@/components/containers/ContentContainer.vue";
 import GroupContainer from "@/components/containers/GroupContainer.vue";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
+import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
@@ -12,6 +13,7 @@ import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 export default {
   name: "LightingCough",
   components: {
+    ButtonLighting,
     CenteredContainer,
     ContentContainer,
     GroupContainer,
@@ -88,14 +90,9 @@ export default {
         <RadioSelection :title="$t('message.lighting.cough.buttonsTitle')" group="lighting_cough_buttons"
                         :options="getButtonOptions()" :selected="this.selectedButtonOption"
                         @selection-changed="onButtonSelectionChange"/>
-        <ColourPicker :title="$t('message.lighting.common.activeColour')" :color-value="activeColor()"
-                      @colour-changed="onActiveColourChange"/>
-        <RadioSelection :title="$t('message.lighting.common.inactiveOption')"
-                        group="lighting_cough_inactive_behaviour"
-                        :options="getLightingInactiveOptions($t)" :selected="this.selectedInactiveOption()"
-                        @selection-changed="onInactiveSelectionChange"/>
-        <ColourPicker :title="$t('message.lighting.common.inactiveColour')" :color-value="inactiveColor()"
-                      @colour-changed="onInactiveColourChange"/>
+        <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
+                    @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
+                    @off-style-changed="onInactiveSelectionChange"/>
       </GroupContainer>
     </ContentContainer>
   </CenteredContainer>

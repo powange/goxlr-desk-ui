@@ -18,7 +18,7 @@
 
       <div
           ref="wrapper"
-          style="position: relative; width: 500px; background-color: #252927"
+          style="position: relative; width: 500px; background-color: var(--c-bg)"
           role="group"
           :aria-label="$t('message.sampler.samples.waveform.title')"
       >
@@ -79,6 +79,7 @@ import {websocket, getBaseHTTPAddress} from "@/util/sockets";
 import {store} from "@/store";
 import WidgetContainer from "@/components/containers/WidgetContainer.vue";
 import WaveSurfer from "wavesurfer.js/dist/wavesurfer";
+import {themeColour} from "@/util/util";
 
 export default {
   name: "AudioVisualiser",
@@ -520,9 +521,9 @@ export default {
       interact: false,
       splitChannels: true,
       hideScrollbar: true,
-      waveColor: "#d7d7d7",
+      waveColor: themeColour("text-soft"),
       cursorWidth: 0,
-      progressColor: "#d7d7d7",
+      progressColor: themeColour("text-soft"),
     });
   },
 
@@ -575,9 +576,9 @@ export default {
   width: 30px;
   margin-left: 6px;
   margin-right: 6px;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
 
-  color: #fff;
+  color: var(--c-text);
   line-height: 170px;
   padding-left: 6px;
   padding-right: 6px;
@@ -586,11 +587,11 @@ export default {
 }
 
 .vertical_button:hover:not(:disabled) {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 .vertical_button:disabled {
-  background-color: #2b2f2d;
+  background-color: var(--c-disabled);
 }
 
 .drag_handle {
@@ -599,8 +600,8 @@ export default {
   height: 100%;
   width: 20px;
 
-  background-color: #3b413f;
-  color: #fff;
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
   line-height: 170px;
 
   text-align: center;
@@ -609,7 +610,7 @@ export default {
 }
 
 .drag_handle:not(.enabled) {
-  background-color: #2b2f2d;
+  background-color: var(--c-disabled);
 }
 
 .drag_handle.left {
@@ -621,12 +622,12 @@ export default {
 }
 
 .drag_handle:hover.enabled {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 .cover {
   position: absolute;
-  background-color: rgb(45, 50, 48, 0.9);
+  background-color: color-mix(in srgb, var(--c-panel) 90%, transparent);
   height: 173px;
   z-index: 3;
 }
@@ -644,10 +645,10 @@ export default {
 .waveform {
   margin-left: 20px;
   margin-right: 20px;
-  color: white;
+  color: var(--c-text);
   height: 173px;
   z-index: 0;
-  background-color: #252927;
+  background-color: var(--c-bg);
 }
 
 .content {

@@ -11,6 +11,10 @@ export default {
     id: {type: String, required: true},
     name: {type: String, required: true},
     selected: {type: Boolean, default: false},
+    // Side bar only: a FontAwesome icon, and the group heading the tab sits under
+    icon: {type: String, required: false, default: undefined},
+    group: {type: String, required: false, default: undefined},
+    hidden: {type: Boolean, default: false},
   },
   data() {
     return {

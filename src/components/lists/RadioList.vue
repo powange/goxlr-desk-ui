@@ -17,7 +17,7 @@ export default {
 
     scrollTop: { type: Function, optional: true, default: () => { return 0; } },
     padding: {type: String, required: false, default: "8px"},
-    background: {type: String, required: false, default: "#3b413f" },
+    background: {type: String, required: false, default: "var(--c-raised-2)" },
 
     // Lets options be dragged (emits item-dragstart / item-dragend with the option id)
     draggable: {type: Boolean, required: false, default: false},

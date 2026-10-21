@@ -93,13 +93,13 @@ export default {
 
     getColour(id) {
       if (id === 'A') {
-        return (this.dimmed) ? "#3b7679" : "#82CFD0";
+        return (this.dimmed) ? "var(--c-accent-muted)" : "var(--c-accent-light)";
       }
-      return (this.dimmed) ? "#955218" : "#E07C24";
+      return (this.dimmed) ? "var(--c-mix-b-dim)" : "var(--c-mix-b)";
     },
 
     getLabelColour() {
-      return (this.dimmed) ? "#838584" : "#fff";
+      return (this.dimmed) ? "var(--c-faint)" : "var(--c-text)";
     },
 
     getTextValue(id) {
@@ -311,11 +311,11 @@ export default {
 <style scoped>
 #sliderBox {
   width: 120px;
-  background-color: #353937;
+  background-color: var(--c-raised);
 }
 
 .link {
-  color: #fff;
+  color: var(--c-text);
   margin-top: 5px;
   height: 20px;
   line-height: 20px;

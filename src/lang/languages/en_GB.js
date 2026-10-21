@@ -101,6 +101,8 @@ export default {
             lighting: "Lighting",
             routing: "Routing",
             system: "System",
+            library: "Library",
+            application: "Application",
 
             // Navigation Sections on the Lighting Page
             lightingGlobal: "Global",
@@ -117,6 +119,24 @@ export default {
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
         microphone: {
+            chain: {
+                title: "Processing chain",
+                input: "Input",
+                gate: "Gate",
+                gateToggle: "Noise gate on",
+                threshold: "Threshold",
+                equaliser: "Equaliser",
+                bands: "{count} bands",
+                flat: "Flat",
+                eqPeak: "{gain} dB at {freq}",
+                compressor: "Compressor",
+                compressorDetail: "Threshold {threshold} dB",
+                curveHintFine: "drag a point up and down for its level, sideways for its frequency",
+                fineTune: "Adjust frequencies",
+                bandLabel: "Band at {freq}",
+                curveHint: "drag a point to set its band",
+                types: {Dynamic: "Dynamic (XLR)", Condenser: "Condenser (XLR, +48V)", Jack: "Jack"},
+            },
             profiles: {
                 title: "Mic Profiles"
             },
@@ -177,10 +197,20 @@ export default {
             // Box Headers
             inputs: "Inputs",
             outputs: "Outputs",
+            otherInputs: "Other Inputs",
+            strip: {
+                source: "Source",
+                mute: "Mute",
+                muted: "Muted",
+                muteFunction: "Mute to",
+                lighting: "{channel} lighting",
+                lightingTitle: "Lighting · {channel}",
+            },
             mixAssignment: "Mix Assignment",
 
             // Submix Checkbox
             submix: "Submixes",
+            submixHint: "A second mix (Mix B) for every channel, faders included, to send different levels to some outputs.",
 
             // Mix Assignment
             channelA: "A",
@@ -215,6 +245,8 @@ export default {
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Lighting",
+                lightingTitle: "Cough and Bleep lighting",
                 behaviour: {
                     hold: "Hold",
                     toggle: "Toggle",
@@ -226,7 +258,26 @@ export default {
         },
 
         effects: {
+            lighting: {
+                customise: "Customise colours",
+                title: "Effects lighting",
+                presetButton: "Preset button · {name}",
+                applyPresets: "Apply to all presets",
+                encoders: "Encoders",
+                applyEncoders: "Apply to all encoders",
+                buttons: "Effect buttons",
+                applyButtons: "Apply to all effect buttons",
+            },
+            face: {
+                label: "Effects",
+                master: "Effects",
+                enabled: "On",
+                on: "on",
+                off: "off",
+                power: "Turn {effect} on or off",
+            },
             preset: {
+                name: "Name",
                 title: "Preset",
                 group: "Group",
 
@@ -396,7 +447,21 @@ export default {
         },
 
         sampler: {
+            lighting: {
+                label: "Lighting",
+                customise: "Customise colours",
+                title: "Sampler lighting",
+                bank: "Bank {bank} buttons",
+                note: "The device sets these colours for the whole bank, all four buttons share them.",
+                applyBanks: "Apply to all banks",
+            },
             bankTitle: "Bank",
+            pads: {
+                title: "Buttons",
+                empty: "Empty",
+                count: "{count} sample(s)",
+                dropHere: "Drop to assign",
+            },
             banks: {
                 bankTitle: "Bank",
                 bank: {
@@ -485,6 +550,22 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Apply to all faders",
+                applyMutes: "Apply to all mute buttons",
+                openIcons: "Open the icons folder",
+                display: "Display",
+                preview: "Preview",
+                previewFader: "fader",
+                previewMeter: "meter",
+                hintTwoColour: "Below the fader: bottom colour. Above it: top colour.",
+                hintGradient: "Below the fader: a blend from the bottom to the top colour. Above it: off.",
+                hintMeter: "The LEDs follow the channel's sound level rather than the fader position.",
+                hintGradientMeter: "The LEDs follow the channel's sound level, blending from the bottom to the top colour.",
+                previewScreen: "screen",
+                previewActive: "active",
+                previewRest: "at rest",
+            },
             // These are some common strings that are used in multiple places
             common: {
                 colour: "Colour",
@@ -501,6 +582,11 @@ export default {
                 },
 
                 applyToAll: "Apply to All",
+                pickColour: "pick a colour",
+                restLabel: "At rest",
+                restColour: "Rest colour",
+                restDimmedHint: "The button shows its active colour, dimmed: no colour to pick.",
+                brightness: "Brightness",
             },
 
             global: {
@@ -673,6 +759,9 @@ export default {
 
         system: {
             title: "System",
+            menu: {
+                firmware: "Firmware update",
+            },
 
             powerButton: "Power Action",
             power: {
@@ -862,6 +951,23 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        theme: {
+            label: "Colour theme",
+            dark: "Dark",
+            light: "Light",
+            system: "Auto",
+        },
+        topBar: {
+            lighting: "Global lighting",
+            lightingTitle: "Global lighting",
+            profile: "Profile",
+            profileLabel: "Active profile",
+            micProfile: "Mic",
+            micProfileLabel: "Active mic profile",
+            save: "Save",
+            showDevice: "Show the GoXLR",
+            hideDevice: "Hide the GoXLR",
+        },
         sampleAssign: {
             title: "Assign to {bank} · {button}",
             bank: "Bank",

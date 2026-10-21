@@ -2,6 +2,15 @@ import {createApp} from 'vue'
 import App from './App.vue'
 import vClickOutside from "click-outside-vue3";
 
+// Colour tokens and the bundled text faces (the app must work offline).
+import "./assets/theme.css";
+import {initTheme} from "@/util/theme";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
+
 /**
  * We use FontAwesome for SVG icons, before they can be used they need to be imported here, so they're correctly
  * embedded into the app at build time. If you need a new Icon, search for it at:
@@ -18,7 +27,8 @@ import {
     faFolder, faEllipsisVertical, faPlay, faStop, faXmark, faGear, faBookOpen, faCircleInfo, faChevronLeft,
     faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic, faTurnUp, faHeadphones,
     faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload, faFolderPlus, faPen,
-    faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles
+    faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles,
+    faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare,
 } from "@fortawesome/free-solid-svg-icons";
 import {createI18n} from "vue-i18n";
 import {messages} from "@/lang/config.js";
@@ -28,9 +38,12 @@ library.add(
     faCheckCircle, faCheck, faFolder, faTrash, faPlay, faStop, faXmark, faGear, faBookOpen, faCircleInfo,
     faChevronLeft, faChevronRight, faPowerOff, faLink, faLinkSlash, faVolumeXmark, faMicrophoneSlash, faMusic,
     faTurnUp, faHeadphones, faUpLong, faDownLong, faRepeat, faWaveSquare, faSquare, faSquareCheck, faDownload,
-    faFolderPlus, faPen, faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles
+    faFolderPlus, faPen, faScissors, faCropSimple, faRotateLeft, faFileImport, faTrashCan, faWandMagicSparkles,
+    faSliders, faScrewdriverWrench, faTableCellsLarge, faShuffle, faLightbulb, faFileLines, faLayerGroup, faChevronUp, faChevronDown, faVolumeHigh, faUpRightFromSquare
 );
 
+
+initTheme();
 
 let app = createApp(App);
 app.component('font-awesome-icon', FontAwesomeIcon);

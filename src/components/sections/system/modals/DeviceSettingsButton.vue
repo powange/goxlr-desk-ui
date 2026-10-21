@@ -1,6 +1,6 @@
 <template>
   <div>
-    <BigButton
+    <BigButton v-if="!inline"
         id="device_settings_button"
         ref="device_button"
         :title="$t('message.system.deviceButton')"
@@ -9,7 +9,7 @@
       <font-awesome-icon icon="fa-solid fa-headphones"/>
     </BigButton>
 
-    <AccessibleModal
+    <AccessibleModal :inline="inline"
         width="630px"
         ref="modal"
         id="device_settings"
@@ -76,6 +76,10 @@ import NumberSetting from "@/components/sections/system/modals/settings/NumberSe
 import ListSetting from "@/components/sections/system/modals/settings/ListSetting.vue";
 
 export default {
+  props: {
+    // Shows the content in place (System section) instead of a button opening a dialog
+    inline: {type: Boolean, default: false},
+  },
   name: "DeviceSettingsButton",
   components: {
     ListSetting,
@@ -215,11 +219,11 @@ export default {
 
 <style scoped>
 .settingList > :nth-child(odd) {
-  background-color: #353937;
+  background-color: var(--c-raised);
 }
 
 .settingList > :nth-child(even) {
-  background-color: #242826;
+  background-color: var(--c-bg);
 }
 
 </style>

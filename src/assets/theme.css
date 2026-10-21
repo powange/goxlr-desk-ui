@@ -1,0 +1,70 @@
+/*
+ * Colour tokens for the whole UI. Components use these variables instead of literal colours,
+ * so the dark (default) and light themes are switched by setting data-theme on <html>.
+ * The GoXLR visualiser and the user's lighting colours keep their own literal colours.
+ */
+:root {
+  --c-bg: #0e1113;            /* page */
+  --c-panel: #161b1e;         /* groups and panels */
+  --c-raised: #1f262a;        /* lists inside a panel */
+  --c-raised-2: #262e33;      /* items inside a list */
+  --c-hover: #303a40;
+  --c-hover-strong: #3c4850;
+  --c-disabled: #13181a;
+  --c-line: #2a3337;
+  --c-line-strong: #4a575d;
+  --c-text: #e6eced;
+  --c-text-soft: #c3ccce;
+  --c-muted: #8a979c;
+  --c-faint: #5e6b70;
+  --c-accent: #3fd0d4;
+  --c-accent-light: #8ae3e6;
+  --c-accent-dim: #1d4f52;
+  --c-accent-muted: #3f7a7d;
+  --c-on-accent: #062a2b;     /* text and icons on the accent */
+  --c-danger: #ff5d5d;
+  --c-on-danger: #2a0505;
+  --c-danger-bg: #3a1214;
+  --c-warn: #f5b041;
+  --c-ok: #42d392;
+  --c-mix-b: #e07c24;         /* submix B */
+  --c-mix-b-dim: #6b3a12;
+  --c-shadow: rgba(0, 0, 0, 0.45);
+
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-title: LeagueMonoCondensed, "Arial Narrow", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  color-scheme: dark;
+}
+
+:root[data-theme="light"] {
+  --c-bg: #eef2f2;
+  --c-panel: #ffffff;
+  --c-raised: #f3f6f6;
+  --c-raised-2: #e9eeee;
+  --c-hover: #dfe7e7;
+  --c-hover-strong: #cfdada;
+  --c-disabled: #eef1f1;
+  --c-line: #d5dddd;
+  --c-line-strong: #a9b6b8;
+  --c-text: #142023;
+  --c-text-soft: #2d3b3f;
+  --c-muted: #5b6b70;
+  --c-faint: #8d9a9e;
+  --c-accent: #0b7d82;
+  --c-accent-light: #0b7d82;
+  --c-accent-dim: #cfe9ea;
+  --c-accent-muted: #7fb3b6;
+  --c-on-accent: #ffffff;
+  --c-danger: #d23b3b;
+  --c-on-danger: #ffffff;
+  --c-danger-bg: #fbe3e3;
+  --c-warn: #a86a0a;
+  --c-ok: #1d8f5a;
+  --c-mix-b: #c25f0c;
+  --c-mix-b-dim: #f3d2b5;
+  --c-shadow: rgba(20, 32, 35, 0.18);
+
+  color-scheme: light;
+}

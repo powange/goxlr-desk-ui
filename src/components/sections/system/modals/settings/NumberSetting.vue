@@ -79,11 +79,11 @@ export default {
   display: flex;
   height: 20px;
   padding: 10px;
-  color: #ccc;
+  color: var(--c-text-soft);
 }
 
 .setting:focus-within {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .label {
@@ -95,7 +95,7 @@ export default {
   white-space: nowrap;
   margin: auto;
 
-  border: 1px solid #ccc;
+  border: 1px solid var(--c-line-strong);
   padding: 2px;
   width: 70px;
 
@@ -103,8 +103,8 @@ export default {
 }
 
 .input:hover {
-  color: #fff;
-  border-color: #fff;
+  color: var(--c-text);
+  border-color: var(--c-text);
 }
 
 .input input {
@@ -112,20 +112,20 @@ export default {
   text-align: right;
   outline: none;
   background-color: transparent;
-  font-family: LeagueMonoCondensed, sans-serif;
-  color: #ccc;
+  font-family: var(--f-body);
+  color: var(--c-text-soft);
   border: 0;
   -moz-appearance: textfield;
   width: 40px;
 }
 
 .input input:focus {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .input:focus-within {
-  border: 1px solid #fff;
-  color: #fff;
+  border: 1px solid var(--c-text);
+  color: var(--c-text);
 }
 
 .input input::-webkit-inner-spin-button {

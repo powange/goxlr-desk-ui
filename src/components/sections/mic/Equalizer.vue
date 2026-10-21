@@ -103,61 +103,61 @@ export default {
     getBackgroundColour(index) {
       if (isDeviceMini()) {
         if (index < 3) {
-          return "#252927";
+          return "var(--c-bg)";
         }
 
         if (index < 5) {
-          return "#353937";
+          return "var(--c-raised)";
         }
 
-        return "#3b413f";
+        return "var(--c-raised-2)";
       }
 
       if (index < 5) {
-        return "#252927";
+        return "var(--c-bg)";
       }
       if (index < 8) {
-        return "#353937";
+        return "var(--c-raised)";
       }
 
-      return "#3b413f";
+      return "var(--c-raised-2)";
     },
 
     getInputBackgroundColour(index) {
       if (isDeviceMini()) {
         if (index < 3) {
-          return "#353937";
+          return "var(--c-raised)";
         }
 
         if (index < 5) {
-          return "#3b413f";
+          return "var(--c-raised-2)";
         }
 
-        return "#535c59";
+        return "var(--c-hover-strong)";
       }
 
       if (index < 5) {
-        return "#353937";
+        return "var(--c-raised)";
       }
       if (index < 8) {
-        return "#3b413f";
+        return "var(--c-raised-2)";
       }
 
-      return "#535c59";
+      return "var(--c-hover-strong)";
     },
 
     getRangeBackgroundColour(index) {
       if (isDeviceMini()) {
         if (index < 3) {
-          return "#353937";
+          return "var(--c-raised)";
         }
-        return "#252927";
+        return "var(--c-bg)";
       }
 
       if (index < 5) {
-        return "#353937";
+        return "var(--c-raised)";
       }
-      return "#252927";
+      return "var(--c-bg)";
     },
 
     getMinEqValue(index) {
@@ -497,7 +497,7 @@ export default {
 
 <style scoped>
 label {
-  color: #fff;
+  color: var(--c-text);
   font-size: 10px;
   font-family: sans-serif;
 }
@@ -506,12 +506,12 @@ label {
   border: 0;
   margin: 0 30px 0 0;
   padding: 5px 24px;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
-  background-color: #3b413f;
+  color: var(--c-text);
+  font-family: var(--f-body);
+  background-color: var(--c-raised-2);
 }
 
 .reset:hover {
-  background-color: #535c59;
+  background-color: var(--c-hover-strong);
 }
 </style>

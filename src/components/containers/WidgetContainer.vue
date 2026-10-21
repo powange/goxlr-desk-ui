@@ -3,7 +3,8 @@ export default {
     name: "WidgetContainer",
     props: {
         title: String,
-        maxWidth: { type: String, default: "fit-content"}
+        maxWidth: { type: String, default: "fit-content"},
+        height: { type: String, default: "220px"}
     }
 }
 </script>
@@ -28,19 +29,23 @@ export default {
     flex-direction: column;
     align-items: center;
 
-    height: 220px;
+    height: v-bind(height);
     min-width: 200px;
     max-width: v-bind(maxWidth);
 
-    background-color: #353937;
+    background-color: var(--c-raised);
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .title {
     width: 100%;
-    padding: 10px 0;
+    padding: 10px 0 8px;
 
-    color: #ffffff;
-    background-color: #3b413f;
+    font-family: var(--f-mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    color: var(--c-muted);
     text-transform: uppercase;
     text-align: center;
 }

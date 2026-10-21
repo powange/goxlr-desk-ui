@@ -1,38 +1,52 @@
 <template>
-  <GroupContainer :title="$t('message.sampler.bankTitle')">
-    <RadioSelection
-        :title="$t('message.sampler.banks.bankTitle')"
-        group="sampler_bank"
-        :options="getBankOptions()"
-        :selected="activeBank"
-        @selection-changed="setActiveBank"
-    />
-    <RadioSelection
-        :title="$t('message.sampler.banks.buttonTitle')"
-        group="sampler_button"
-        :options="getButtonOptions()"
-        :selected="activeButton"
-        @selection-changed="setActiveButton"
-        :label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})"
-    />
-    <RadioSelection
-        :title="$t('message.sampler.banks.functionTitle')"
-        group="sampler_function"
-        :options="getFunctionOptions()"
-        :selected="getActiveFunction()"
-        @selection-changed="setActiveFunction"
-        :label="$t('message.sampler.banks.functionLabel', {activeButton: activeButton, activeBank: activeBank})"
-    />
-    <RadioSelection
-        :title="$t('message.sampler.banks.playOrderTitle')"
-        group="sampler_order"
-        :options="getOrderOptions()"
-        :selected="getActiveOrder()"
-        @selection-changed="setActiveOrder"
-        :label="$t('message.sampler.banks.playOrderLabel', {activeButton: activeButton, activeBank: activeBank})"
-    />
+  <GroupContainer :title="$t('message.sampler.pads.title')">
+    <div class="pad-panel">
+      <div class="pad-row">
+        <span class="field-label">{{ $t('message.sampler.banks.bankTitle') }}</span>
+        <SegmentedControl :options="getBankOptions()" :selected="activeBank" @selection-changed="setActiveBank"
+                          :label="$t('message.sampler.banks.bankTitle')"/>
+      </div>
+
+      <div class="pads" role="radiogroup" :aria-label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})">
+        <button v-for="option in getButtonOptions()" :key="option.id" type="button" role="radio" class="pad"
+                :aria-checked="option.id === activeButton"
+                :class="{ selected: option.id === activeButton, filled: getPadSamples(option.id).length > 0, drop: dropButton === option.id }"
+                @click="setActiveButton(option.id)"
+                @dragover="onPadDragOver($event, option.id)" @dragleave="onPadDragLeave(option.id)"
+                @drop="onPadDrop($event, option.id)">
+          <span class="pad-key">{{ option.label }}</span>
+          <span class="pad-name">{{ getPadSamples(option.id).length > 0 ? getPadSamples(option.id)[0].name : $t('message.sampler.pads.empty') }}</span>
+          <span class="pad-meta" v-if="getPadSamples(option.id).length > 0">
+            {{ $t('message.sampler.pads.count', {count: getPadSamples(option.id).length}) }} · {{ getFunctionLabel(option.id) }}
+          </span>
+          <span class="pad-tip" v-if="dropButton === option.id">{{ $t('message.sampler.pads.dropHere') }}</span>
+        </button>
+      </div>
+
+      <label class="pad-row">
+        <span class="field-label">{{ $t('message.sampler.banks.functionTitle') }}</span>
+        <select class="pad-select" :value="getActiveFunction()" @change="setActiveFunction($event.target.value)"
+                :aria-label="$t('message.sampler.banks.functionLabel', {activeButton: activeButton, activeBank: activeBank})">
+          <option v-for="option in getFunctionOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
+        </select>
+      </label>
+
+      <div class="pad-row">
+        <span class="field-label">{{ $t('message.sampler.banks.playOrderTitle') }}</span>
+        <SegmentedControl :options="getOrderOptions()" :selected="getActiveOrder()" @selection-changed="setActiveOrder"
+                          :label="$t('message.sampler.banks.playOrderLabel', {activeButton: activeButton, activeBank: activeBank})"/>
+      </div>
+
+      <div class="pad-row">
+        <span class="field-label">{{ $t('message.sampler.lighting.label') }}</span>
+        <button ref="lightingButton" type="button" class="lighting-button" @click="openLighting">
+          <font-awesome-icon icon="fa-solid fa-lightbulb"/>
+          <span>{{ $t('message.sampler.lighting.customise') }}</span>
+        </button>
+      </div>
+    </div>
   </GroupContainer>
-  <GroupContainer :title="$t('message.sampler.samplesTitle')">
+  <GroupContainer class="button-samples" :title="$t('message.sampler.samplesTitle')">
     <RadioSelection
         :title="$t('message.sampler.samples.samplesTitle')"
         group="sampler_samples"
@@ -66,6 +80,11 @@
         :sample-name="getActiveSampleName(activeSample)"
     />
   </GroupContainer>
+
+  <AccessibleModal ref="lightingModal" id="samplerLighting" width="min(560px, 94vw)" body-padding="0">
+    <template v-slot:title>{{ $t('message.sampler.lighting.title') }}</template>
+    <SamplerLighting v-if="lightingOpen" :bank="activeBank"/>
+  </AccessibleModal>
 
   <AccessibleModal
       ref="add_sample_modal"
@@ -153,13 +172,18 @@ import ModalButton from "@/components/design/modal/ModalButton.vue";
 import {websocket} from "@/util/sockets";
 import SampleFileSelector from "@/components/sections/sampler/SampleFileSelector.vue";
 import Slider from "@/components/slider/Slider.vue";
+import SegmentedControl from "@/components/design/SegmentedControl.vue";
+import SamplerLighting from "@/components/sections/sampler/SamplerLighting.vue";
+import {getDraggedSamples, isSampleDrag} from "@/util/sampleDrag";
 
 export default {
-  emits: ["on-sample-bank-change"],
+  emits: ["on-sample-bank-change", "sample-drop"],
 
   name: "SamplerTab",
   components: {
     Slider,
+    SegmentedControl,
+    SamplerLighting,
     SampleFileSelector,
 
     ModalButton,
@@ -177,6 +201,9 @@ export default {
       activeBank: "A",
       activeButton: "TopLeft",
       activeSample: "-1",
+      // The pad samples are being dragged over
+      dropButton: undefined,
+      lightingOpen: false,
 
       showAddModal: false,
       waitModal: false,
@@ -194,6 +221,49 @@ export default {
         {id: "B", label: this.$t('message.sampler.banks.bank.b')},
         {id: "C", label: this.$t('message.sampler.banks.bank.c')},
       ];
+    },
+
+    // The bank's lighting (moved here from the Lighting section)
+    openLighting() {
+      this.lightingOpen = false;
+      this.$nextTick(() => {
+        this.lightingOpen = true;
+        this.$refs.lightingModal.openModal(undefined, this.$refs.lightingButton);
+      });
+    },
+
+    getPadSamples(button) {
+      return store.getActiveDevice().sampler.banks[this.activeBank][button].samples;
+    },
+
+    getFunctionLabel(button) {
+      const id = store.getActiveDevice().sampler.banks[this.activeBank][button].function;
+      const option = this.getFunctionOptions().find(option => option.id === id);
+      return option ? option.label : id;
+    },
+
+    // Samples dragged from the library onto a pad are assigned through the same dialog as the
+    // visualiser's buttons.
+    onPadDragOver(event, button) {
+      if (!isSampleDrag(event)) return;
+      event.preventDefault();
+      event.dataTransfer.dropEffect = "copy";
+      this.dropButton = button;
+    },
+
+    onPadDragLeave(button) {
+      if (this.dropButton === button) this.dropButton = undefined;
+    },
+
+    onPadDrop(event, button) {
+      if (!isSampleDrag(event)) return;
+      event.preventDefault();
+      this.dropButton = undefined;
+      const paths = getDraggedSamples(event);
+      if (paths.length > 0) {
+        this.setActiveButton(button);
+        this.$emit("sample-drop", {button, paths, bank: this.activeBank});
+      }
     },
 
     getButtonOptions() {
@@ -480,6 +550,134 @@ export default {
 </script>
 
 <style scoped>
+.pad-panel {
+  display: grid;
+  gap: 14px;
+  width: 360px;
+  padding: 6px 0 4px;
+}
+
+.pad-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.field-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.pad-panel .lighting-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 6px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.pad-panel .lighting-button:hover {
+  border-color: var(--c-line-strong);
+}
+
+.pad-panel .lighting-button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.pad-select {
+  flex: 1;
+  max-width: 220px;
+  padding: 6px 8px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-size: 12px;
+}
+
+.pads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.pad-panel .pad {
+  position: relative;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  min-height: 92px;
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 10px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.pad-panel .pad.filled {
+  border-color: color-mix(in srgb, var(--c-accent) 50%, var(--c-line));
+}
+
+.pad-panel .pad:hover {
+  background-color: var(--c-hover);
+}
+
+.pad-panel .pad.selected {
+  box-shadow: 0 0 0 2px var(--c-accent);
+}
+
+.pad-panel .pad.drop {
+  border: 2px dashed var(--c-accent);
+  background-color: color-mix(in srgb, var(--c-accent) 12%, var(--c-raised));
+}
+
+.pad-panel .pad:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
+.pad-key {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.pad-name {
+  font-weight: 600;
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pad-meta {
+  font-size: 11px;
+  color: var(--c-muted);
+}
+
+.pad-tip {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--c-accent);
+}
+
 button {
   border: 0;
   background-color: transparent;
@@ -489,12 +687,12 @@ button {
 
 .openButton {
   display: inline-block;
-  color: #a5a7a6;
+  color: var(--c-muted);
   font-size: 14px;
 }
 
 .openButton:hover {
-  color: #fff;
+  color: var(--c-text);
   cursor: pointer;
 }
 </style>

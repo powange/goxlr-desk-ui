@@ -70,25 +70,27 @@ export default {
         // These Strings appear in the tabs throughout the pages
         navigation: {
             // Tabs at the top of the Page
-            profiles: "Profiles",
+            profiles: "Profils",
             presets: "Préréglages",
-            samples: "Sons enregistrés",
+            samples: "Sons",
 
             // Main Navigation Tabs
             microphone: "Micro",
             mixer: "Mixer",
             configuration: "Configuration",
             effects: "Effets",
-            sampler: "Sons enregistrés",
+            sampler: "Sampler",
             lighting: "Éclairage",
-            routing: "Entrée/Sortie",
+            routing: "Routage",
             system: "Système",
+            library: "Bibliothèque",
+            application: "Application",
 
             // Navigation Sections on the Lighting Page
             lightingGlobal: "Global",
             lightingMixer: "Mixer",
             lightingEffects: "Effets",
-            lightingSampler: "Sons enregistrés",
+            lightingSampler: "Sampler",
             lightingCough: "Toux/Bip",
 
             // Accessibility Messages (these are announced to screen readers)
@@ -99,6 +101,24 @@ export default {
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
         microphone: {
+            chain: {
+                title: "Chaîne de traitement",
+                input: "Entrée",
+                gate: "Gate",
+                gateToggle: "Suppression de bruit activée",
+                threshold: "Seuil",
+                equaliser: "Égaliseur",
+                bands: "{count} bandes",
+                flat: "Plat",
+                eqPeak: "{gain} dB à {freq}",
+                compressor: "Compresseur",
+                compressorDetail: "Seuil {threshold} dB",
+                curveHintFine: "tirer un point vers le haut ou le bas pour son niveau, sur le côté pour sa fréquence",
+                fineTune: "Ajuster les fréquences",
+                bandLabel: "Bande à {freq}",
+                curveHint: "tirer un point pour régler sa bande",
+                types: {Dynamic: "Dynamique (XLR)", Condenser: "Condensateur (XLR, +48 V)", Jack: "Jack"},
+            },
             profiles: {
                 title: "Profils de Micro"
             },
@@ -159,10 +179,20 @@ export default {
             // Box Headers
             inputs: "Entrées",
             outputs: "Sorties",
+            otherInputs: "Autres entrées",
+            strip: {
+                source: "Source",
+                mute: "Couper",
+                muted: "Coupé",
+                muteFunction: "Coupe vers",
+                lighting: "Éclairage de {channel}",
+                lightingTitle: "Éclairage · {channel}",
+            },
             mixAssignment: "Assignation de mixage",
 
             // Submix Checkbox
             submix: "Sous-mixages",
+            submixHint: "Un second mix (Mix B) pour chaque canal, faders compris, pour envoyer des niveaux différents vers certaines sorties.",
 
             // Mix Assignment
             channelA: "A",
@@ -192,6 +222,8 @@ export default {
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Éclairage",
+                lightingTitle: "Éclairage de Toux et Bip",
                 behaviour: {
                     hold: "Maintenir",
                     toggle: "Basculer",
@@ -203,11 +235,30 @@ export default {
         },
 
         effects: {
+            lighting: {
+                customise: "Personnaliser la couleur",
+                title: "Éclairage des effets",
+                presetButton: "Bouton du préréglage · {name}",
+                applyPresets: "Appliquer à tous les préréglages",
+                encoders: "Molettes",
+                applyEncoders: "Appliquer à toutes les molettes",
+                buttons: "Boutons d'effet",
+                applyButtons: "Appliquer à tous les boutons d'effet",
+            },
+            face: {
+                label: "Effets",
+                master: "Effets",
+                enabled: "Activé",
+                on: "marche",
+                off: "arrêt",
+                power: "Allumer ou éteindre {effect}",
+            },
             preset: {
+                name: "Nom",
                 title: "Préréglages",
                 group: "Groupe",
 
-                menuLoad: "Charge",
+                menuLoad: "Charger",
                 menuRename: "Renommer",
                 menuSave: "Sauvegarder",
 
@@ -373,7 +424,21 @@ export default {
         },
 
         sampler: {
+            lighting: {
+                label: "Éclairage",
+                customise: "Personnaliser la couleur",
+                title: "Éclairage du sampler",
+                bank: "Boutons de la banque {bank}",
+                note: "La GoXLR règle ces couleurs pour toute la banque : les quatre boutons les partagent.",
+                applyBanks: "Appliquer à toutes les banques",
+            },
             bankTitle: "Banque",
+            pads: {
+                title: "Boutons",
+                empty: "Vide",
+                count: "{count} son(s)",
+                dropHere: "Déposer pour affecter",
+            },
             banks: {
                 bankTitle: "Banque",
                 bank: {
@@ -461,6 +526,22 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Appliquer à tous les faders",
+                applyMutes: "Appliquer à tous les boutons muet",
+                openIcons: "Ouvrir le dossier des icônes",
+                display: "Affichage",
+                preview: "Aperçu",
+                previewFader: "fader",
+                previewMeter: "vumètre",
+                hintTwoColour: "Sous le fader : couleur basse. Au-dessus : couleur haute.",
+                hintGradient: "Sous le fader : dégradé de la couleur basse vers la haute. Au-dessus : éteint.",
+                hintMeter: "Les LED suivent le niveau du son du canal, et non la position du fader.",
+                hintGradientMeter: "Les LED suivent le niveau du son du canal, en dégradé de la couleur basse vers la haute.",
+                previewScreen: "écran",
+                previewActive: "actif",
+                previewRest: "au repos",
+            },
             // These are some common strings that are used in multiple places
             common: {
                 colour: "Couleur",
@@ -477,6 +558,11 @@ export default {
                 },
 
                 applyToAll: "Appliquer à tout",
+                pickColour: "choisir une couleur",
+                restLabel: "Au repos",
+                restColour: "Couleur au repos",
+                restDimmedHint: "Le bouton reprend sa couleur active, en moins lumineux : pas de couleur à choisir.",
+                brightness: "Luminosité",
             },
 
             global: {
@@ -648,6 +734,9 @@ export default {
 
         system: {
             title: "Système",
+            menu: {
+                firmware: "Mise à jour du firmware",
+            },
 
             powerButton: "Actions d'alimentation",
             power: {
@@ -673,7 +762,7 @@ export default {
                 }
             },
 
-            deviceButton: "Paramètres de l'appareil.",
+            deviceButton: "Paramètres de l'appareil",
             device: {
                 holdDuration: "Durée du maintien du bouton de sourdine pour mettre en sourdine tout.",
                 holdDurationAccessibility: "La durée en millisecondes pendant laquelle le bouton de sourdine doit être maintenu enfoncé pour mettre en sourdine tous les canaux.",
@@ -762,6 +851,23 @@ export default {
         },
 
         // Strings used in Profile and Microphone Profile Management.
+        theme: {
+            label: "Thème de couleurs",
+            dark: "Sombre",
+            light: "Clair",
+            system: "Auto",
+        },
+        topBar: {
+            lighting: "Éclairage global",
+            lightingTitle: "Éclairage global",
+            profile: "Profil",
+            profileLabel: "Profil actif",
+            micProfile: "Micro",
+            micProfileLabel: "Profil micro actif",
+            save: "Enregistrer",
+            showDevice: "Afficher la GoXLR",
+            hideDevice: "Masquer la GoXLR",
+        },
         sampleAssign: {
             title: "Affecter à {bank} · {button}",
             bank: "Banque",

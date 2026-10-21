@@ -1,6 +1,7 @@
 <script>
 import {websocket} from "@/util/sockets";
 import {store} from "@/store";
+import {themeColour} from "@/util/util";
 
 export default {
   name: "AudioMeter",
@@ -85,13 +86,13 @@ export default {
       this.draw_text(this.$t('message.microphone.waveform.good'), -20, -10);
 
       if (this.show_estimated) {
-        this.render_text(this.$t('message.microphone.waveform.gate_estimated'), this.canvas_size.width - 40, this.canvas_size.height - 10, "#888", "right", "middle");
+        this.render_text(this.$t('message.microphone.waveform.gate_estimated'), this.canvas_size.width - 40, this.canvas_size.height - 10, themeColour("muted"), "right", "middle");
       }
 
       this.draw_db_lines()
 
       // Draw the Points..
-      this.canvas.strokeStyle = 'white'
+      this.canvas.strokeStyle = themeColour('text')
 
       // Begin the Path..
       let f = 0.3
@@ -166,10 +167,10 @@ export default {
       this.render_text(text, 10, position);
     },
 
-    render_text: function(text, x, y, color = "#fff", text_align = "left", text_baseline = "middle") {
+    render_text: function(text, x, y, color = themeColour("text"), text_align = "left", text_baseline = "middle") {
       this.canvas.fillStyle = color;
       this.canvas.textAlign = text_align;
-      this.canvas.font = "12px LeagueMonoCondensed";
+      this.canvas.font = "12px " + getComputedStyle(document.documentElement).getPropertyValue("--f-body");
       this.canvas.textBaseline = text_baseline;
 
       this.canvas.fillText(text, x, y);
@@ -181,7 +182,7 @@ export default {
       let start = this.get_db_position(this.fade_below);
       this.canvas.fillRect(0, start, this.canvas_size.width, this.canvas_size.height);
 
-      this.canvas.strokeStyle = '#fff';
+      this.canvas.strokeStyle = themeColour('text');
       this.canvas.beginPath();
       this.canvas.moveTo(0, start);
       this.canvas.lineTo(this.canvas_size.width, start);
@@ -194,7 +195,7 @@ export default {
         let value = i * -10
         let position = this.get_db_position(value)
 
-        this.canvas.strokeStyle = 'rgb(50, 50, 50)'
+        this.canvas.strokeStyle = themeColour('line')
         this.canvas.beginPath()
         this.canvas.moveTo(0, position)
         this.canvas.lineTo(this.canvas_size.width, position)

@@ -60,8 +60,8 @@ export default {
   },
 
   methods: {
-    open(button, paths) {
-      this.bank = store.getActiveDevice().sampler.active_bank;
+    open(button, paths, bank = undefined) {
+      this.bank = bank || store.getActiveDevice().sampler.active_bank;
       this.button = button;
       this.paths = paths;
       this.busy = false;
@@ -162,19 +162,19 @@ export default {
 }
 
 .bankButton {
-  background-color: #353937;
-  color: #fff;
+  background-color: var(--c-raised);
+  color: var(--c-text);
   border: none;
   padding: 4px 14px;
 }
 
 .bankButton.active {
-  background-color: #59b1b6;
-  color: #000;
+  background-color: var(--c-accent);
+  color: var(--c-on-accent);
 }
 
 .bankButton:not(.active):not(:disabled):hover {
-  background-color: #737775;
+  background-color: var(--c-hover-strong);
 }
 
 .samples, .current {
@@ -196,13 +196,13 @@ export default {
   padding-left: 18px;
   list-style: disc;
   font-size: 0.85em;
-  color: #a5a7a6;
+  color: var(--c-muted);
 }
 
 .hint {
   margin: 10px 0 4px 0;
   font-size: 0.85em;
-  color: #a5a7a6;
+  color: var(--c-muted);
 }
 
 .progress {
@@ -211,6 +211,6 @@ export default {
 
 .error {
   margin: 10px 0 0 0;
-  color: #ff6b6b;
+  color: var(--c-danger);
 }
 </style>

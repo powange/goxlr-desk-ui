@@ -1,10 +1,10 @@
 <template>
   <div>
-    <BigButton id="about_button" ref="button" :title="$t('message.system.aboutButton')"
+    <BigButton v-if="!inline" id="about_button" ref="button" :title="$t('message.system.aboutButton')"
                @button-clicked="$refs.aboutModal.openModal(undefined, $refs.button)">
       <font-awesome-icon icon="fa-solid fa-circle-info"/>
     </BigButton>
-    <AccessibleModal ref="aboutModal" id="about_modal" :show_footer=false>
+    <AccessibleModal :inline="inline" ref="aboutModal" id="about_modal" :show_footer=false>
       <template v-slot:title>{{ $t('message.system.aboutButton') }}</template>
       <div style="text-align: left">
         <div style="margin-bottom: 20px">
@@ -54,6 +54,10 @@ import {store} from "@/store";
 import { isWindowsDriver } from "@/util/util";
 
 export default {
+  props: {
+    // Shows the content in place (System section) instead of a button opening a dialog
+    inline: {type: Boolean, default: false},
+  },
   name: "AboutButton",
   components: {AccessibleModal, BigButton},
 

@@ -40,8 +40,8 @@ export default {
     storePath: {type: String, required: true},
     id: {type: String, required: false, default: ""},
 
-    colour: {type: String, required: false, default: "#82CFD0"},
-    backgroundColour: {type: String, required: false, default: '#252927'},
+    colour: {type: String, required: false, default: "var(--c-accent-light)"},
+    backgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
 
     title: {type: String, required: false, default: ''},
     reportedValue: {type: String, required: false, default: ''}
@@ -162,7 +162,7 @@ export default {
 
   position: relative;
   border-radius: 2px;
-  height: 3px;
+  height: 4px;
   width: v-bind(heightString);
   outline: none;
   transition: background 450ms ease-in;
@@ -172,20 +172,29 @@ export default {
   touch-action: none;
 }
 
+/* A fader cap: the range is drawn rotated, so the cap is wider along the track */
 input[type='range']::-webkit-slider-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 8px;
-  background: v-bind(colour);
+  width: 12px;
+  height: 24px;
+  border-radius: 3px;
+  background: var(--c-text);
+  border: 2px solid v-bind(colour);
+  box-shadow: 0 1px 3px var(--c-shadow);
   -webkit-appearance: none;
 }
 
 input[type='range']::-moz-range-thumb {
-  width: 16px;
-  height: 16px;
-  border-radius: 7px;
-  background: v-bind(colour);
-  border: 0;
+  width: 12px;
+  height: 24px;
+  border-radius: 3px;
+  background: var(--c-text);
+  border: 2px solid v-bind(colour);
+  box-shadow: 0 1px 3px var(--c-shadow);
+}
+
+input[type='range']:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 .rotation {

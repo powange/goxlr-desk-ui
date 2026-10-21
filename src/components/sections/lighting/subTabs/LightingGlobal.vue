@@ -115,9 +115,9 @@ export default {
     // Range Helpers
     getRangeColour(enabled) {
       if (enabled) {
-        return "#82CFD0";
+        return "var(--c-accent-light)";
       }
-      return "#3b7679";
+      return "var(--c-accent-muted)";
     },
 
     // Mod1 Settings..
@@ -185,7 +185,7 @@ export default {
       }
 
       store.getActiveDevice().lighting.animation.mod2 = this.mod2Value;
-      websocket.send_command(store.getActiveSerial(), {"SetAnimationMod2": this.this.mod2Value});
+      websocket.send_command(store.getActiveSerial(), {"SetAnimationMod2": this.mod2Value});
     },
 
     // Waterfall Settings..
@@ -228,7 +228,7 @@ export default {
                         :options="getAnimationOptions()" :selected="this.animationModeSelected()"
                         @selection-changed="onAnimationModeChange"/>
 
-        <div style="text-align: center; color: #fff; padding-left: 8px">
+        <div style="text-align: center; color: var(--c-text); padding-left: 8px">
           <div class="title" :class="{ disabled: !isMod1Enabled()}">
             {{ $t('message.lighting.global.animations.mod1') }}
           </div>
@@ -295,17 +295,17 @@ export default {
 }
 
 .title.disabled {
-  color: #818483;
+  color: var(--c-muted);
 }
 
 .modValue {
   margin-top: 12px;
   margin-bottom: 12px;
-  color: #82CFD0;
+  color: var(--c-accent-light);
 }
 
 .modValue.disabled {
-  color: #3C6061;
+  color: var(--c-accent-muted);
 }
 
 .waterfall {
@@ -316,47 +316,47 @@ export default {
 }
 
 .waterfall.active {
-  color: #59B1B6;
+  color: var(--c-accent);
 
 }
 
 .waterfall.active.disabled {
   cursor: initial;
-  color: #427273;
+  color: var(--c-accent-muted);
 }
 
 .waterfall:not(.active) {
-  color: #447475;
+  color: var(--c-accent-muted);
 }
 
 .waterfall:not(.active).disabled {
   cursor: initial;
-  color: #385352;
+  color: var(--c-accent-muted);
 }
 
 .wf-button > button {
   border: none;
   width: 100%;
   font-size: 12px;
-  background-color: #447475;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  background-color: var(--c-accent-dim);
+  color: var(--c-text);
+  font-family: var(--f-body);
   padding: 3px;
   cursor: pointer;
 }
 
 .wf-button > button.active {
-  background-color: #59B1B6;
+  background-color: var(--c-accent);
 }
 
 .wf-button > button:disabled {
   cursor: initial;
-  background-color: #385352;
+  background-color: var(--c-accent-dim);
 }
 
 .wf-button > button.active:disabled {
   cursor: initial;
-  color: #427273;
+  color: var(--c-accent-muted);
 }
 
 

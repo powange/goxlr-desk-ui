@@ -35,16 +35,16 @@ export default {
   display:inline-flex;
   align-items: center;
 
-  color: #fff;
+  color: var(--c-text);
   vertical-align: middle;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
   padding: 15px;
 
   border: 0;
 }
 
 .expander:hover {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 </style>
 

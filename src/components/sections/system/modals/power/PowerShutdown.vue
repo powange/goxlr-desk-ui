@@ -231,10 +231,10 @@ export default {
 
 <style scoped>
 .settingList > :nth-child(odd) {
-  background-color: #353937;
+  background-color: var(--c-raised);
 }
 
 .settingList > :nth-child(even) {
-  background-color: #242826;
+  background-color: var(--c-bg);
 }
 </style>

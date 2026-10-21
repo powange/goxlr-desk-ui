@@ -1,5 +1,10 @@
 <template>
-  <div v-show=is_visible class="modal-mask">
+  <!-- Inline: the content shown in place, as a titled panel (no mask, no close button) -->
+  <section v-if="inline" class="inline-panel" :aria-labelledby="`${id}_label`">
+    <h2 :id="`${id}_label`" class="inline-title"><slot name="title"></slot></h2>
+    <div class="inline-body"><slot></slot></div>
+  </section>
+  <div v-else v-show=is_visible class="modal-mask">
     <div class="modal-wrapper">
       <div ref="dialog" class="modal-container" role="dialog" aria-modal="true" :aria-labelledby="`${id}_label`"
            :aria-describedby="`${id}_body`" @keyup.esc.prevent="closeModalEsc">
@@ -38,7 +43,8 @@ export default {
     prevent_esc: {type: Boolean, default: false},
 
     bodyPadding: {type: String, default: "20px"},
-    width: {type: String, default: "500px"}
+    width: {type: String, default: "500px"},
+    inline: {type: Boolean, default: false},
   },
 
   data() {
@@ -51,6 +57,7 @@ export default {
 
   methods: {
     openModal(focusRef, returnFocus) {
+      if (this.inline) return;
       this.returnFocus = returnFocus;
       this.is_visible = true;
 
@@ -79,6 +86,7 @@ export default {
     },
 
     closeModal() {
+      if (this.inline) return;
       // Deactivate the Trap (if active)..
       this.trap.deactivate();
 
@@ -94,7 +102,7 @@ export default {
     },
 
     isOpen() {
-      return this.is_visible;
+      return this.inline || this.is_visible;
     }
   }
 }
@@ -103,6 +111,26 @@ export default {
 </script>
 
 <style scoped>
+.inline-panel {
+  display: grid;
+  gap: 16px;
+  align-content: start;
+  color: var(--c-text);
+}
+
+.inline-title {
+  margin: 0;
+  font-family: var(--f-title);
+  font-size: 18px;
+  font-weight: normal;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.inline-body {
+  text-align: left;
+}
+
 /* Turn the background of the screen grey */
 .modal-mask {
   position: fixed;
@@ -124,12 +152,12 @@ export default {
 
 /* The Actual Border / Setup of the Modal */
 .modal-container {
-  border: 1px solid #000;
+  border: 1px solid var(--c-line);
 
   min-width: v-bind(width);
   max-width: min-content;
   margin: 0 auto;
-  background-color: #fff;
+  background-color: var(--c-text);
   border-radius: 2px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
@@ -138,10 +166,10 @@ export default {
 /* Header Styling.. */
 .modal-header {
   text-transform: uppercase;
-  font-family: LeagueMono, sans-serif;
-  background-color: #3b413f;
+  font-family: var(--f-title);
+  background-color: var(--c-raised-2);
   text-align: center;
-  color: #fff;
+  color: var(--c-text);
   overflow: hidden;
   outline: none;
 }
@@ -158,31 +186,31 @@ export default {
   float: right;
   cursor: pointer;
   background-color: transparent;
-  color: #fff;
+  color: var(--c-text);
   border: 0;
 }
 
 .modal-body {
-  background-color: #2d3230;
-  color: #fff;
+  background-color: var(--c-panel);
+  color: var(--c-text);
   padding: v-bind(bodyPadding);
 }
 
 .modal-footer {
-  background-color: #2d3230;
+  background-color: var(--c-panel);
   text-align: right;
   padding-right: 10px;
   padding-bottom: 10px;
 }
 
 .modal-footer button {
-  background-color: #353937;
-  color: #fff;
+  background-color: var(--c-raised);
+  color: var(--c-text);
   padding: 8px 30px;
   border: none;
 }
 
 .modal-footer button:hover {
-  background-color: #737775;
+  background-color: var(--c-hover-strong);
 }
 </style>

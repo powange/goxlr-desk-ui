@@ -1,7 +1,7 @@
 <template>
   <div class="button" style="display: flex" :class="{ selected: isSelected }" @click="handleClick">
     <div class="left_side">
-      <span v-show="showCheck" style="width: 20px; display: inline-block; color: #59b1b6">
+      <span v-show="showCheck" style="width: 20px; display: inline-block; color: var(--c-accent)">
         <font-awesome-icon :title="$t('message.common.activeProfile')" v-show="isActive" icon="fa-solid fa-check"/>
       </span>
       <span>{{ label }}</span>
@@ -67,13 +67,13 @@ export default {
   margin-right: 8px;
   padding: v-bind(padding);
   text-align: left;
-  color: #fff;
+  color: var(--c-text);
 
   cursor: default;
 }
 
 .selected {
-  background-color: #2d3230;
+  background-color: var(--c-panel);
   font-weight: bold;
 }
 

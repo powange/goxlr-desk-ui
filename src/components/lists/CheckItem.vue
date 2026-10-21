@@ -63,7 +63,7 @@ label {
   width: calc(100% - 12px);
   /*margin: 8px;*/
   margin: auto;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
 
   overflow: hidden;
   text-overflow: ellipsis;
@@ -74,25 +74,25 @@ label {
    */
   padding: v-bind(padding) v-bind(padding) v-bind(padding) calc(v-bind(padding) - 4px);
   text-align: left;
-  color: #fff;
+  color: var(--c-text);
 }
 
 label.selected {
-  background-color: #59b1b6;
-  color: #353937;
+  background-color: var(--c-accent);
+  color: var(--c-on-accent);
 }
 
 label:not(.selected):focus-within {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 label:not(.selected):hover {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 label.disabled {
-  background-color: #383D3B;
-  color: #959796;
+  background-color: var(--c-raised-2);
+  color: var(--c-muted);
 }
 
 </style>

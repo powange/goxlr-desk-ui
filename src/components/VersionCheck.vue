@@ -204,17 +204,17 @@ export default {
  .version {
    font-family: sans-serif;
    text-align: center;
-   color: #444444;
+   color: var(--c-faint);
    margin-bottom: 8px;
    padding: 3px;
  }
 
  .version a {
-   color: #555555;
+   color: var(--c-faint);
  }
 
  .version span.click {
-   color: #555555;
+   color: var(--c-faint);
    cursor: pointer;
    text-decoration: underline;
  }
@@ -225,16 +225,16 @@ export default {
 
  .warning {
    margin: auto;
-   background-color: #370000;
-   border: 1px solid #6e0000;
-   color: #8e8e8e;
+   background-color: var(--c-danger-bg);
+   border: 1px solid var(--c-danger);
+   color: var(--c-muted);
    font-weight: bold;
    padding: 6px;
    text-align: center;
  }
 
  .warning a {
-   color: #717171;
+   color: var(--c-faint);
    text-decoration: none;
  }
 </style>

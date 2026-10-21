@@ -10,7 +10,7 @@ export default {
 
   props: {
     title: String,
-    textColour: { type: String, required: false, default: "#fff" },
+    textColour: { type: String, required: false, default: "var(--c-text)" },
   }
 }
 </script>

@@ -428,12 +428,12 @@ export default {
 }
 
 .line hr {
-  border: 1px solid #2d3230;
+  border: 1px solid var(--c-line);
 }
 
 .toolButton {
   position: relative;
-  color: #a5a7a6;
+  color: var(--c-muted);
   background-color: transparent;
   border: 0;
   padding: 8px;
@@ -442,11 +442,11 @@ export default {
 }
 
 .toolButton:hover, .toolButton:focus, .toolButton.active {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .toolButton.active {
-  color: #59b1b6;
+  color: var(--c-accent);
 }
 
 .count {
@@ -454,15 +454,15 @@ export default {
   top: 0;
   right: 0;
   font-size: 9px;
-  background-color: #59b1b6;
-  color: #000;
+  background-color: var(--c-accent);
+  color: var(--c-on-accent);
   border-radius: 6px;
   padding: 0 3px;
 }
 
 .importing {
   font-size: 0.85em;
-  color: #a5a7a6;
+  color: var(--c-muted);
   margin-right: 6px;
 }
 
@@ -472,10 +472,10 @@ export default {
 
 .folderSelect {
   width: 100%;
-  background-color: #2B2F2D;
-  border: 1px solid #3b413f;
+  background-color: var(--c-disabled);
+  border: 1px solid var(--c-line);
   padding: 5px;
-  color: #fff;
+  color: var(--c-text);
 }
 
 .question {
@@ -494,7 +494,7 @@ export default {
 .hint {
   margin: 6px 0 0 0;
   font-size: 0.85em;
-  color: #a5a7a6;
+  color: var(--c-muted);
 }
 
 .trashList {
@@ -510,7 +510,7 @@ export default {
   align-items: center;
   gap: 6px;
   padding: 6px 0;
-  border-bottom: 1px solid #3b413f;
+  border-bottom: 1px solid var(--c-line);
 }
 
 .trashInfo {
@@ -527,9 +527,9 @@ export default {
 }
 
 .trashList button {
-  background-color: #3b413f;
-  border: 1px solid #49514e;
-  color: #fff;
+  background-color: var(--c-raised-2);
+  border: 1px solid var(--c-line);
+  color: var(--c-text);
   padding: 3px 8px;
   cursor: pointer;
 }

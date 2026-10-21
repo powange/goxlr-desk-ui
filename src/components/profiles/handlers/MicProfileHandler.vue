@@ -1,11 +1,11 @@
 <template>
-  <div class="profile-border">
-    <div class="title">
+  <div :class="{ 'profile-border': !bare }">
+    <div v-if="!bare" class="title">
       {{ $t('message.microphone.profiles.title') }}
     </div>
     <div style="height: 30px; text-align: right">
       <div style="height: 14px; display: inline-block; width: calc(100% - 50px);">
-        <hr style="border: 1px solid #2d3230" />
+        <hr style="border: 1px solid var(--c-line)" />
       </div>
       <button :aria-label="$t('message.profileManager.accessibilityOpenMicProfileDirectory')"
               class="openButton" @click="openProfiles">
@@ -44,6 +44,10 @@ import ModalButton from "@/components/design/modal/ModalButton.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
+  props: {
+    // Without its own frame and title, when placed in a titled panel
+    bare: {type: Boolean, default: false},
+  },
   name: "MicProfileHandler",
   components: {FontAwesomeIcon, ModalButton, AccessibleModal, ProfileManager},
 
@@ -123,13 +127,13 @@ export default {
 
 <style scoped>
 .profile-border {
-  border: 1px solid #59b1b6;
+  border: 1px solid var(--c-accent);
   width: 240px;
 }
 
 .title {
-  background-color: #2d3230;
-  color: #fff;
+  background-color: var(--c-panel);
+  color: var(--c-text);
   padding: 20px;
   text-transform: uppercase;
   text-align: center;
@@ -137,7 +141,7 @@ export default {
 
 .openButton {
   display: inline-block;
-  color: #a5a7a6;
+  color: var(--c-muted);
   padding: 10px;
   font-size: 14px;
 
@@ -147,6 +151,6 @@ export default {
 }
 
 .openButton:hover {
-  color: #fff;
+  color: var(--c-text);
 }
 </style>

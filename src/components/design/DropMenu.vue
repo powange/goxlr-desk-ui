@@ -173,9 +173,9 @@ export default {
 
 <style scoped>
 .context-menu {
-  background-color: #252927;
-  color: #fff;
-  border: 1px solid #6e7676;
+  background-color: var(--c-bg);
+  color: var(--c-text);
+  border: 1px solid var(--c-line-strong);
   list-style: none;
   position: absolute;
   left: 0;
@@ -187,20 +187,20 @@ export default {
 
 .context-menu .item {
   align-items: center;
-  color: #fff;
+  color: var(--c-text);
   cursor: pointer;
   display: flex;
   padding: 5px 15px;
 }
 
 .context-menu .item:hover {
-  background-color: #59b1b6 !important;
-  color: white;
+  background-color: var(--c-accent) !important;
+  color: var(--c-on-accent);
 }
 
 .context-menu .item:focus-within {
-  background-color: #2d3230;
-  color: white;
+  background-color: var(--c-hover);
+  color: var(--c-text);
 }
 
 .context-menu .item a:focus {

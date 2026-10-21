@@ -2,56 +2,73 @@
   <div id="main">
     <DeviceSelector v-if="!isDeviceSet()"/>
     <template v-if="isDeviceSet()">
-      <h1 class="screenreader-only"> {{ $t('message.navigation.accessibilityProfileSection') }}</h1>
-      <div style="display: flex; flex-direction: row; column-gap: 30px">
-        <div>
-          <FileTabs/>
-        </div>
-        <div aria-hidden="true" style="margin: auto; width: 100%">
-          <GoXLRVisualiser :highlighted-areas="this.visualiserHighlightAreas" @area-click="onAreaClicked"
-                           @sample-drop="onSampleDrop"/>
-        </div>
-      </div>
+      <Tabs ref="device-tabs" vertical shortcuts @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
+        <template #nav-top>
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true"></span>
+            <span>GoXLR Utility</span>
+          </div>
+        </template>
+        <template #nav-bottom>
+          <div class="theme-switch">
+            <SegmentedControl :options="getThemeOptions()" :selected="themeMode" @selection-changed="changeTheme"
+                              :label="$t('message.theme.label')"/>
+          </div>
+          <div class="device-status">
+            <span class="device-name"><span class="dot" aria-hidden="true"></span>{{ getDeviceName() }}</span>
+            <span class="device-detail">{{ getSerial() }}</span>
+          </div>
+        </template>
+        <template #header>
+          <TopBar :active-zone="activeZone" :visualiser-open="visualiserOpen" @toggle-visualiser="toggleVisualiser"/>
+          <div v-show="visualiserOpen" class="visualiser-panel" aria-hidden="true">
+            <GoXLRVisualiser :highlighted-areas="this.visualiserHighlightAreas" @area-click="onAreaClicked"
+                             @sample-drop="onSampleDrop"/>
+          </div>
+        </template>
 
-      <div style="height: 25px; background-color: #3b413f"/>
-      <h1 class="sr-only">{{ $t('message.navigation.accessibilityDeviceSection') }}</h1>
-      <Tabs ref="device-tabs" @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
-        <Tab id="mic" :name="$t('message.navigation.microphone')">
-          <Mic/>
-        </Tab>
-        <Tab id="mixer" :name="$t('message.navigation.mixer')" selected>
+        <Tab id="mixer" icon="fa-solid fa-sliders" :name="$t('message.navigation.mixer')" selected>
           <ContentContainer>
-            <Mixer/>
+            <Mixer ref="mixer"/>
           </ContentContainer>
         </Tab>
-        <Tab id="configuration" :name="$t('message.navigation.configuration')">
-          <ContentContainer>
-            <CenteredContainer>
-              <Faders ref="faders" @on-fader-channel-change="onFaderChannelChange"/>
-              <Cough/>
-            </CenteredContainer>
-          </ContentContainer>
+        <Tab id="mic" icon="fa-solid fa-microphone-lines" :name="$t('message.navigation.microphone')">
+          <Mic ref="mic"/>
         </Tab>
-        <Tab id="effects" v-if="!isDeviceMini()" :name="$t('message.navigation.effects')">
+        <Tab id="effects" v-if="!isDeviceMini()" icon="fa-solid fa-wand-magic-sparkles" :name="$t('message.navigation.effects')">
           <EffectsTab ref="effects" @on-effect-preset-change="onEffectPresetChange"/>
         </Tab>
-        <Tab id="sampler" v-if="!isDeviceMini()" :name="$t('message.navigation.sampler')">
-          <ContentContainer>
-            <SamplerTab ref="sampler" @on-sample-bank-change="onSampleBankChange"/>
-          </ContentContainer>
+        <Tab id="sampler" v-if="!isDeviceMini()" icon="fa-solid fa-table-cells-large" :name="$t('message.navigation.sampler')">
+          <div class="sampler-page">
+            <Panel :title="$t('message.navigation.samples')" class="sampler-library">
+              <SampleHandler/>
+            </Panel>
+            <div class="sampler-device">
+              <SamplerTab ref="sampler" @on-sample-bank-change="onSampleBankChange" @sample-drop="onSampleDrop"/>
+            </div>
+          </div>
         </Tab>
-        <Tab id="lighting" :name="$t('message.navigation.lighting')">
-          <LightingTab ref="lighting" @on-lighting-changed="onLightingDataChange"/>
-        </Tab>
-        <Tab id="routing" :name="$t('message.navigation.routing')">
+        <Tab id="routing" icon="fa-solid fa-shuffle" :name="$t('message.navigation.routing')">
           <ContentContainer>
             <Routing/>
           </ContentContainer>
         </Tab>
-        <Tab id="system" :name="$t('message.navigation.system')">
-          <ContentContainer>
+
+        <Tab id="profiles" icon="fa-solid fa-file-lines" :group="$t('message.navigation.library')" :name="$t('message.navigation.profiles')">
+          <div class="library">
+            <Panel :title="$t('message.navigation.profiles')">
+              <ProfileHandler/>
+            </Panel>
+            <Panel :title="$t('message.microphone.profiles.title')">
+              <MicProfileHandler bare/>
+            </Panel>
+          </div>
+        </Tab>
+
+        <Tab id="system" icon="fa-solid fa-gear" :group="$t('message.navigation.application')" :name="$t('message.navigation.system')">
+          <div class="system-wrap">
             <SystemComponent/>
-          </ContentContainer>
+          </div>
         </Tab>
       </Tabs>
     </template>
@@ -125,7 +142,6 @@
 
 <script>
 import A11yNotifications from "./A11yNotifications.vue";
-import Faders from "./sections/Faders.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
 import Tab from "@/components/tabs/Tab.vue";
@@ -133,13 +149,17 @@ import Routing from "@/components/sections/Routing.vue";
 import Mic from "@/components/sections/Mic.vue";
 import DeviceSelector from "@/components/sections/DeviceSelector.vue";
 import {store} from "@/store";
-import Cough from "@/components/sections/Cough.vue";
 import {runWebsocket, websocket} from "@/util/sockets";
 import SystemComponent from "@/components/sections/System.vue";
-import FileTabs from "@/components/sections/files/FileTabs.vue";
+import TopBar from "@/components/TopBar.vue";
+import SegmentedControl from "@/components/design/SegmentedControl.vue";
+import {getThemeMode, setThemeMode} from "@/util/theme";
+import Panel from "@/components/design/Panel.vue";
+import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
+import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
+import SampleHandler from "@/components/sections/files/SampleHandler.vue";
 import EffectsTab from "@/components/sections/EffectsTab.vue";
 import {isDeviceMini} from "@/util/util";
-import LightingTab from "@/components/sections/lighting/LightingTab.vue";
 import SamplerTab from "@/components/sections/SamplerTab.vue";
 import SampleAssignModal from "@/components/sections/sampler/SampleAssignModal.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
@@ -150,6 +170,18 @@ import {HighlightArea} from "@/components/visualisation/VisualiserHelper";
 import Language from "@/components/Language.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ProgressBar from "@/components/design/ProgressBar.vue";
+
+// Whether the large GoXLR drawing is shown, remembered between sessions (open by default).
+function loadVisualiserOpen() {
+  try {
+    return localStorage.getItem("visualiserOpen") !== "false";
+  } catch (e) {
+    return true;
+  }
+}
+
+// The device zone shown on the top bar map for each section.
+const SECTION_ZONES = {mixer: "faders", configuration: "faders", mic: "mic", effects: "effects", sampler: "sampler"};
 
 export default {
   name: "GoXLR",
@@ -165,17 +197,19 @@ export default {
     ContentContainer,
     SamplerTab,
     SampleAssignModal,
-    LightingTab,
     EffectsTab,
-    FileTabs,
+    TopBar,
+    SegmentedControl,
+    Panel,
+    ProfileHandler,
+    MicProfileHandler,
+    SampleHandler,
     SystemComponent,
-    Cough,
     DeviceSelector,
     Routing,
     Tab,
     Tabs,
     Mixer,
-    Faders,
     Mic,
   },
 
@@ -204,11 +238,44 @@ export default {
   data() {
     return {
       visualiserHighlightAreas: [],
+      activeZone: "faders",
+      visualiserOpen: loadVisualiserOpen(),
+      themeMode: getThemeMode(),
     }
   },
 
   methods: {
     isDeviceMini,
+
+    toggleVisualiser() {
+      this.visualiserOpen = !this.visualiserOpen;
+      try {
+        localStorage.setItem("visualiserOpen", String(this.visualiserOpen));
+      } catch (e) {
+        // Storage can be unavailable, the panel just won't be remembered.
+      }
+    },
+
+    getThemeOptions() {
+      return [
+        {id: "dark", label: this.$t('message.theme.dark')},
+        {id: "light", label: this.$t('message.theme.light')},
+        {id: "system", label: this.$t('message.theme.system')},
+      ];
+    },
+
+    changeTheme(mode) {
+      this.themeMode = mode;
+      setThemeMode(mode);
+    },
+
+    getDeviceName() {
+      return isDeviceMini() ? "GoXLR Mini" : "GoXLR";
+    },
+
+    getSerial() {
+      return store.getActiveDevice().hardware.serial_number;
+    },
 
     loadLocale() {
       if (!this.utilitySupportsLanguages()) {
@@ -242,6 +309,7 @@ export default {
 
     onTabChange(tab) {
       let id = tab.id;
+      this.activeZone = SECTION_ZONES[id] || "none";
       if (id === "configuration") {
         this.visualiserHighlightAreas = [
           HighlightArea.COUGH,
@@ -263,7 +331,7 @@ export default {
 
     // Samples dragged from the Samples browser onto a sampler button
     onSampleDrop(drop) {
-      this.$refs.sampleAssign.open(drop.button, drop.paths);
+      this.$refs.sampleAssign.open(drop.button, drop.paths, drop.bank);
     },
 
     onFaderChannelChange(activeChannel) {
@@ -278,28 +346,6 @@ export default {
       this.visualiserHighlightAreas = [HighlightArea[`SAMPLER_BANK_${activeBank}`]];
     },
 
-    onLightingDataChange() {
-      let lightingData = this.$refs.lighting.getNodes();
-
-      // mixer channels
-      if (lightingData[0] === "mixer")
-        this.visualiserHighlightAreas = [HighlightArea[`CHANNEL_${lightingData[1]}`]];
-
-      // effect presets
-      else if (lightingData[0] === "effects")
-        this.visualiserHighlightAreas = [HighlightArea[`EFFECTS_PRESET${lightingData[1].slice(-1)}`]];
-
-      // sampler banks
-      else if (lightingData[0] === "sampler")
-        this.visualiserHighlightAreas = [HighlightArea[`SAMPLER_BANK_${lightingData[1].slice(-1)}`]];
-
-      // cough
-      else if (lightingData[0] === "cough")
-        this.visualiserHighlightAreas = [HighlightArea.COUGH];
-
-      // nothing
-      else this.visualiserHighlightAreas = [];
-    },
 
     onFirmwareClicked() {
       if (store.getActiveDevice() === null || store.getActiveDevice() === undefined) {
@@ -310,10 +356,39 @@ export default {
     },
 
     onAreaClicked(area) {
+      const faderAreas = {[HighlightArea.CHANNEL_A]: "A", [HighlightArea.CHANNEL_B]: "B", [HighlightArea.CHANNEL_C]: "C", [HighlightArea.CHANNEL_D]: "D"};
+      if (area.alt && faderAreas[area.area] !== undefined) {
+        // Fader lighting lives in the Mixer now
+        this.$refs["device-tabs"].selectTabById("mixer");
+        this.$nextTick(() => this.$refs.mixer.openLighting(faderAreas[area.area]));
+        return;
+      }
+      const presetAreas = [HighlightArea.EFFECTS_PRESET1, HighlightArea.EFFECTS_PRESET2, HighlightArea.EFFECTS_PRESET3,
+        HighlightArea.EFFECTS_PRESET4, HighlightArea.EFFECTS_PRESET5, HighlightArea.EFFECTS_PRESET6];
+      if (area.alt && presetAreas.includes(area.area)) {
+        // Effects lighting lives in the Effects section now
+        this.$refs["device-tabs"].selectTabById("effects");
+        this.$nextTick(() => this.$refs.effects.openLighting());
+        return;
+      }
+      if (area.alt && area.area === HighlightArea.COUGH) {
+        // Cough and Bleep lighting lives in the Mic section now
+        this.$refs["device-tabs"].selectTabById("mic");
+        this.$nextTick(() => this.$refs.mic.$refs.cough.openLighting());
+        return;
+      }
+      const bankAreas = {[HighlightArea.SAMPLER_BANK_A]: "A", [HighlightArea.SAMPLER_BANK_B]: "B", [HighlightArea.SAMPLER_BANK_C]: "C"};
+      if (area.alt && bankAreas[area.area] !== undefined) {
+        // Sampler lighting lives in the Sampler section now
+        this.$refs["device-tabs"].selectTabById("sampler");
+        this.$nextTick(() => {
+          this.$refs.sampler.setActiveBank(bankAreas[area.area]);
+          this.$refs.sampler.openLighting();
+        });
+        return;
+      }
       if (area.alt) {
-        // All right click behaviour is handled by the Lighting Tab (saves sub-tab headaches)
-        this.$refs["device-tabs"].selectTabById("lighting");
-        this.$nextTick(() => this.$refs.lighting.activateArea(area.area));
+        // Every lit area has its lighting next to its settings now (handled above)
         return;
       }
 
@@ -374,13 +449,9 @@ export default {
       }
     },
 
+    // Faders now live in the Mixer, and the cough button in the Mic section.
     loadConfigurationTab(channel = undefined) {
-      this.$refs['device-tabs'].selectTabById("configuration");
-      if (channel !== undefined) {
-        this.$nextTick(() => {
-          this.$refs.faders.channelChanged(channel);
-        });
-      }
+      this.$refs['device-tabs'].selectTabById(channel === undefined ? "mic" : "mixer");
     },
 
     loadSampleBank(bank) {
@@ -491,6 +562,112 @@ export default {
   width: 100%;
   font-size: 10pt;
 }
+
+#main .brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 10px 16px;
+  font-family: var(--f-title);
+  font-size: 15px;
+  letter-spacing: .04em;
+  color: var(--c-text);
+}
+
+#main .brand-mark {
+  width: 22px;
+  height: 14px;
+  border: 2px solid var(--c-accent);
+  border-radius: 3px;
+}
+
+#main .theme-switch {
+  margin-top: auto;
+  padding: 10px 4px;
+}
+
+#main .device-status {
+  padding: 12px 10px 2px;
+  border-top: 1px solid var(--c-line);
+  display: grid;
+  gap: 2px;
+  font-size: 12px;
+  color: var(--c-muted);
+}
+
+#main .device-name {
+  color: var(--c-text);
+  font-weight: 600;
+}
+
+#main .device-status .dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--c-ok);
+  margin-right: 7px;
+  vertical-align: 1px;
+}
+
+#main .device-detail {
+  font-family: var(--f-mono);
+  font-size: 11px;
+}
+
+#main .visualiser-panel {
+  display: flex;
+  justify-content: center;
+  padding: 10px 16px 0;
+  border-bottom: 1px solid var(--c-line);
+}
+
+#main .visualiser-panel > * {
+  width: 100%;
+  max-width: 760px;
+}
+
+/* Library and buttons side by side, the selected button's samples below across the page */
+#main .sampler-page {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 16px;
+  padding: 24px;
+}
+
+#main .sampler-library {
+  flex: 0 1 460px;
+  min-width: 0;
+}
+
+#main .sampler-device {
+  display: contents;
+}
+
+/* The buttons card keeps its own height; the library stretches to it */
+#main .sampler-library {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Its own row, from the left edge */
+#main .sampler-page .button-samples {
+  flex: 0 0 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+#main .system-wrap {
+  padding: 24px;
+}
+
+#main .library {
+  padding: 24px;
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+}
 </style>
 
 <style scoped>
@@ -502,30 +679,30 @@ export default {
 
   button {
     padding: 5px;
-    color: #ccc;
-    border: 1px solid #CCCCCC;
+    color: var(--c-text-soft);
+    border: 1px solid var(--c-line-strong);
     background-color: transparent;
     padding: 4px 8px;
     cursor: pointer;
 
     &:hover {
-      color: #fff;
-      border-color: #fff;
+      color: var(--c-text);
+      border-color: var(--c-text);
     }
 
     &.cancel {
-      border-color: #c00;
+      border-color: var(--c-danger);
 
       &:hover {
-        border-color: #ff0000;
+        border-color: var(--c-danger);
       }
     }
 
     &.close {
-      border-color: #417b80;
+      border-color: var(--c-accent-muted);
 
       &:hover {
-        border-color: #59b1b6;
+        border-color: var(--c-accent);
       }
     }
   }

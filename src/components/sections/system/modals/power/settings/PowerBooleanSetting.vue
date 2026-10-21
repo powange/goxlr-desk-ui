@@ -53,16 +53,16 @@ export default {
   gap: 5px;
   height: 16px;
   padding: 5px;
-  color: #ccc;
+  color: var(--c-text-soft);
 }
 
 .setting:focus-within {
-  color: #fff;
+  color: var(--c-text);
 }
 
 .setting:hover {
   cursor: pointer;
-  color: #fff;
+  color: var(--c-text);
 }
 
 .label {

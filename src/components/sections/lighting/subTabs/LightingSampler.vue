@@ -3,6 +3,7 @@ import GroupContainer from "@/components/containers/GroupContainer.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
+import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 
 import {store} from "@/store";
@@ -13,6 +14,7 @@ export default {
   emits: ["nav-updated"],
   name: "LightingSampler",
   components: {
+    ButtonLighting,
     CenteredContainer,
     ContentContainer,
     GroupContainer,
@@ -127,16 +129,16 @@ export default {
         <RadioSelection :title="$t('message.lighting.sampler.buttonsTitle')" group="lighting_sampler_buttons"
                         :options="getButtonOptions()" :selected="this.selectedButtonOption"
                         @selection-changed="onButtonSelectionChange"/>
-        <ColourPicker :title="$t('message.lighting.sampler.active')" :color-value="activeColor()"
-                      @colour-changed="onActiveColourChange"/>
-        <ColourPicker :title="$t('message.lighting.sampler.empty')" :color-value="emptyColor()"
-                      @colour-changed="onEmptyColourChange"/>
-        <RadioSelection :title="$t('message.lighting.sampler.inactive')"
-                        group="lighting_sampler_inactive_behaviour" :options="getLightingInactiveOptions($t)"
-                        :selected="this.selectedInactiveOption()"
-                        @selection-changed="onInactiveSelectionChange"/>
-        <ColourPicker :title="$t('message.lighting.sampler.inactive')" :color-value="inactiveColor()"
-                      @colour-changed="onInactiveColourChange"/>
+        <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
+                        :active-label="$t('message.lighting.sampler.active')"
+                        @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
+                        @off-style-changed="onInactiveSelectionChange">
+          <div class="row">
+            <span class="row-label">{{ $t('message.lighting.sampler.empty') }}</span>
+            <ColourPicker inline :title="$t('message.lighting.sampler.empty')" :color-value="emptyColor()"
+                          @colour-changed="onEmptyColourChange"/>
+          </div>
+        </ButtonLighting>
       </GroupContainer>
     </ContentContainer>
   </CenteredContainer>
@@ -148,13 +150,13 @@ button {
   border: 0;
   margin: 0;
   padding: 5px 24px;
-  color: #fff;
-  font-family: LeagueMonoCondensed, sans-serif;
+  color: var(--c-text);
+  font-family: var(--f-body);
   font-size: 12px;
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
 }
 
 button:hover {
-  background-color: #535c59;
+  background-color: var(--c-hover-strong);
 }
 </style>

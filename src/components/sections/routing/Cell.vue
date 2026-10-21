@@ -22,9 +22,9 @@ export default {
   computed: {
     textColour() {
       if (this.orange) {
-        return "#CC7224";
+        return "var(--c-mix-b)";
       }
-      return "#59b1b6";
+      return "var(--c-accent)";
     }
   },
 
@@ -47,18 +47,18 @@ div {
   text-align: center;
   font-size: 18px;
   color: v-bind(textColour);
-  background-color: #3b413f;
+  background-color: var(--c-raised-2);
   margin: 0;
   position: relative;
   height: 26px;
 }
 
 div.disabled {
-  background-color: #353B39;
+  background-color: var(--c-raised);
 }
 
 div.disabled:hover {
-  background-color: #353B39;
+  background-color: var(--c-raised);
 }
 
 /* Force SVG to center of the Cell */
@@ -73,10 +73,10 @@ div svg {
 }
 
 div:has(>input[type=checkbox]:focus) {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 
 div:hover {
-  background-color: #49514e;
+  background-color: var(--c-hover);
 }
 </style>

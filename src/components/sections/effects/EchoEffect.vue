@@ -1,5 +1,5 @@
 <template>
-  <ExpandoGroupContainer :title="$t('message.effects.echo.title')" :expanded="is_expanded"
+  <ExpandoGroupContainer :collapsible="false" :title="$t('message.effects.echo.title')" :expanded="is_expanded"
                          @expando-clicked="is_expanded = !is_expanded">
     <RadioSelection :title="$t('message.effects.echo.style')" group="effects_echo_style" :options="getEchoStyles()"
                     :selected="getActiveStyle()" @selection-changed="stylePressed"/>
@@ -67,7 +67,8 @@ export default {
   components: {ExpandoGroupContainer, RadioSelection, SliderInput},
   data() {
     return {
-      is_expanded: false,
+      // Each effect has its own panel in the Effects section, so everything is shown
+      is_expanded: true,
     }
   },
 
@@ -92,16 +93,16 @@ export default {
     },
 
     getBackgroundColour(disabled) {
-      return (disabled) ? "#303533" : "#353937";
+      return (disabled) ? "var(--c-disabled)" : "var(--c-raised)";
     },
     getInputBackgroundColour(disabled) {
-      return (disabled) ? "#333937" : "#3b413f";
+      return (disabled) ? "var(--c-disabled)" : "var(--c-raised-2)";
     },
     getSliderColour(disabled) {
-      return (disabled) ? "#3b7679" : "#59b1b6";
+      return (disabled) ? "var(--c-accent-muted)" : "var(--c-accent)";
     },
     getLabelColour(disabled) {
-      return (disabled) ? "#838584" : "#fff";
+      return (disabled) ? "var(--c-faint)" : "var(--c-text)";
     },
 
 

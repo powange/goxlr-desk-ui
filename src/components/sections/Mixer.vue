@@ -1,43 +1,71 @@
 <template>
-  <CenteredContainer>
-    <MixAssignment v-if="submixEnabled()"/>
+  <div class="mixer-page">
+    <!-- Options that apply to the whole mixer -->
+    <div v-if="isSubMixSupported()" class="options">
+      <label class="option">
+        <Toggle :model-value="submixEnabled()" @update:model-value="setSubmixEnabled" :label="$t('message.mixer.submix')"/>
+        <span>{{ $t('message.mixer.submix') }}</span>
+      </label>
+      <span class="option-hint">{{ $t('message.mixer.submixHint') }}</span>
+    </div>
 
-    <GroupContainer v-if="!submixEnabled()" :title="$t('message.mixer.inputs' )">
-      <template v-if="isSubMixSupported()" #right>
-        <label for="submix_enabled">{{ $t('message.mixer.submix' )}}</label>
-        <input id="submix_enabled" type="checkbox" :checked="submixEnabled()" @change="setSubmixEnabled"/>
-      </template>
-      <Slider v-for="item in inputMixer" :key=item :id=channelNames.indexOf(item) :title="getChannelName(item)"
-              :slider-min-value=0 :slider-max-value=255 :text-min-value=0 :text-max-value=100
-              :text-suffix="$t('message.suffixes.percentage')" :slider-value="getValue(item)"
-              :store-path="getStorePath(item)" @value-changed="valueChange"
-      />
-    </GroupContainer>
-    <GroupContainer v-else :title="$t('message.mixer.inputs')">
-      <template v-if="isSubMixSupported()" #right>
-        <label for="submix_enabled">{{ $t('message.mixer.submix' )}}</label>
-        <input id="submix_enabled" type="checkbox" :checked="submixEnabled()" @change="setSubmixEnabled"/>
-      </template>
-      <SubmixSlider v-for="item in inputMixer" :key=item :id=channelNames.indexOf(item)
-                    :title="getChannelName(item)" :slider-min-value=0 :slider-max-value=255 :text-min-value=0
-                    :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')"
-                    :slider-a-value="getValue(item)" :slider-b-value="getSubmixValue(item)"
-                    :submix-linked="isSubMixLinked(item)" :dimmed="isSubmixDimmed(item)"
-                    :store-path="getSubmixPaths(item)" @value-changed="submixValueChange"
-                    @submix-linked="submixLinkChanged"
-      />
-    </GroupContainer>
+    <!-- The four physical faders -->
+    <div class="strips">
+      <!-- With submixes on, which mix each output gets comes first -->
+      <MixAssignment v-if="submixEnabled()"/>
+      <FaderStrip v-for="fader in faders" :key="fader" :fader="fader" @lighting="openLighting">
+        <SubmixSlider v-if="submixEnabled() && inputMixer.includes(faderChannel(fader))" :id=channelNames.indexOf(faderChannel(fader))
+                      :title="getChannelName(faderChannel(fader))" :slider-min-value=0 :slider-max-value=255
+                      :text-min-value=0 :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')"
+                      :slider-a-value="getValue(faderChannel(fader))" :slider-b-value="getSubmixValue(faderChannel(fader))"
+                      :submix-linked="isSubMixLinked(faderChannel(fader))" :dimmed="isSubmixDimmed(faderChannel(fader))"
+                      :store-path="getSubmixPaths(faderChannel(fader))" @value-changed="submixValueChange"
+                      @submix-linked="submixLinkChanged"
+        />
+        <Slider v-else :id=channelNames.indexOf(faderChannel(fader)) :title="getChannelName(faderChannel(fader))"
+                :slider-min-value=0 :slider-max-value=255 :text-min-value=0 :text-max-value=100
+                :text-suffix="$t('message.suffixes.percentage')" :slider-value="getValue(faderChannel(fader))"
+                :store-path="getStorePath(faderChannel(fader))" @value-changed="valueChange"
+        />
+      </FaderStrip>
+    </div>
 
-    <GroupContainer :title="$t('message.mixer.outputs')" @expando-clicked="isVisible = !isVisible"
-                    :expanded="isVisible">
-      <Slider v-for="item in outputMixer" :key=item :id=channelNames.indexOf(item)
-              :title="getChannelName(item)" :slider-min-value=0 :slider-max-value=255 :text-min-value=0
-              :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')" :slider-value="getValue(item)"
-              :store-path="getStorePath(item)" @value-changed="valueChange"
-              v-show="!submixEnabled() || !submixHide.includes(item)"
-      />
-    </GroupContainer>
-  </CenteredContainer>
+    <CenteredContainer>
+
+      <GroupContainer v-if="!submixEnabled()" :title="$t('message.mixer.otherInputs')">
+        <Slider v-for="item in otherInputs()" :key=item :id=channelNames.indexOf(item) :title="getChannelName(item)"
+                :slider-min-value=0 :slider-max-value=255 :text-min-value=0 :text-max-value=100
+                :text-suffix="$t('message.suffixes.percentage')" :slider-value="getValue(item)"
+                :store-path="getStorePath(item)" @value-changed="valueChange"
+        />
+      </GroupContainer>
+      <GroupContainer v-else :title="$t('message.mixer.otherInputs')">
+        <SubmixSlider v-for="item in otherInputs()" :key=item :id=channelNames.indexOf(item)
+                      :title="getChannelName(item)" :slider-min-value=0 :slider-max-value=255 :text-min-value=0
+                      :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')"
+                      :slider-a-value="getValue(item)" :slider-b-value="getSubmixValue(item)"
+                      :submix-linked="isSubMixLinked(item)" :dimmed="isSubmixDimmed(item)"
+                      :store-path="getSubmixPaths(item)" @value-changed="submixValueChange"
+                      @submix-linked="submixLinkChanged"
+        />
+      </GroupContainer>
+
+      <GroupContainer :title="$t('message.mixer.outputs')" @expando-clicked="isVisible = !isVisible"
+                      :expanded="isVisible">
+        <Slider v-for="item in otherOutputs()" :key=item :id=channelNames.indexOf(item)
+                :title="getChannelName(item)" :slider-min-value=0 :slider-max-value=255 :text-min-value=0
+                :text-max-value=100 :text-suffix="$t('message.suffixes.percentage')" :slider-value="getValue(item)"
+                :store-path="getStorePath(item)" @value-changed="valueChange"
+                v-show="!submixEnabled() || !submixHide.includes(item)"
+        />
+      </GroupContainer>
+    </CenteredContainer>
+
+    <AccessibleModal ref="lightingModal" id="faderLighting" width="min(900px, 94vw)" body-padding="0">
+      <template v-slot:title>{{ $t('message.mixer.strip.lightingTitle', { channel: lightingFader ? $t(`message.faders.${lightingFader}`) : '' }) }}</template>
+      <ChannelLighting v-if="lightingFader" :key="lightingFader" :fixed-channel="lightingFader"/>
+    </AccessibleModal>
+  </div>
 </template>
 
 <script>
@@ -56,10 +84,14 @@ import GroupContainer from "@/components/containers/GroupContainer.vue";
 import SubmixSlider from "@/components/slider/SubmixSlider.vue";
 import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 import MixAssignment from "@/components/sections/mixer/MixAssignment.vue";
+import FaderStrip from "@/components/sections/mixer/FaderStrip.vue";
+import Toggle from "@/components/design/Toggle.vue";
+import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import ChannelLighting from "@/components/sections/lighting/subTabs/ChannelLighting.vue";
 
 export default {
   name: "MixerTop",
-  components: {MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
+  components: {ChannelLighting, AccessibleModal, Toggle, FaderStrip, MixAssignment, CenteredContainer, SubmixSlider, GroupContainer, Slider},
 
   data() {
     return {
@@ -69,6 +101,9 @@ export default {
       outputDevices: OutputDevice,
       channelNames: ChannelName,
 
+      faders: ["A", "B", "C", "D"],
+      // The fader whose lighting dialog is open
+      lightingFader: undefined,
       isVisible: false,
       updatesPaused: false,
       volumes: [],
@@ -76,6 +111,23 @@ export default {
   },
 
   methods: {
+    faderChannel(fader) {
+      return store.getActiveDevice().fader_status[fader].channel;
+    },
+
+    // Channels on a physical fader are shown in its strip rather than in the groups below
+    onFaders() {
+      return this.faders.map(fader => this.faderChannel(fader));
+    },
+
+    otherInputs() {
+      return this.inputMixer.filter(channel => !this.onFaders().includes(channel));
+    },
+
+    otherOutputs() {
+      return this.outputMixer.filter(channel => !this.onFaders().includes(channel));
+    },
+
     getChannelName(channel) {
       return this.$t(`message.channels.${channel}`);
     },
@@ -181,9 +233,15 @@ export default {
       return store.getActiveDevice().levels.submix !== null;
     },
 
-    setSubmixEnabled(e) {
+    // Opens the lighting settings of one fader (its lights, screen and mute button)
+    openLighting(fader) {
+      this.lightingFader = fader;
+      this.$refs.lightingModal.openModal();
+    },
+
+    setSubmixEnabled(enabled) {
       let command = {
-        "SetSubMixEnabled": e.target.checked
+        "SetSubMixEnabled": enabled
       };
 
       websocket.send_command(store.getActiveSerial(), command);
@@ -210,6 +268,45 @@ export default {
 
 <style scoped>
 label {
-  color: #fff;
+  color: var(--c-text);
+}
+
+.mixer-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin: 0 auto;
+}
+
+.options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 10px 14px;
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+}
+
+.option {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.option-hint {
+  color: var(--c-muted);
+  font-size: 12px;
+}
+
+.strips {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
 }
 </style>

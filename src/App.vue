@@ -15,7 +15,8 @@ export default {
 
 <style>
 body {
-  background-color: #252927;
+  background-color: var(--c-bg);
+  color: var(--c-text);
   padding: 0;
   margin: 0;
 }
@@ -35,16 +36,15 @@ body {
 }
 
 #app {
-  font-family: LeagueMonoCondensed, sans-serif;
+  font-family: var(--f-body);
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
-  margin-top: 10px;
+  color: var(--c-text);
   user-select: none;
 }
 
-button {
-  font-family: LeagueMonoCondensed, sans-serif;
+button, input, select, textarea {
+  font-family: var(--f-body);
 }
 </style>

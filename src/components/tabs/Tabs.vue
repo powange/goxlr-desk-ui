@@ -1,5 +1,29 @@
 <template>
-  <div style="margin-left: 8px; margin-right: 8px; font-family: LeagueMonoCondensed, sans-serif;;">
+  <!-- Vertical: a side bar of sections, with a header slot above the active section -->
+  <div v-if="vertical" class="tabs-vertical">
+    <nav class="side" :aria-label="tabListLabel">
+      <slot name="nav-top"></slot>
+      <div class="tab-list-vertical" role="tablist" aria-orientation="vertical" :aria-label="tabListLabel">
+        <template v-for="(tab, index) in tabs" :key="tab.id">
+          <div v-if="tab.group && !tab.hidden && tab.group !== groupBefore(index)" class="group-label" aria-hidden="true">{{ tab.group }}</div>
+          <button :class="{ active: tab.isActive }" v-show="!tab.hidden" @click="selectTab(tab)" role="tab"
+                  :aria-selected="tab.isActive" :tabindex="tab.isActive ? 0 : -1" @keydown="onTabKeydown" :ref="tab.name">
+            <font-awesome-icon v-if="tab.icon" :icon="tab.icon" class="tab-icon" fixed-width/>
+            <span>{{ tab.name }}</span>
+          </button>
+        </template>
+      </div>
+      <slot name="nav-bottom"></slot>
+    </nav>
+    <div class="main-column">
+      <slot name="header"></slot>
+      <div class="tabs-details-vertical" role="tabpanel" :aria-label="getActiveTab().name">
+        <slot></slot>
+      </div>
+    </div>
+  </div>
+
+  <div v-else style="margin-left: 8px; margin-right: 8px;">
     <div class="tab" role="TabList" :aria-label="tabListLabel">
       <button v-for="tab in tabs" :key="tab.name"
         :class="{ active: tab.isActive }" v-show="!tab.hidden" @click="selectTab(tab)" role="tab"
@@ -32,6 +56,10 @@ export default {
       required: false,
       default: "Tab list",
     },
+    // Renders the tabs as a side bar (with nav-top, nav-bottom and header slots)
+    vertical: {type: Boolean, default: false},
+    // Ctrl+Shift+1..9 select the visible tabs in order
+    shortcuts: {type: Boolean, default: false},
   },
 
   created() {
@@ -71,7 +99,7 @@ export default {
     },
     //keyboard navigation
     onTabKeydown(event) {
-      const tabs = this.tabs;
+      const tabs = this.tabs.filter(tab => !tab.hidden);
       const activeTab = this.getActiveTab();
       const activeTabIndex = tabs.indexOf(activeTab);
       let nextTab;
@@ -104,9 +132,17 @@ export default {
         this.$refs[nextTab.name][0].focus();
       }
     },
+    // The group of the closest visible tab before this one, to only label a group once.
+    groupBefore(index) {
+      for (let i = index - 1; i >= 0; i--) {
+        if (!this.tabs[i].hidden) return this.tabs[i].group;
+      }
+      return undefined;
+    },
+
     onTabKeydownGlobal(event) {
-      if (this.label !== "Device Settings") return;
-      const tabs = this.tabs;
+      if (!this.shortcuts) return;
+      const tabs = this.tabs.filter(tab => !tab.hidden);
       // const activeTab = this.getActiveTab();
       // const activeTabIndex = tabs.indexOf(activeTab);
       let nextTab;
@@ -121,6 +157,7 @@ export default {
           case "Digit6":
           case "Digit7":
           case "Digit8":
+          case "Digit9":
             nextTab = tabs[Number(event.code[5]) - 1];
             break;
           default:
@@ -143,44 +180,129 @@ export default {
 </script>
 
 <style>
+/* Horizontal tabs */
 .tab {
-  border-bottom: 1px solid #59b1b6;
+  border-bottom: 1px solid var(--c-line);
   text-align: left;
+  display: flex;
+  gap: 4px;
 }
 
 .tab button {
-  background-color: inherit;
+  background-color: transparent;
   border: none;
+  border-bottom: 2px solid transparent;
   outline: none;
   cursor: pointer;
-  padding: 10px 20px;
+  padding: 10px 18px;
   margin-bottom: -1px;
-  min-width: 150px;
-  max-width: min-content;
-
-  /*font-family: LeagueMonoVariable, sans-serif;*/
-  border-radius: 5px 5px 0 0;
-  color: #fff;
+  color: var(--c-muted);
+  font-weight: 500;
   white-space: nowrap;
 }
 
 .tab button:hover:not(.active) {
-  background-color: #2d3230;
+  color: var(--c-text);
 }
 
 .tab button.active {
-  border: 1px solid #59b1b6;
-  border-bottom: 1px solid #252927;
+  color: var(--c-text);
+  border-bottom-color: var(--c-accent);
+}
 
-  text-shadow: 0 0 3px #59b1b6, 0 0 5px #59b1b6;
+.tab button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: -2px;
 }
 
 .tabs-details {
-  border: 1px solid #59b1b6;
-  border-top: 0;
   padding: 0;
   margin: 0;
   overflow: auto;
   vertical-align: middle;
+}
+
+/* Vertical tabs: the application shell */
+.tabs-vertical {
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  min-height: 100vh;
+}
+
+.tabs-vertical .side {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 14px 10px;
+  background-color: var(--c-panel);
+  border-right: 1px solid var(--c-line);
+  overflow-y: auto;
+}
+
+.tab-list-vertical {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.tab-list-vertical .group-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+  padding: 14px 10px 4px;
+}
+
+.tab-list-vertical button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--c-muted);
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+
+.tab-list-vertical button .tab-icon {
+  font-size: 14px;
+}
+
+.tab-list-vertical button:hover:not(.active) {
+  background-color: var(--c-raised);
+  color: var(--c-text);
+}
+
+.tab-list-vertical button.active {
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
+  box-shadow: inset 3px 0 0 var(--c-accent);
+}
+
+.tab-list-vertical button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: -2px;
+}
+
+.tabs-vertical .main-column {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tabs-details-vertical {
+  flex: 1;
+  min-width: 0;
+  overflow-x: auto;
 }
 </style>

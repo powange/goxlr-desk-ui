@@ -45,8 +45,8 @@ export default {
 
     // Display Related Settings
     textSuffix: {type: String, default: ""},
-    colour: {type: String, required: false, default: '#59b1b6'},
-    backgroundColour: {type: String, required: false, default: '#3b413f'},
+    colour: {type: String, required: false, default: 'var(--c-accent)'},
+    backgroundColour: {type: String, required: false, default: 'var(--c-raised-2)'},
     title: {type: String, required: false, default: ''},
 
     disabled: {type: Boolean, required: false, default: false},
@@ -207,6 +207,7 @@ export default {
   top: 0;
 
   color: v-bind(colour);
+  font-family: var(--f-mono);
 
   /* Prevent Mouse interactions */
   user-select: none;
@@ -224,7 +225,7 @@ export default {
 }
 
 .sliderInput input[type=number], .sliderInput input[type=text] {
-  font-family: LeagueMonoCondensed, sans-serif;
+  font-family: var(--f-mono);
 
   background-color: v-bind(backgroundColour);
   color: v-bind(colour);
