@@ -38,6 +38,7 @@ export default {
             tabList: "Список вкладок",
         },
         deviceSelector: {
+            reconnecting: "Соединение с GoXLR Utility потеряно, переподключение…",
             title: "Выбор устройства",
             connecting: "Попытка подключения к GoXLR Utility..",
             disconnected: "Не удаётся подключиться к GoXLR Utility, проверьте, что она запущена.\n\nЭта страница автоматически попытается переподключиться..",
@@ -60,6 +61,13 @@ export default {
             system: "Авто",
         },
         topBar: {
+            saveBothHint: "Сохранить профиль {profile} и профиль микрофона {mic} (Ctrl+S)",
+            saveMore: "Другие варианты сохранения",
+            saveProfileOnly: "Сохранить только профиль {profile}",
+            saveMicOnly: "Сохранить только профиль микрофона {mic}",
+            savedBoth: "Профиль {profile} и профиль микрофона {mic} сохранены",
+            savedProfile: "Профиль {profile} сохранён",
+            savedMic: "Профиль микрофона {mic} сохранён",
             loadTitle: "Загрузить {name}?",
             loadQuestion: "Несохранённые настройки {current} будут потеряны.",
             loadMicQuestion: "Несохранённые настройки Профиля Микрофона {current} будут потеряны.",
@@ -270,6 +278,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Включить фантомное питание (+{voltage} В)?",
+                phantomWarning: "Только для конденсаторных микрофонов, которым оно нужно. Сначала убавьте громкость наушников и стрима: при включении возможен громкий щелчок.",
+                phantomEnable: "Включить",
                 button: "Настройка",
                 title: "Настройка Микрофона",
                 type: "Тип Микрофона",
@@ -296,6 +307,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Сбросить эквалайзер?",
+                resetQuestion: "Все полосы вернутся к 0 дБ и частоте по умолчанию. «До / После» позволяет вернуть сохранённый эквалайзер, пока вы не сохраните.",
                 compare: "Сравнить с сохранённым эквалайзером",
                 before: "До",
                 after: "После",
@@ -860,6 +873,7 @@ export default {
                 firmware: "Обновление прошивки",
             },
             firmwareUpdate: {
+                seeLogs: "Подробности в журналах утилиты (Система, Настройки утилиты, Открыть журналы).",
                 noInfo: "Серверы обновлений не ответили, поэтому последняя версия неизвестна. На этом GoXLR установлена версия {currentVersion}.",
                 updateTo: "Обновить до {version}",
                 reinstall: "Переустановить {version}",
@@ -951,6 +965,10 @@ export default {
 
             settingsButton: "Настройки Утилиты",
             settings: {
+                recoverConfirmTitle: "Восстановить файлы по умолчанию?",
+                recoverConfirmMessage: "Недостающие {type} по умолчанию будут добавлены снова. Существующие файлы не изменяются.",
+                recoverConfirmOk: "Восстановить",
+                recoverDone: "{type} по умолчанию восстановлены",
                 shutdownConfirmTitle: "Вы уверены?",
                 shutdownConfirmMessage: "Вы уверены, что хотите отключить GoXLR Utility?",
                 settingsRegionAccessibility: "настройки",

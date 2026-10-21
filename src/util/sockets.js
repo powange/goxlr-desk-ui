@@ -32,7 +32,37 @@
  */
 import {store} from "@/store";
 
-// TODO: Error checking and handling!
+// The text of an error from the daemon (websocket {Error: ".."}, or a string from HTTP).
+export function errorMessage(error) {
+    if (error && error.Error !== undefined) return String(error.Error);
+    return String(error);
+}
+
+// Sends a command over HTTP and tells the user how it went: `ok` as a confirmation toast and
+// `a11y` to screen readers on success, the daemon's error as a toast otherwise. Resolves with
+// whether it worked.
+export function runCommand(serial, command, {ok, a11y} = {}) {
+    return sendHttpCommand(serial, command).then(() => {
+        if (ok) store.addToast("ok", ok);
+        if (a11y || ok) store.setAccessibilityNotification("polite", a11y || ok);
+        return true;
+    }).catch(error => {
+        store.addToast("error", errorMessage(error));
+        return false;
+    });
+}
+
+// Errors from the daemon that no code handles (a command sent without a .catch) are shown to the
+// user instead of only reaching the console.
+window.addEventListener("unhandledrejection", event => {
+    const reason = event.reason;
+    const fromDaemon = (reason && reason.Error !== undefined) || (typeof reason === "string");
+    if (!fromDaemon) return;
+    event.preventDefault();
+    console.log("Unhandled error from the daemon: ", reason);
+    store.addToast("error", errorMessage(reason));
+});
+
 export class Websocket {
     #connection_promise = [];
     #disconnect_callback = undefined;

@@ -59,22 +59,22 @@
           <div class="label">{{ $t('message.system.settings.recoverDefaults') }}</div>
           <div class="buttons">
             <div>
-              <button @click="recover_defaults('Profiles')">
+              <button :ref="'recoverProfiles'" @click="askRecover('Profiles')">
                 {{ $t('message.system.settings.recoverOptions.profiles') }}
               </button>
             </div>
             <div>
-              <button @click="recover_defaults('MicProfiles')">
+              <button :ref="'recoverMicProfiles'" @click="askRecover('MicProfiles')">
                 {{ $t('message.system.settings.recoverOptions.micProfiles') }}
               </button>
             </div>
             <div>
-              <button @click="recover_defaults('Icons')">
+              <button :ref="'recoverIcons'" @click="askRecover('Icons')">
                 {{ $t('message.system.settings.recoverOptions.icons') }}
               </button>
             </div>
             <div>
-              <button @click="recover_defaults('Presets')">
+              <button :ref="'recoverPresets'" @click="askRecover('Presets')">
                 {{ $t('message.system.settings.recoverOptions.presets') }}
               </button>
             </div>
@@ -89,6 +89,15 @@
           </div>
         </div>
       </div>
+    </AccessibleModal>
+    <!-- Restoring only adds the default files that are missing, it never replaces a file -->
+    <AccessibleModal ref="recoverConfirm" id="confirm_recover" :show_close="false">
+      <template v-slot:title>{{ $t('message.system.settings.recoverConfirmTitle') }}</template>
+      <template v-slot:default>{{ $t('message.system.settings.recoverConfirmMessage', {type: recoverLabel()}) }}</template>
+      <template v-slot:footer>
+        <ModalButton ref="recoverOk" @click="recover_defaults()">{{ $t('message.system.settings.recoverConfirmOk') }}</ModalButton>
+        <ModalButton @click="$refs.recoverConfirm.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
+      </template>
     </AccessibleModal>
     <AccessibleModal ref="shutdownConfirm" id="confirm_shutdown" @modal-close="closeConfirm">
       <template v-slot:title>{{ $t('message.system.settings.shutdownConfirmTitle') }}</template>
@@ -106,7 +115,7 @@ import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 import {store} from "@/store";
-import {websocket} from "@/util/sockets";
+import {errorMessage, websocket} from "@/util/sockets";
 import {languages} from "@/lang/config";
 import BooleanSetting from "@/components/sections/system/modals/settings/BooleanSetting.vue";
 import ListSetting from "@/components/sections/system/modals/settings/ListSetting.vue";
@@ -130,6 +139,8 @@ export default {
 
   data() {
     return {
+      // The defaults waiting for confirmation (Profiles, MicProfiles, Icons or Presets)
+      pendingRecover: undefined,
       isShutdown: false,
     }
   },
@@ -411,14 +422,31 @@ export default {
       websocket.send_daemon_command({"SetTTSEnabled": value});
     },
 
-    recover_defaults(type) {
-      websocket.send_daemon_command({"RecoverDefaults": type});
+    recoverLabel() {
+      const keys = {Profiles: "profiles", MicProfiles: "micProfiles", Icons: "icons", Presets: "presets"};
+      return this.pendingRecover ? this.$t(`message.system.settings.recoverOptions.${keys[this.pendingRecover]}`) : "";
+    },
+
+    askRecover(type) {
+      this.pendingRecover = type;
+      this.$refs.recoverConfirm.openModal(this.$refs.recoverOk, this.$refs[`recover${type}`]);
+    },
+
+    recover_defaults() {
+      const label = this.recoverLabel();
+      this.$refs.recoverConfirm.closeModal();
+      websocket.send_daemon_command({"RecoverDefaults": this.pendingRecover})
+          .then(() => store.addToast("ok", this.$t('message.system.settings.recoverDone', {type: label})))
+          .catch(error => store.addToast("error", errorMessage(error)));
     },
 
     closeConfirm() {
       if (this.isShutdown) {
         this.isShutdown = false;
         websocket.send_daemon_command("StopDaemon");
+      } else if (this.inline) {
+        // Shown in place: there's no dialog to reopen, go back to the button
+        this.$nextTick(() => this.$refs.shutdownButton.focus());
       } else {
         this.$refs.modal.openModal(this.$refs.shutdownButton);
       }

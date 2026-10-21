@@ -12,7 +12,7 @@
                           :options="[{id: 'saved', label: $t('message.microphone.equaliser.before')}, {id: 'edits', label: $t('message.microphone.equaliser.after')}]"
                           :selected="eqState.showingSaved ? 'saved' : 'edits'"
                           @selection-changed="$refs.curve.showSaved($event === 'saved')"/>
-        <AppButton @click="$refs.curve.reset()">{{ $t('message.microphone.equaliser.reset') }}</AppButton>
+        <AppButton ref="resetButton" @click="$refs.resetConfirm.openModal($refs.resetNo, $refs.resetButton)">{{ $t('message.microphone.equaliser.reset') }}</AppButton>
         <AppButton variant="primary" :disabled="!eqState.modified" @click="$refs.curve.save()"
                    :title="$t('message.microphone.equaliser.saveHint', {profile: micProfile()})">
           <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
@@ -21,6 +21,15 @@
       </template>
       <EqCurve ref="curve" :fine-tune="fineTune" @compare-state="eqState = $event"/>
     </Panel>
+
+    <AccessibleModal ref="resetConfirm" id="eqResetConfirm" :show_close="false">
+      <template v-slot:title>{{ $t('message.microphone.equaliser.resetTitle') }}</template>
+      <template v-slot:default>{{ $t('message.microphone.equaliser.resetQuestion') }}</template>
+      <template v-slot:footer>
+        <ModalButton @click="$refs.curve.reset(); $refs.resetConfirm.closeModal()">{{ $t('message.microphone.equaliser.reset') }}</ModalButton>
+        <ModalButton ref="resetNo" @click="$refs.resetConfirm.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
+      </template>
+    </AccessibleModal>
   </div>
   <div style="display: flex">
     <ContentContainer>
@@ -45,6 +54,8 @@ import MicChain from "@/components/sections/mic/MicChain.vue";
 import EqCurve from "@/components/sections/mic/EqCurve.vue";
 import Panel from "@/components/design/Panel.vue";
 import Toggle from "@/components/design/Toggle.vue";
+import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import ModalButton from "@/components/design/modal/ModalButton.vue";
 import SegmentedControl from "@/components/design/SegmentedControl.vue";
 import {store} from "@/store";
 import MicSetupButton from "@/components/sections/system/modals/MicSetupButton.vue";
@@ -53,7 +64,7 @@ import ContentContainer from "@/components/containers/ContentContainer.vue";
 
 export default {
   name: "MicSections",
-  components: {AppButton, Toggle, SegmentedControl,
+  components: {AccessibleModal, ModalButton, AppButton, Toggle, SegmentedControl,
     Cough,
     MicChain,
     EqCurve,

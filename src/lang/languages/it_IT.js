@@ -19,6 +19,7 @@ export default {
             tabList: "Elenco schede",
         },
         deviceSelector: {
+            reconnecting: "Connessione a GoXLR Utility persa, riconnessione…",
             title: "Seleziona Dispositivo",
             connecting: "Tentativo di connessione a GoXLR Utility..",
             disconnected: "Impossibile connettersi a GoXLR Utility, verifica che sia in esecuzione.\n\nQuesta pagina tenterà di riconnettersi automaticamente..",
@@ -41,6 +42,13 @@ export default {
             system: "Auto",
         },
         topBar: {
+            saveBothHint: "Salva il profilo {profile} e il profilo microfono {mic} (Ctrl+S)",
+            saveMore: "Altre opzioni di salvataggio",
+            saveProfileOnly: "Salva solo il profilo {profile}",
+            saveMicOnly: "Salva solo il profilo microfono {mic}",
+            savedBoth: "Profilo {profile} e profilo microfono {mic} salvati",
+            savedProfile: "Profilo {profile} salvato",
+            savedMic: "Profilo microfono {mic} salvato",
             loadTitle: "Caricare {name}?",
             loadQuestion: "Le impostazioni non salvate di {current} andranno perse.",
             loadMicQuestion: "Le impostazioni non salvate del profilo mic {current} andranno perse.",
@@ -251,6 +259,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Attivare l'alimentazione phantom (+{voltage} V)?",
+                phantomWarning: "Solo per i microfoni a condensatore che ne hanno bisogno. Abbassa prima cuffie e stream: l'attivazione può causare un forte schiocco.",
+                phantomEnable: "Attiva",
                 button: "Configurazione Mic",
                 title: "Configurazione Mic",
                 type: "Tipo Mic",
@@ -276,6 +287,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Reimpostare l'equalizzatore?",
+                resetQuestion: "Tutte le bande tornano a 0 dB e alla frequenza predefinita. Prima / Dopo permette di ritrovare l'equalizzatore salvato finché non salvi.",
                 compare: "Confronta con l'equalizzatore salvato",
                 before: "Prima",
                 after: "Dopo",
@@ -840,6 +853,7 @@ export default {
                 firmware: "Aggiornamento firmware",
             },
             firmwareUpdate: {
+                seeLogs: "I log dell'utility contengono i dettagli (Sistema, Impostazioni dell'utility, Apri log).",
                 noInfo: "I server di aggiornamento non hanno risposto, quindi l'ultima versione non è nota. Questo GoXLR usa la versione {currentVersion}.",
                 updateTo: "Aggiorna a {version}",
                 reinstall: "Reinstalla {version}",
@@ -931,6 +945,10 @@ export default {
 
             settingsButton: "Impostazioni Utility",
             settings: {
+                recoverConfirmTitle: "Ripristinare i file predefiniti?",
+                recoverConfirmMessage: "I {type} predefiniti mancanti verranno aggiunti di nuovo. I file esistenti non vengono modificati.",
+                recoverConfirmOk: "Ripristina",
+                recoverDone: "{type} predefiniti ripristinati",
                 shutdownConfirmTitle: "Sei Sicuro?",
                 shutdownConfirmMessage: "Confermi di voler chiudere GoXLR Utility?",
                 settingsRegionAccessibility: "impostazioni",

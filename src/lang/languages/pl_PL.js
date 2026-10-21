@@ -38,6 +38,7 @@ export default {
             tabList: "Lista kart",
         },
         deviceSelector: {
+            reconnecting: "Utracono połączenie z GoXLR Utility, ponowne łączenie…",
             title: "Wybierz Urządzenie",
             connecting: "Próba połączenia z GoXLR Utility..",
             disconnected: "Nie można połączyć się z GoXLR Utility, sprawdź, czy jest uruchomione.\n\nTa strona automatycznie spróbuje połączyć się ponownie..",
@@ -60,6 +61,13 @@ export default {
             system: "Auto",
         },
         topBar: {
+            saveBothHint: "Zapisz profil {profile} i profil mikrofonu {mic} (Ctrl+S)",
+            saveMore: "Więcej opcji zapisu",
+            saveProfileOnly: "Zapisz tylko profil {profile}",
+            saveMicOnly: "Zapisz tylko profil mikrofonu {mic}",
+            savedBoth: "Zapisano profil {profile} i profil mikrofonu {mic}",
+            savedProfile: "Zapisano profil {profile}",
+            savedMic: "Zapisano profil mikrofonu {mic}",
             loadTitle: "Wczytać {name}?",
             loadQuestion: "Niezapisane ustawienia profilu {current} zostaną utracone.",
             loadMicQuestion: "Niezapisane ustawienia profilu mikrofonu {current} zostaną utracone.",
@@ -270,6 +278,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Włączyć zasilanie phantom (+{voltage} V)?",
+                phantomWarning: "Tylko dla mikrofonów pojemnościowych, które go wymagają. Najpierw ścisz słuchawki i stream: włączenie może wywołać głośne trzaśnięcie.",
+                phantomEnable: "Włącz",
                 button: "Konfiguracja Mikrofonu",
                 title: "Konfiguracja Mikrofonu",
                 type: "Typ mikrofonu",
@@ -296,6 +307,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Zresetować korektor?",
+                resetQuestion: "Wszystkie pasma wrócą do 0 dB i domyślnej częstotliwości. Przed / Po pozwala przywrócić zapisany korektor, dopóki nie zapiszesz.",
                 compare: "Porównaj z zapisanym korektorem",
                 before: "Przed",
                 after: "Po",
@@ -860,6 +873,7 @@ export default {
                 firmware: "Aktualizacja firmware",
             },
             firmwareUpdate: {
+                seeLogs: "Szczegóły znajdziesz w dziennikach narzędzia (System, Ustawienia narzędzia, Otwórz dzienniki).",
                 noInfo: "Serwery aktualizacji nie odpowiedziały, więc najnowsza wersja jest nieznana. Ten GoXLR ma wersję {currentVersion}.",
                 updateTo: "Aktualizuj do {version}",
                 reinstall: "Zainstaluj ponownie {version}",
@@ -951,6 +965,10 @@ export default {
 
             settingsButton: "Ustawienia GoXLR Utility",
             settings: {
+                recoverConfirmTitle: "Przywrócić pliki domyślne?",
+                recoverConfirmMessage: "Brakujące domyślne {type} zostaną dodane ponownie. Istniejące pliki nie zostaną zmienione.",
+                recoverConfirmOk: "Przywróć",
+                recoverDone: "Przywrócono domyślne {type}",
                 shutdownConfirmTitle: "Czy na pewno?",
                 shutdownConfirmMessage: "Czy na pewno chcesz zamknąć GoXLR Utility?",
                 settingsRegionAccessibility: "ustawienia",

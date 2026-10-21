@@ -38,6 +38,7 @@ export default {
             tabList: "Tabbladenlijst",
         },
         deviceSelector: {
+            reconnecting: "Verbinding met GoXLR Utility verbroken, opnieuw verbinden…",
             title: "Selecteer apparaat",
             connecting: "Verbinding maken met de GoXLR Utility..",
             disconnected: "Kan geen verbinding maken met de GoXLR Utility, controleer of deze draait.\n\nDeze pagina probeert automatisch opnieuw te verbinden..",
@@ -60,6 +61,13 @@ export default {
             system: "Auto",
         },
         topBar: {
+            saveBothHint: "Profiel {profile} en microfoonprofiel {mic} opslaan (Ctrl+S)",
+            saveMore: "Meer opslagopties",
+            saveProfileOnly: "Alleen profiel {profile} opslaan",
+            saveMicOnly: "Alleen microfoonprofiel {mic} opslaan",
+            savedBoth: "Profiel {profile} en microfoonprofiel {mic} opgeslagen",
+            savedProfile: "Profiel {profile} opgeslagen",
+            savedMic: "Microfoonprofiel {mic} opgeslagen",
             loadTitle: "{name} laden?",
             loadQuestion: "Niet opgeslagen instellingen van {current} gaan verloren.",
             loadMicQuestion: "Niet opgeslagen instellingen van het Mic profiel {current} gaan verloren.",
@@ -270,6 +278,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Fantoomvoeding (+{voltage} V) inschakelen?",
+                phantomWarning: "Alleen voor condensatormicrofoons die het nodig hebben. Zet eerst je koptelefoon en stream zachter: inschakelen kan een harde plop geven.",
+                phantomEnable: "Inschakelen",
                 button: "Mic Instellen",
                 title: "Mic Instellen",
                 type: "Mic Type",
@@ -296,6 +307,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Equalizer resetten?",
+                resetQuestion: "Alle banden gaan terug naar 0 dB en hun standaardfrequentie. Met Voor / Na haal je de opgeslagen equalizer terug zolang je niet opslaat.",
                 compare: "Vergelijk met de opgeslagen equaliser",
                 before: "Voor",
                 after: "Na",
@@ -860,6 +873,7 @@ export default {
                 firmware: "Firmware-update",
             },
             firmwareUpdate: {
+                seeLogs: "De logbestanden van het hulpprogramma bevatten de details (Systeem, Instellingen hulpprogramma, Logs openen).",
                 noInfo: "De updateservers gaven geen antwoord, dus de nieuwste versie is onbekend. Deze GoXLR draait {currentVersion}.",
                 updateTo: "Updaten naar {version}",
                 reinstall: "{version} opnieuw installeren",
@@ -951,6 +965,10 @@ export default {
 
             settingsButton: "Utility Instellingen",
             settings: {
+                recoverConfirmTitle: "Standaardbestanden herstellen?",
+                recoverConfirmMessage: "Ontbrekende standaard-{type} worden opnieuw toegevoegd. Bestaande bestanden blijven ongewijzigd.",
+                recoverConfirmOk: "Herstellen",
+                recoverDone: "Standaard-{type} hersteld",
                 shutdownConfirmTitle: "Weet je het zeker?",
                 shutdownConfirmMessage: "Weet je zeker dat je de GoXLR Utility wilt uitschakelen?",
                 settingsRegionAccessibility: "instellingen",

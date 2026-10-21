@@ -132,6 +132,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Switch on phantom power (+{voltage}V)?",
+                phantomWarning: "Only for condenser microphones that need it. Turn your headphones and stream down first: switching it on can make a loud pop.",
+                phantomEnable: "Switch on",
                 button: "Mic Setup",
                 title: "Mic Setup",
                 type: "Mic Type",
@@ -158,6 +161,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Reset the equaliser?",
+                resetQuestion: "Every band goes back to 0 dB at its default frequency. Before / After can still bring the saved equaliser back until you save.",
                 compare: "Compare with the saved equaliser",
                 before: "Before",
                 after: "After",
@@ -774,6 +779,10 @@ export default {
 
             settingsButton: "Utility Settings",
             settings: {
+                recoverConfirmTitle: "Restore default files?",
+                recoverConfirmMessage: "The default {type} that are missing will be added back. Existing files are not changed.",
+                recoverConfirmOk: "Restore",
+                recoverDone: "Default {type} restored",
                 language: "Language",
                 useSystem: "Use System Language (if available)",
 
@@ -856,6 +865,7 @@ export default {
                 custom: "Custom Firmware",
             },
             firmwareUpdate: {
+                seeLogs: "The utility's logs have the details (System, Utility settings, Open logs).",
                 noInfo: "The update servers didn't answer, so the latest version isn't known. This GoXLR runs {currentVersion}.",
                 updateTo: "Update to {version}",
                 reinstall: "Reinstall {version}",
@@ -901,6 +911,7 @@ export default {
         },
 
         deviceSelector: {
+            reconnecting: "Connection to the GoXLR Utility lost, reconnecting…",
             title: "Select Device",
             connecting: "Attempting to Connect to the GoXLR Utility..",
             disconnected: "Unable to connect to the GoXLR Utility, please check it's running.\n\nThis page will automatically try to reconnect..",
@@ -926,6 +937,13 @@ export default {
             system: "Auto",
         },
         topBar: {
+            saveBothHint: "Save the profile {profile} and the mic profile {mic} (Ctrl+S)",
+            saveMore: "More save options",
+            saveProfileOnly: "Save the profile {profile} only",
+            saveMicOnly: "Save the mic profile {mic} only",
+            savedBoth: "Profile {profile} and mic profile {mic} saved",
+            savedProfile: "Profile {profile} saved",
+            savedMic: "Mic profile {mic} saved",
             loadTitle: "Load {name}?",
             loadQuestion: "Settings of {current} that weren't saved will be lost.",
             loadMicQuestion: "Settings of the mic profile {current} that weren't saved will be lost.",

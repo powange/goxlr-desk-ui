@@ -42,7 +42,7 @@
 
 <script>
 import { store } from "@/store";
-import { sendHttpCommand, websocket } from "@/util/sockets";
+import { runCommand, websocket } from "@/util/sockets";
 import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -108,57 +108,36 @@ export default {
         LoadProfile: [label, true],
       };
 
-      sendHttpCommand(store.getActiveSerial(), command).catch((error) => {
-        console.log(error);
-      });
-      store.setAccessibilityNotification(
-          "polite",
-          this.$t('message.profileManager.accessibilityLoadedProfile', { profileName: label })
-      );
+      runCommand(store.getActiveSerial(), command,
+          {a11y: this.$t('message.profileManager.accessibilityLoadedProfile', { profileName: label })});
     },
 
     loadProfileColours: function (label) {
-      sendHttpCommand(store.getActiveSerial(), {
-        LoadProfileColours: label,
-      });
-      store.setAccessibilityNotification(
-        "polite",
-        this.$t('message.profileManager.accessibilityLoadedColours', { profileName: label })
-      );
+      runCommand(store.getActiveSerial(), {LoadProfileColours: label},
+          {ok: this.$t('message.profileManager.accessibilityLoadedColours', { profileName: label })});
     },
 
     newProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), { NewProfile: name });
-      store.setAccessibilityNotification(
-          "polite",
-          this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })
-      );
+      runCommand(store.getActiveSerial(), { NewProfile: name },
+          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })});
     },
 
     saveProfile() {
-      sendHttpCommand(store.getActiveSerial(), { SaveProfile: [] });
-      store.setAccessibilityNotification(
-          "polite",
-          this.$t('message.profileManager.accessibilitySavedProfile', { profileName: this.getActiveProfile() })
-      );
+      runCommand(store.getActiveSerial(), { SaveProfile: [] },
+          {ok: this.$t('message.profileManager.accessibilitySavedProfile', { profileName: this.getActiveProfile() })});
     },
 
     saveProfileAs(name) {
       let command = {
         SaveProfileAs: name,
       };
-      sendHttpCommand(store.getActiveSerial(), command);
-      store.setAccessibilityNotification(
-          "polite",
-          this.$t('message.profileManager.accessibilitySavedProfileAs', { profileName: name })
-      );
+      runCommand(store.getActiveSerial(), command,
+          {ok: this.$t('message.profileManager.accessibilitySavedProfileAs', { profileName: name })});
     },
 
     deleteProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), { DeleteProfile: name });
-      store.setAccessibilityNotification(
-          "polite",
-          this.$t('message.profileManager.accessibilityProfileDeleted', { profileName: name }));
+      runCommand(store.getActiveSerial(), { DeleteProfile: name },
+          {ok: this.$t('message.profileManager.accessibilityProfileDeleted', { profileName: name })});
     },
 
     openProfiles() {

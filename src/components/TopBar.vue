@@ -4,11 +4,26 @@
                 :label="$t('message.topBar.profileLabel')" @select="askLoad($event, false)">
       <template #prefix><span class="picker-label">{{ $t('message.topBar.profile') }}</span></template>
     </SelectMenu>
-    <AppButton ref="save" variant="primary" @click="$refs.saveModal.openModal($refs.saveOk, $refs.save)"
-            :title="$t('message.profileManager.saveProfileName', { profileName: getActiveProfile() })">
-      <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
-      <span>{{ $t('message.topBar.save') }}</span>
-    </AppButton>
+    <!-- Saves the profile and the mic profile (Ctrl+S); the arrow saves only one of them -->
+    <div class="save-group" ref="saveGroup">
+      <AppButton ref="save" variant="primary" class="save-main" @click="save(true, true)"
+                 :title="$t('message.topBar.saveBothHint', { profile: getActiveProfile(), mic: getActiveMicProfile() })">
+        <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
+        <span>{{ $t('message.topBar.save') }}</span>
+      </AppButton>
+      <AppButton variant="primary" class="save-more" :aria-expanded="saveMenuOpen" aria-haspopup="menu"
+                 :aria-label="$t('message.topBar.saveMore')" @click="saveMenuOpen = !saveMenuOpen">
+        <font-awesome-icon icon="fa-solid fa-chevron-down"/>
+      </AppButton>
+      <div v-if="saveMenuOpen" class="save-menu" role="menu" @keydown.esc.stop="saveMenuOpen = false">
+        <button type="button" role="menuitem" @click="save(true, false)">
+          {{ $t('message.topBar.saveProfileOnly', { profile: getActiveProfile() }) }}
+        </button>
+        <button type="button" role="menuitem" @click="save(false, true)">
+          {{ $t('message.topBar.saveMicOnly', { mic: getActiveMicProfile() }) }}
+        </button>
+      </div>
+    </div>
 
     <SelectMenu class="picker" button-class="picker-button" :options="getMicProfiles()" :selected="getActiveMicProfile()"
                 :label="$t('message.topBar.micProfileLabel')" @select="askLoad($event, true)">
@@ -54,20 +69,12 @@
     </template>
   </AccessibleModal>
 
-  <AccessibleModal ref="saveModal" id="topBarSave" :show_close="false">
-    <template v-slot:title>{{ $t('message.profileManager.overwriteTitle') }}</template>
-    <template v-slot:default>{{ $t('message.profileManager.overwriteQuestion', { activeProfile: getActiveProfile() }) }}</template>
-    <template v-slot:footer>
-      <ModalButton ref="saveOk" @click="saveProfile(); $refs.saveModal.closeModal()">{{ $t('message.profileManager.overwriteYes') }}</ModalButton>
-      <ModalButton @click="$refs.saveModal.closeModal()">{{ $t('message.profileManager.overwriteNo') }}</ModalButton>
-    </template>
-  </AccessibleModal>
 </template>
 
 <script>
 import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
-import {sendHttpCommand} from "@/util/sockets";
+import {runCommand} from "@/util/sockets";
 import {isDeviceMini} from "@/util/util";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -81,6 +88,7 @@ export default {
   data() {
     return {
       lightingOpen: false,
+      saveMenuOpen: false,
       // The profile chosen in a picker, waiting for confirmation
       pendingLoad: {name: "", mic: false, current: ""},
     };
@@ -93,7 +101,40 @@ export default {
     visualiserOpen: {type: Boolean, default: false},
   },
 
+  mounted() {
+    window.addEventListener("keydown", this.onKeydown);
+    document.addEventListener("pointerdown", this.onOutside);
+  },
+
+  unmounted() {
+    window.removeEventListener("keydown", this.onKeydown);
+    document.removeEventListener("pointerdown", this.onOutside);
+  },
+
   methods: {
+    onKeydown(event) {
+      if ((event.ctrlKey || event.metaKey) && !event.shiftKey && !event.altKey && event.key.toLowerCase() === "s") {
+        event.preventDefault();
+        this.save(true, true);
+      }
+    },
+
+    onOutside(event) {
+      if (this.saveMenuOpen && !this.$refs.saveGroup.contains(event.target)) this.saveMenuOpen = false;
+    },
+
+    // Saves the profile and / or the mic profile, then confirms with a notification.
+    async save(profile, mic) {
+      this.saveMenuOpen = false;
+      const serial = store.getActiveSerial();
+      const names = {profile: this.getActiveProfile(), mic: this.getActiveMicProfile()};
+      if (profile && !(await runCommand(serial, {SaveProfile: []}))) return;
+      if (mic && !(await runCommand(serial, {SaveMicProfile: []}))) return;
+      const key = profile && mic ? "savedBoth" : (profile ? "savedProfile" : "savedMic");
+      store.addToast("ok", this.$t(`message.topBar.${key}`, names));
+      store.setAccessibilityNotification("polite", this.$t(`message.topBar.${key}`, names));
+    },
+
     // The device-wide lighting (moved here from the Lighting section)
     openLighting() {
       this.lightingOpen = false;
@@ -131,7 +172,7 @@ export default {
       this.$refs.loadModal.closeModal();
       const serial = store.getActiveSerial();
       if (saveFirst) {
-        await sendHttpCommand(serial, mic ? {SaveMicProfile: []} : {SaveProfile: []}).catch(error => console.log(error));
+        if (!(await runCommand(serial, mic ? {SaveMicProfile: []} : {SaveProfile: []}))) return;
       }
       if (mic) {
         this.loadMicProfile(name);
@@ -149,17 +190,12 @@ export default {
     },
 
     loadProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), {LoadProfile: [name, true]}).catch(error => console.log(error));
-      store.setAccessibilityNotification("polite", this.$t('message.profileManager.accessibilityLoadedProfile', {profileName: name}));
+      runCommand(store.getActiveSerial(), {LoadProfile: [name, true]},
+          {a11y: this.$t('message.profileManager.accessibilityLoadedProfile', {profileName: name})});
     },
 
     loadMicProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), {LoadMicProfile: [name, true]}).catch(error => console.log(error));
-    },
-
-    saveProfile() {
-      sendHttpCommand(store.getActiveSerial(), {SaveProfile: []});
-      store.setAccessibilityNotification("polite", this.$t('message.profileManager.accessibilitySavedProfile', {profileName: this.getActiveProfile()}));
+      runCommand(store.getActiveSerial(), {LoadMicProfile: [name, true]});
     },
   }
 }
@@ -200,6 +236,55 @@ export default {
 .map-button:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 2px;
+}
+
+.save-group {
+  position: relative;
+  display: inline-flex;
+}
+
+.save-main {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.save-more {
+  padding-left: 8px;
+  padding-right: 8px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 1px solid var(--c-on-accent);
+}
+
+.save-menu {
+  position: absolute;
+  z-index: 50;
+  top: calc(100% + 4px);
+  left: 0;
+  display: grid;
+  min-width: 100%;
+  padding: 4px;
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-line-strong);
+  border-radius: 8px;
+  box-shadow: 0 8px 24px var(--c-shadow);
+}
+
+.save-menu button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--c-text);
+  font-size: 12px;
+  text-align: left;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.save-menu button:hover, .save-menu button:focus-visible {
+  background-color: var(--c-hover);
+  outline: none;
 }
 
 .grow {

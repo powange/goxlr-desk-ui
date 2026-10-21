@@ -15,6 +15,7 @@ export default {
             tabList: "Lista de pestañas",
         },
         deviceSelector: {
+            reconnecting: "Se perdió la conexión con GoXLR Utility, reconectando…",
             title: "Seleccionar Dispositivo",
             connecting: "Intentando conectar con la Utilidad GoXLR...",
             disconnected: "No se puede conectar con la Utilidad GoXLR, comprueba que está en ejecución.\n\nEsta página intentará reconectarse automáticamente...",
@@ -37,6 +38,13 @@ export default {
             system: "Automático",
         },
         topBar: {
+            saveBothHint: "Guardar el perfil {profile} y el perfil de micrófono {mic} (Ctrl+S)",
+            saveMore: "Más opciones de guardado",
+            saveProfileOnly: "Guardar solo el perfil {profile}",
+            saveMicOnly: "Guardar solo el perfil de micrófono {mic}",
+            savedBoth: "Perfil {profile} y perfil de micrófono {mic} guardados",
+            savedProfile: "Perfil {profile} guardado",
+            savedMic: "Perfil de micrófono {mic} guardado",
             loadTitle: "¿Cargar {name}?",
             loadQuestion: "Se perderán los ajustes de {current} que no se hayan guardado.",
             loadMicQuestion: "Se perderán los ajustes del perfil de micrófono {current} que no se hayan guardado.",
@@ -239,6 +247,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "¿Activar la alimentación phantom (+{voltage} V)?",
+                phantomWarning: "Solo para micrófonos de condensador que la necesiten. Baja antes los auriculares y el stream: al activarla puede oírse un fuerte chasquido.",
+                phantomEnable: "Activar",
                 button: "Configuración de Micrófono",
                 title: "Configuración de Micrófono",
                 type: "Tipo de Micrófono",
@@ -264,6 +275,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "¿Restablecer el ecualizador?",
+                resetQuestion: "Todas las bandas vuelven a 0 dB y a su frecuencia predeterminada. Antes / Después permite recuperar el ecualizador guardado hasta que guardes.",
                 compare: "Comparar con el ecualizador guardado",
                 before: "Antes",
                 after: "Después",
@@ -807,6 +820,7 @@ export default {
                 firmware: "Actualización de firmware",
             },
             firmwareUpdate: {
+                seeLogs: "Los registros de la utilidad tienen los detalles (Sistema, Ajustes de la utilidad, Abrir registros).",
                 noInfo: "Los servidores de actualización no han respondido, así que no se conoce la última versión. Este GoXLR tiene la versión {currentVersion}.",
                 updateTo: "Actualizar a {version}",
                 reinstall: "Reinstalar {version}",
@@ -898,6 +912,10 @@ export default {
 
             settingsButton: "Configuración de la Utilidad",
             settings: {
+                recoverConfirmTitle: "¿Restaurar los archivos predeterminados?",
+                recoverConfirmMessage: "Se volverán a añadir los {type} predeterminados que falten. Los archivos existentes no se modifican.",
+                recoverConfirmOk: "Restaurar",
+                recoverDone: "{type} predeterminados restaurados",
                 shutdownConfirmTitle: "¿Estás seguro?",
                 shutdownConfirmMessage: "¿Estás seguro de que deseas apagar la Utilidad GoXLR?",
                 settingsRegionAccessibility: "configuración",

@@ -37,7 +37,7 @@
 
 <script>
 import {store} from "@/store";
-import {sendHttpCommand, websocket} from "@/util/sockets";
+import {runCommand, websocket} from "@/util/sockets";
 import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -93,29 +93,30 @@ export default {
         "LoadMicProfile": [label, true]
       };
 
-      sendHttpCommand(store.getActiveSerial(), command)
-          .catch((error) => {
-            console.log(error);
-          });
+      runCommand(store.getActiveSerial(), command);
     },
 
     newProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), {"NewMicProfile": name})
+      runCommand(store.getActiveSerial(), {"NewMicProfile": name},
+          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })});
     },
 
     saveProfile() {
-      sendHttpCommand(store.getActiveSerial(), {"SaveMicProfile": []});
+      runCommand(store.getActiveSerial(), {"SaveMicProfile": []},
+          {ok: this.$t('message.profileManager.accessibilitySavedProfile', { profileName: this.getActiveProfile() })});
     },
 
     saveProfileAs(name) {
       let command = {
         "SaveMicProfileAs": name
       }
-      sendHttpCommand(store.getActiveSerial(), command);
+      runCommand(store.getActiveSerial(), command,
+          {ok: this.$t('message.profileManager.accessibilitySavedProfileAs', { profileName: name })});
     },
 
     deleteProfile(name) {
-      sendHttpCommand(store.getActiveSerial(), { "DeleteMicProfile": name });
+      runCommand(store.getActiveSerial(), { "DeleteMicProfile": name },
+          {ok: this.$t('message.profileManager.accessibilityProfileDeleted', { profileName: name })});
     },
 
     openProfiles() {

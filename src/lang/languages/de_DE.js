@@ -21,6 +21,7 @@ export default {
             tabList: "Tab-Liste",
         },
         deviceSelector: {
+            reconnecting: "Verbindung zum GoXLR Utility verloren, verbinde neu…",
             title: "Gerät auswählen",
             connecting: "Verbindung zum GoXLR Utility wird hergestellt..",
             disconnected: "Verbindung zum GoXLR Utility nicht möglich, bitte prüfe, ob es läuft.\n\nDiese Seite versucht automatisch, die Verbindung wiederherzustellen..",
@@ -43,6 +44,13 @@ export default {
             system: "Auto",
         },
         topBar: {
+            saveBothHint: "Profil {profile} und Mikrofonprofil {mic} speichern (Strg+S)",
+            saveMore: "Weitere Speicheroptionen",
+            saveProfileOnly: "Nur das Profil {profile} speichern",
+            saveMicOnly: "Nur das Mikrofonprofil {mic} speichern",
+            savedBoth: "Profil {profile} und Mikrofonprofil {mic} gespeichert",
+            savedProfile: "Profil {profile} gespeichert",
+            savedMic: "Mikrofonprofil {mic} gespeichert",
             loadTitle: "{name} laden?",
             loadQuestion: "Nicht gespeicherte Einstellungen von {current} gehen verloren.",
             loadMicQuestion: "Nicht gespeicherte Einstellungen des Mikrofonprofils {current} gehen verloren.",
@@ -253,6 +261,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Phantomspeisung (+{voltage} V) einschalten?",
+                phantomWarning: "Nur für Kondensatormikrofone, die sie benötigen. Kopfhörer und Stream vorher leiser stellen: Beim Einschalten kann es laut knallen.",
+                phantomEnable: "Einschalten",
                 button: "Mikrofon Setup",
                 title: "Mikrofon Setup",
                 type: "Mikrofon Typ",
@@ -279,6 +290,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Equalizer zurücksetzen?",
+                resetQuestion: "Alle Bänder gehen auf 0 dB und ihre Standardfrequenz zurück. Mit Vorher / Nachher lässt sich der gespeicherte Equalizer bis zum Speichern zurückholen.",
                 compare: "Mit dem gespeicherten Equalizer vergleichen",
                 before: "Vorher",
                 after: "Nachher",
@@ -894,6 +907,10 @@ export default {
 
             settingsButton: "Utility Einstellungen",
             settings: {
+                recoverConfirmTitle: "Standarddateien wiederherstellen?",
+                recoverConfirmMessage: "Fehlende Standard-{type} werden wieder hinzugefügt. Vorhandene Dateien bleiben unverändert.",
+                recoverConfirmOk: "Wiederherstellen",
+                recoverDone: "Standard-{type} wiederhergestellt",
                 shutdownConfirmTitle: "Bist du sicher?",
                 shutdownConfirmMessage: "Bist du sicher, dass du das GoXLR Utility beenden möchtest?",
                 settingsRegionAccessibility: "Einstellungen",
@@ -973,6 +990,7 @@ export default {
                 custom: "Custom Firmware",
             },
             firmwareUpdate: {
+                seeLogs: "Details stehen in den Protokollen des Utility (System, Utility-Einstellungen, Protokolle öffnen).",
                 noInfo: "Die Update-Server haben nicht geantwortet, daher ist die neueste Version unbekannt. Auf diesem GoXLR läuft {currentVersion}.",
                 updateTo: "Auf {version} aktualisieren",
                 reinstall: "{version} neu installieren",

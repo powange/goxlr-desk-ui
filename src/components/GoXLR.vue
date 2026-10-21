@@ -1,6 +1,10 @@
 <template>
   <div id="main">
     <DeviceSelector v-if="!isDeviceSet()"/>
+    <!-- The interface stays in place, covered, until the connection comes back -->
+    <div v-if="isDeviceSet() && isReconnecting()" class="reconnecting" role="alert">
+      <span>{{ $t('message.deviceSelector.reconnecting') }}</span>
+    </div>
     <template v-if="isDeviceSet()">
       <Tabs ref="device-tabs" vertical shortcuts @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
         <template #nav-top>
@@ -78,6 +82,7 @@
     <VersionCheck @firmware-click="onFirmwareClicked" />
     <Language v-if="!utilitySupportsLanguages()" />
     <A11yNotifications/>
+    <AppToasts/>
 
     <AccessibleModal id="firmware_update_progress_modal" ref="firmware_update_progress_modal" width="620px" :show_footer=false :show_close=false>
       <template v-slot:title>{{$t('message.system.firmwareUpdate.title')}}</template>
@@ -92,7 +97,7 @@
         />
 
         <div class="modalButtonBox">
-          <button @click="continueFirmwareUpdate">{{$t('message.modalButtons.continue')}}</button>
+          <AppButton variant="primary" @click="continueFirmwareUpdate">{{$t('message.modalButtons.continue')}}</AppButton>
           <AppButton variant="danger" @click="completeFirmwareUpdate">{{$t('message.modalButtons.cancel')}}</AppButton>
         </div>
       </div>
@@ -113,6 +118,8 @@
 
       <div v-else-if="getFirmwareUpdateState() == 'Failed'">
         {{ $t('message.system.firmwareUpdate.failed') }}
+        <p v-if="firmwareError()" class="firmware-error">{{ firmwareError() }}</p>
+        <p class="firmware-hint">{{ $t('message.system.firmwareUpdate.seeLogs') }}</p>
 
         <ProgressBar
             :progress="getUpdateProgress()"
@@ -145,6 +152,7 @@
 
 <script>
 import A11yNotifications from "./A11yNotifications.vue";
+import AppToasts from "./Toasts.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
 import AppButton from "@/components/design/AppButton.vue";
@@ -198,6 +206,7 @@ export default {
     VersionCheck,
     GoXLRVisualiser,
     A11yNotifications,
+    AppToasts,
     ContentContainer,
     SamplerTab,
     SampleAssignModal,
@@ -219,6 +228,9 @@ export default {
   },
 
   computed: {
+    deviceShown() {
+      return this.isDeviceSet();
+    },
     firmwareUpdateStatus() {
       const updateState = store.status.firmware;
 
@@ -304,13 +316,24 @@ export default {
       return store.getConfig().hasOwnProperty("locale");
     },
 
+    // Stays true while reconnecting, the interface is then covered by a notice
     isDeviceSet() {
-      let ready = store.hasActiveDevice() && store.isConnected();
-      return ready;
+      return store.hasActiveDevice() && (store.isConnected() || store.hasConnected());
+    },
+
+    isReconnecting() {
+      return !store.isConnected() && store.hasConnected();
     },
 
     onTabChange(tab) {
       let id = tab.id;
+      if (id) {
+        try {
+          localStorage.setItem("activeTab", id);
+        } catch (e) {
+          // Only remembered for this session
+        }
+      }
       this.activeZone = SECTION_ZONES[id] || "none";
       if (id === "effects") {
         // This one comes initially from the store...
@@ -466,11 +489,27 @@ export default {
       this.$refs['device-tabs'].selectTabById("system");
     },
 
+    // The device being updated: the active one when it is, otherwise the first one updating.
+    firmwareSerial() {
+      const firmware = store.status.firmware || {};
+      return firmware[store.getActiveSerial()] !== undefined ? store.getActiveSerial() : Object.keys(firmware)[0];
+    },
+
+    firmwareDevice() {
+      const serial = this.firmwareSerial();
+      return serial === undefined ? undefined : store.status.firmware[serial];
+    },
+
+    firmwareError() {
+      const device = this.firmwareDevice();
+      return device && device.error ? device.error : "";
+    },
+
     getFirmwareUpdateState() {
       if (this.firmwareUpdateStatus === undefined)
         return false;
 
-      const firstDevice = Object.values(store.status.firmware)[0];
+      const firstDevice = this.firmwareDevice();
       if (firstDevice === undefined)
         return false;
 
@@ -491,7 +530,7 @@ export default {
       if (this.firmwareUpdateStatus  === undefined)
         return false;
 
-      const firstDeviceSerial = Object.keys(store.status.firmware)[0];
+      const firstDeviceSerial = this.firmwareSerial();
       websocket.continue_firmware_update(firstDeviceSerial);
     },
 
@@ -499,7 +538,7 @@ export default {
       if (this.firmwareUpdateStatus  === undefined)
         return false;
 
-      const firstDeviceSerial = Object.keys(store.status.firmware)[0];
+      const firstDeviceSerial = this.firmwareSerial();
       websocket.clear_firmware_state(firstDeviceSerial);
     },
 
@@ -510,7 +549,7 @@ export default {
       if (this.getFirmwareUpdateState() === "Complete")
         return 100;
 
-      const firstDevice = Object.values(store.status.firmware)[0];
+      const firstDevice = this.firmwareDevice();
       if (firstDevice === undefined)
         return 0;
 
@@ -524,7 +563,7 @@ export default {
       if (this.getFirmwareUpdateState() !== "Pause")
         return this.$t('message.common.unknown');
 
-      const firstDevice = Object.values(store.status.firmware)[0];
+      const firstDevice = this.firmwareDevice();
       const firmwareInfo = firstDevice.state["Pause"];
       return firmwareInfo.version.join('.');
     }
@@ -532,6 +571,27 @@ export default {
 
   created() {
     runWebsocket();
+  },
+
+  watch: {
+    // The section opened last time comes back with the interface
+    deviceShown: {
+      handler(shown) {
+        if (!shown) return;
+        let id = undefined;
+        try {
+          id = localStorage.getItem("activeTab");
+        } catch (e) {
+          return;
+        }
+        this.$nextTick(() => {
+          const tabs = this.$refs["device-tabs"];
+          const tab = tabs && tabs.tabs.find(tab => tab.id === id && !tab.hidden);
+          if (tab && !tab.isActive) tabs.selectTab(tab);
+        });
+      },
+      immediate: true,
+    },
   },
 
   mounted() {
@@ -650,6 +710,39 @@ export default {
   flex: 0 0 100%;
   max-width: 100%;
   box-sizing: border-box;
+}
+
+.firmware-error {
+  margin: 8px 0 0;
+  color: var(--c-danger);
+  white-space: pre-line;
+}
+
+.firmware-hint {
+  margin: 4px 0 0;
+  color: var(--c-muted);
+  font-size: 13px;
+}
+
+.reconnecting {
+  position: fixed;
+  inset: 0;
+  z-index: 150;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 80px;
+  background-color: var(--c-shadow);
+}
+
+.reconnecting span {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid var(--c-warn);
+  background-color: var(--c-panel);
+  color: var(--c-text);
+  font-weight: 600;
+  box-shadow: 0 8px 24px var(--c-shadow);
 }
 
 #main .system-wrap {

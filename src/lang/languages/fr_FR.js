@@ -23,6 +23,9 @@
 
 export default {
     message: {
+        deviceSelector: {
+            reconnecting: "Connexion au GoXLR Utility perdue, reconnexion…",
+        },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
             All: "Tous",
@@ -113,6 +116,9 @@ export default {
             },
 
             setup: {
+                phantomTitle: "Activer l'alimentation fantôme (+{voltage} V) ?",
+                phantomWarning: "Seulement pour les micros à condensateur qui en ont besoin. Baissez d'abord le casque et le stream : l'activation peut provoquer un fort « pop ».",
+                phantomEnable: "Activer",
                 button: "Configuration du Gain",
                 title: "Configuration du Gain",
                 type: "Type de Micro",
@@ -139,6 +145,8 @@ export default {
             },
 
             equaliser: {
+                resetTitle: "Réinitialiser l'égaliseur ?",
+                resetQuestion: "Toutes les bandes reviennent à 0 dB et à leur fréquence par défaut. Avant / Après permet de retrouver l'égaliseur enregistré tant que vous n'enregistrez pas.",
                 compare: "Comparer avec l'égaliseur enregistré",
                 before: "Avant",
                 after: "Après",
@@ -698,6 +706,7 @@ export default {
                 regenerate: "Nouveau lien (les liens précédents ne marchent plus)",
             },
             firmwareUpdate: {
+                seeLogs: "Les journaux de l'utilitaire donnent le détail (Système, Paramètres de l'Utilitaire, Ouvrir les journaux).",
                 noInfo: "Les serveurs de mise à jour n'ont pas répondu : la dernière version n'est pas connue. Cette GoXLR est en {currentVersion}.",
                 updateTo: "Mettre à jour vers {version}",
                 reinstall: "Réinstaller {version}",
@@ -758,6 +767,10 @@ export default {
 
             settingsButton: "Paramètres de l'Utilitaire",
             settings: {
+                recoverConfirmTitle: "Restaurer les fichiers par défaut ?",
+                recoverConfirmMessage: "Les {type} par défaut qui manquent seront ajoutés. Les fichiers existants ne sont pas modifiés.",
+                recoverConfirmOk: "Restaurer",
+                recoverDone: "{type} par défaut restaurés",
                 language: "Langue",
                 useSystem: "Utiliser la langue du système (si disponible)",
 
@@ -831,6 +844,13 @@ export default {
             system: "Auto",
         },
         topBar: {
+            saveBothHint: "Enregistrer le profil {profile} et le profil micro {mic} (Ctrl+S)",
+            saveMore: "Autres options d'enregistrement",
+            saveProfileOnly: "Enregistrer seulement le profil {profile}",
+            saveMicOnly: "Enregistrer seulement le profil micro {mic}",
+            savedBoth: "Profil {profile} et profil micro {mic} enregistrés",
+            savedProfile: "Profil {profile} enregistré",
+            savedMic: "Profil micro {mic} enregistré",
             loadTitle: "Charger {name} ?",
             loadQuestion: "Les réglages de {current} qui n'ont pas été enregistrés seront perdus.",
             loadMicQuestion: "Les réglages du profil micro {current} qui n'ont pas été enregistrés seront perdus.",
