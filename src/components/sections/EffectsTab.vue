@@ -45,7 +45,8 @@
   </div>
 
   <!-- Modals -->
-  <AccessibleModal ref="lightingModal" id="effectsLighting" width="min(640px, 94vw)" body-padding="0">
+  <AccessibleModal ref="lightingModal" id="effectsLighting" width="min(640px, 94vw)" body-padding="0"
+                   @modal-close="lightingOpen = false">
     <template v-slot:title>{{ $t('message.effects.lighting.title') }}</template>
     <EffectsLighting v-if="lightingOpen" :preset="getActivePreset()" :preset-name="getCurrentPresetName()"
                      :selected-effect="selectedEffect"/>

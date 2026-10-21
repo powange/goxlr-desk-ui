@@ -13,7 +13,8 @@
                       :selected="getActiveMute()" />
     </GroupContainer>
 
-    <AccessibleModal ref="lightingModal" id="coughLighting" width="min(560px, 94vw)" body-padding="0">
+    <AccessibleModal ref="lightingModal" id="coughLighting" width="min(560px, 94vw)" body-padding="0"
+                     @modal-close="lightingOpen = false">
       <template v-slot:title>{{ $t('message.configuration.cough.lightingTitle') }}</template>
       <CoughLighting v-if="lightingOpen"/>
     </AccessibleModal>

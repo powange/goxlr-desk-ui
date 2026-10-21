@@ -40,6 +40,8 @@ import Equalizer from "@/components/sections/mic/Equalizer.vue";
 const shared = ["getMinEqValue", "getMaxEqValue", "getStep", "fineTuneEnabled", "resetEqValues", "sendFreqCommand"];
 
 const MIN_FREQ = 20;
+// While dragging, at most one command per band setting is sent in this time.
+const SEND_INTERVAL = 50;
 const MAX_FREQ = 20000;
 
 // The equaliser as a curve on a frequency axis: each band is a point dragged up and down for its
@@ -74,8 +76,14 @@ export default {
     this.observer.observe(this.$refs.svg);
   },
 
+  created() {
+    this.pending = {};
+    this.sendTimer = undefined;
+  },
+
   unmounted() {
     this.observer.disconnect();
+    this.endDrag();
   },
 
   methods: {
@@ -166,8 +174,50 @@ export default {
 
       // Update locally straight away, the daemon's patch confirms it.
       this.equaliser().gain[band] = gain;
-      const command = isDeviceMini() ? {SetEqMiniGain: [band, gain]} : {SetEqGain: [band, gain]};
-      websocket.send_command(store.getActiveSerial(), command);
+      this.queue(isDeviceMini() ? "SetEqMiniGain" : "SetEqGain", band, gain);
+    },
+
+    // Sends now, or, while dragging, keeps only the latest value for the next send.
+    queue(commandName, band, value) {
+      this.pending[`${commandName}:${band}`] = [commandName, band, value];
+      if (this.dragIndex === undefined) {
+        this.flush();
+      } else if (this.sendTimer === undefined) {
+        this.flush();
+        this.sendTimer = setTimeout(() => {
+          this.sendTimer = undefined;
+          this.flush();
+        }, SEND_INTERVAL);
+      }
+    },
+
+    flush() {
+      const serial = store.getActiveSerial();
+      for (const [commandName, band, value] of Object.values(this.pending)) {
+        if (commandName.endsWith("Freq")) {
+          this.sendFreqCommand(commandName, band, value);
+        } else {
+          websocket.send_command(serial, {[commandName]: [band, value]});
+        }
+      }
+      this.pending = {};
+    },
+
+    // The band's gain and frequency paths, whose patches are ignored while it's dragged so
+    // replies to earlier commands don't pull the point back.
+    patchPaths(index) {
+      const base = `/mixers/${store.getActiveSerial()}/mic_status/${isDeviceMini() ? "equaliser_mini" : "equaliser"}`;
+      const band = this.bands()[index];
+      return `${base}/gain/${band};${base}/frequency/${band}`;
+    },
+
+    endDrag() {
+      if (this.dragIndex === undefined) return;
+      clearTimeout(this.sendTimer);
+      this.sendTimer = undefined;
+      store.resumePatchPath(this.patchPaths(this.dragIndex));
+      this.dragIndex = undefined;
+      this.flush();
     },
 
     // Keeps the frequency inside the band's range (which depends on its neighbours) and on its step.
@@ -177,11 +227,14 @@ export default {
       const max = this.getMaxEqValue(index + 1);
       const value = roundToStep(Math.max(min, Math.min(max, hz)), this.getStep(index + 1));
       if (value === this.freqOf(band)) return;
-      this.sendFreqCommand(isDeviceMini() ? "SetEqMiniFreq" : "SetEqFreq", band, value);
+      if (this.dragIndex !== undefined) this.equaliser().frequency[band] = value;
+      this.queue(isDeviceMini() ? "SetEqMiniFreq" : "SetEqFreq", band, value);
     },
 
     onPointerDown(event, index) {
+      this.endDrag();
       this.dragIndex = index;
+      store.pausePatchPath(this.patchPaths(index));
       this.$refs.svg.setPointerCapture(event.pointerId);
       event.preventDefault();
     },
@@ -196,7 +249,7 @@ export default {
     },
 
     onPointerUp() {
-      this.dragIndex = undefined;
+      this.endDrag();
     },
 
     onKeydown(event, index) {

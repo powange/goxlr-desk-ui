@@ -35,7 +35,8 @@
     </button>
   </header>
 
-  <AccessibleModal ref="lightingModal" id="globalLighting" width="min(560px, 94vw)" body-padding="0">
+  <AccessibleModal ref="lightingModal" id="globalLighting" width="min(560px, 94vw)" body-padding="0"
+                   @modal-close="lightingOpen = false">
     <template v-slot:title>{{ $t('message.topBar.lightingTitle') }}</template>
     <GlobalLighting v-if="lightingOpen"/>
   </AccessibleModal>

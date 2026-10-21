@@ -80,7 +80,8 @@
     />
   </GroupContainer>
 
-  <AccessibleModal ref="lightingModal" id="samplerLighting" width="min(560px, 94vw)" body-padding="0">
+  <AccessibleModal ref="lightingModal" id="samplerLighting" width="min(560px, 94vw)" body-padding="0"
+                   @modal-close="lightingOpen = false">
     <template v-slot:title>{{ $t('message.sampler.lighting.title') }}</template>
     <SamplerLighting v-if="lightingOpen" :bank="activeBank"/>
   </AccessibleModal>
