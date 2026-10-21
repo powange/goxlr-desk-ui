@@ -102,7 +102,7 @@
             </span>
           </div>
           <button @click="send({ RestoreSampleTrash: item.id })">{{ $t('message.sampleManager.restore') }}</button>
-          <button @click="send({ EmptySampleTrash: item.id })">{{ $t('message.sampleManager.deleteForever') }}</button>
+          <button @click="deleteForever(item.id)">{{ confirmDelete === item.id ? $t('message.sampleManager.deleteForeverConfirm') : $t('message.sampleManager.deleteForever') }}</button>
         </li>
       </ul>
       <p class="hint">{{ $t('message.sampleManager.trashRetention') }}</p>
@@ -155,6 +155,8 @@ export default {
       deleteProfiles: [],
 
       confirmEmpty: false,
+      // The trash item a second click deletes for good
+      confirmDelete: null,
       errorMessage: '',
     }
   },
@@ -338,7 +340,18 @@ export default {
 
     openTrash() {
       this.confirmEmpty = false;
+      this.confirmDelete = null;
       this.$refs.trashModal.openModal(this.$refs.trashClose, this.$refs.trashButton);
+    },
+
+    // Can't be undone either: a second click confirms
+    deleteForever(id) {
+      if (this.confirmDelete !== id) {
+        this.confirmDelete = id;
+        return;
+      }
+      this.confirmDelete = null;
+      this.send({EmptySampleTrash: id});
     },
 
     emptyTrash() {

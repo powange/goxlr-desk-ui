@@ -53,6 +53,7 @@ import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import NameDialog from "@/components/profiles/NameDialog.vue";
+import {guardProfileChange} from "@/util/profileGuard";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
@@ -131,16 +132,12 @@ export default {
     },
 
     loadProfile(label) {
-      let command = {
-        "LoadMicProfile": [label, true]
-      };
-
-      runCommand(store.getActiveSerial(), command);
+      guardProfileChange("load", true, label, () => runCommand(store.getActiveSerial(), {"LoadMicProfile": [label, true]}));
     },
 
     newProfile(name) {
-      runCommand(store.getActiveSerial(), {"NewMicProfile": name},
-          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })});
+      guardProfileChange("create", true, name, () => runCommand(store.getActiveSerial(), {"NewMicProfile": name},
+          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })}));
     },
 
     saveProfile() {

@@ -46,13 +46,13 @@
 
         <SettingsCard>
           <div class="fw-actions">
-            <span class="fw-hint">{{ $t(firmwareState() === 'outdated' ? 'message.system.pages.firmware.hintUpdate' : 'message.system.pages.firmware.hintReinstall') }}</span>
+            <span class="fw-hint">{{ $t({outdated: 'message.system.pages.firmware.hintUpdate', newer: 'message.system.pages.firmware.hintDowngrade'}[firmwareState()] || 'message.system.pages.firmware.hintReinstall') }}</span>
             <button type="button" class="settings-action" @click="confirmFlash(true)">{{ $t('message.system.firmwareUpdate.customButton') }}</button>
             <button v-if="isLatestFirmwareAvailable() && compareCurrentFirmwareToLatest() < 0" type="button" class="settings-action primary" @click="confirmFlash(false)">
               {{ $t('message.system.firmwareUpdate.updateTo', { version: getLatestFirmwareInfo().version.join('.') }) }}
             </button>
             <button v-else-if="isLatestFirmwareAvailable()" type="button" class="settings-action" @click="confirmFlash(false)">
-              {{ $t('message.system.firmwareUpdate.reinstall', { version: getLatestFirmwareInfo().version.join('.') }) }}
+              {{ $t(firmwareState() === 'newer' ? 'message.system.firmwareUpdate.downgradeTo' : 'message.system.firmwareUpdate.reinstall', { version: getLatestFirmwareInfo().version.join('.') }) }}
             </button>
           </div>
         </SettingsCard>
@@ -108,6 +108,7 @@
       <template v-slot:title>{{ $t('message.system.firmwareUpdate.confirmTitle') }}</template>
       <template v-slot:default>
         <p>{{ customFirmware ? $t('message.system.firmwareUpdate.confirmCustom') : $t('message.system.firmwareUpdate.confirmText') }}</p>
+        <p v-if="!customFirmware && firmwareState() === 'newer'">{{ $t('message.system.firmwareUpdate.confirmDowngrade', { current: getCurrentFirmwareVersion(), version: getLatestFirmwareInfo().version.join('.') }) }}</p>
       </template>
       <template v-slot:footer>
         <ModalButton ref="flashOk" @click="$refs.flashConfirm.closeModal(); startFirmwareUpdate()">{{ $t('message.modalButtons.continue') }}</ModalButton>
@@ -303,7 +304,12 @@ export default {
         this.selectFirmwareFile()
             .then(result => {
               this.$refs.firmware_update_modal.closeModal();
-              uploadFirmwareBlob(result, store.getActiveDevice().hardware.serial_number);
+              // The daemon answers {"Error": ..} when it refuses the file (too big, unknown device)
+              uploadFirmwareBlob(result, store.getActiveDevice().hardware.serial_number)
+                  .then(data => {
+                    if (data && data.Error !== undefined) store.addToast("error", data.Error);
+                  })
+                  .catch(error => store.addToast("error", String(error)));
             })
             .catch(() => this.$refs.firmware_update_modal.closeModal());
       }

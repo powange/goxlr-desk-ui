@@ -35,6 +35,12 @@ export default {
             saved: "Scene {name} saved",
             ran: "Scene {name} applied",
             deleted: "Scene {name} deleted",
+            updateTitle: "Replace {name}?",
+            updateQuestion: "The scene {name} will hold the current volumes, mutes, routing and effects instead of its own.",
+            updateYes: "Replace",
+            deleteTitle: "Delete {name}?",
+            deleteQuestion: "The scene {name} will be deleted. This can't be undone.",
+            deleteYes: "Delete",
         },
         integrations: {
             title: "Integrations",
@@ -866,7 +872,11 @@ export default {
                     fade: "Fade duration",
                     fadeHelp: "For the playback modes that fade.",
                     resetOnClear: "Reset the playback mode when a button is cleared",
-                    resetOnClearHelp: "Otherwise the button keeps its mode and play order."
+                    resetOnClearHelp: "Otherwise the button keeps its mode and play order.",
+                    vodLabel: "{channel} behaviour",
+                    vodDescription: "Sets what the {channel} channel carries",
+                    vodRoutable: "Routable",
+                    vodStreamNoMusic: "Stream Mix (No Music)",
                 },
                 power: {
                     intro: "What the utility does by itself when it stops, when the computer goes to sleep and when it wakes up. The list on the right is only active when the action is on."
@@ -885,6 +895,7 @@ export default {
                     latest: "Latest version",
                     channel: "Channel",
                     hintUpdate: "Don't unplug the GoXLR during the update.",
+                    hintDowngrade: "This GoXLR has a newer version than the latest published one: installing it goes back to an older version.",
                     hintReinstall: "Nothing to install. You can reinstall the same version if the device misbehaves."
                 },
                 integrations: {
@@ -938,6 +949,7 @@ export default {
 
             powerButton: "Power Action",
             power: {
+                missing: "{name} (not found)",
                 shutdownTitle: "Shutdown Actions",
                 shutdownDescription: "These actions will be executed when the GoXLR Utility is safely shut down.",
 
@@ -1076,6 +1088,8 @@ export default {
                 seeLogs: "The utility's logs have the details (System, Utility settings, Open logs).",
                 noInfo: "The update servers didn't answer, so the latest version isn't known. This GoXLR runs {currentVersion}.",
                 updateTo: "Update to {version}",
+                downgradeTo: "Go back to {version}",
+                confirmDowngrade: "{current} is installed: {version} is an older version.",
                 reinstall: "Reinstall {version}",
                 customButton: "Custom firmware…",
                 confirmTitle: "Flash the firmware?",
@@ -1164,6 +1178,9 @@ export default {
             loadMicQuestion: "Settings of the mic profile {current} that weren't saved will be lost.",
             load: "Load",
             saveThenLoad: "Save, then load",
+            createTitle: "Create {name}?",
+            create: "Create",
+            saveThenCreate: "Save, then create",
             lighting: "Global lighting",
             lightingTitle: "Global lighting",
             profile: "Profile",
@@ -1265,6 +1282,7 @@ export default {
             folderCount: "{count} sample(s)",
             restore: "Restore",
             deleteForever: "Delete",
+            deleteForeverConfirm: "Click again to delete",
             trashRetention: "Items are deleted for good after 30 days.",
             emptyTrash: "Empty the Trash",
             emptyTrashConfirm: "Click again to delete everything",

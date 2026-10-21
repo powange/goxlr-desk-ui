@@ -27,6 +27,23 @@ const HANDLERS = {
 
 const steps = [];
 let undoing = false;
+// The device and profiles the steps were made on: when any of them changes (a profile loaded
+// from anywhere, a scene, another device selected), the steps don't apply any more.
+let context = undefined;
+
+function currentContext() {
+    const device = store.getActiveDevice();
+    if (device === undefined) return undefined;
+    return `${store.getActiveSerial()}\u0000${device.profile_name}\u0000${device.mic_profile_name}`;
+}
+
+function checkContext() {
+    const now = currentContext();
+    if (now !== context) {
+        steps.length = 0;
+        context = now;
+    }
+}
 
 // Called with every command about to be sent to the active device
 export function recordForUndo(serial, command) {
@@ -35,13 +52,14 @@ export function recordForUndo(serial, command) {
     const handler = HANDLERS[name];
     const device = store.getActiveDevice();
     if (handler === undefined || device === undefined) return;
+    checkContext();
 
     let args = command[name];
     if (!Array.isArray(args)) args = [args];
     let entry;
     try {
         const [key, inverse] = handler(device, args);
-        entry = {key, inverse, time: Date.now()};
+        entry = {key, inverse, serial, time: Date.now()};
     } catch (e) {
         return;
     }
@@ -57,16 +75,19 @@ export function recordForUndo(serial, command) {
 }
 
 export function canUndo() {
+    checkContext();
     return steps.length > 0;
 }
 
 // Sends the inverse of the last change; `send` is websocket.send_command.
 export function undoLast(send) {
+    checkContext();
     const step = steps.pop();
     if (step === undefined) return false;
     undoing = true;
     try {
-        send(store.getActiveSerial(), step.inverse);
+        // To the device it was made on
+        send(step.serial, step.inverse);
     } finally {
         undoing = false;
     }

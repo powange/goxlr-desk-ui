@@ -7,7 +7,7 @@
         <span class="name">{{ item.name }}</span>
         <span class="meta">{{ item.mic ? $t('message.profileManager.trashMic') : $t('message.profileManager.trashProfile') }} · {{ formatDate(item.deleted_at) }}</span>
         <button type="button" class="small" @click="restore(item)">{{ $t('message.sampleManager.restore') }}</button>
-        <button type="button" class="small danger" @click="remove(item)">{{ $t('message.sampleManager.deleteForever') }}</button>
+        <button type="button" class="small danger" @click="remove(item)">{{ confirmDelete === item.id ? $t('message.sampleManager.deleteForeverConfirm') : $t('message.sampleManager.deleteForever') }}</button>
       </li>
     </ul>
     <button type="button" class="small danger empty" @click="emptyAll">
@@ -28,6 +28,8 @@ export default {
   data() {
     return {
       confirmEmpty: false,
+      // The item a second click deletes for good
+      confirmDelete: null,
       error: "",
     }
   },
@@ -52,7 +54,14 @@ export default {
       this.send({RestoreProfileTrash: item.id});
     },
 
+    // Can't be undone either: a second click confirms
     remove(item) {
+      if (this.confirmDelete !== item.id) {
+        this.confirmDelete = item.id;
+        setTimeout(() => { if (this.confirmDelete === item.id) this.confirmDelete = null; }, 4000);
+        return;
+      }
+      this.confirmDelete = null;
       this.send({EmptyProfileTrash: item.id});
     },
 

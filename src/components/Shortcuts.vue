@@ -22,6 +22,8 @@ import {undoLast} from "@/util/undo";
 
 const PRESETS = ["Preset1", "Preset2", "Preset3", "Preset4", "Preset5", "Preset6"];
 const BANKS = {F7: "A", F8: "B", F9: "C"};
+// Inputs nothing is typed in
+const NOT_TYPED = ["range", "checkbox", "radio", "button", "submit", "reset", "color", "file", "image"];
 
 export default {
   name: "AppShortcuts",
@@ -51,10 +53,12 @@ export default {
       return rows;
     },
 
-    // Typing in a field, or a dialog open: the keys are theirs
+    // Typing in a field, or a dialog open: the keys are theirs. Sliders, checkboxes and buttons
+    // keep the focus after being used, the shortcuts still work there.
     ignored(event) {
       const target = event.target;
-      if (target && (target.isContentEditable || ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))) return true;
+      if (target && (target.isContentEditable || ["TEXTAREA", "SELECT"].includes(target.tagName))) return true;
+      if (target && target.tagName === "INPUT" && !NOT_TYPED.includes((target.type || "text").toLowerCase())) return true;
       return document.querySelector(".modal-mask:not([style*='display: none'])") !== null;
     },
 

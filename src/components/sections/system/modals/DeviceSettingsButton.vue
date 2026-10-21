@@ -57,8 +57,8 @@
 
         <SettingsCard v-if="isDeviceMini() || (!isDeviceMini() && firmwareSupportsMix2())" :title="getKeyForMix2()">
           <ListSetting :value="getVodMode()" :options="getVodModeKeys()"
-                       :description="`Sets ${getKeyForMix2()} behaviour`"
-                       :label="`${getKeyForMix2()} Behaviour`" @change="setVodMode"/>
+                       :description="$t('message.system.pages.device.vodDescription', {channel: getKeyForMix2()})"
+                       :label="$t('message.system.pages.device.vodLabel', {channel: getKeyForMix2()})" @change="setVodMode"/>
         </SettingsCard>
       </div>
 
@@ -185,11 +185,11 @@ export default {
       return [
         {
           key: "Routable",
-          value: "Routable",
+          value: this.$t('message.system.pages.device.vodRoutable'),
         },
         {
           key: "StreamNoMusic",
-          value: "Stream Mix (No Music)",
+          value: this.$t('message.system.pages.device.vodStreamNoMusic'),
         },
       ];
     },

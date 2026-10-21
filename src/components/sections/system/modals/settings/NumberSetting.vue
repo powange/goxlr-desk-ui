@@ -19,42 +19,36 @@ export default {
   },
 
   methods: {
+    // Committed on Enter and when leaving the field. The value is shown as it's kept: back
+    // within min..max, or the current one when what was typed isn't a number.
     onChange(e) {
       let value = parseInt(e.target.value);
       if (isNaN(value)) {
+        e.target.value = this.value;
         return;
       }
-      if (value === this.value) {
-        return;
+      value = Math.min(this.max, Math.max(this.min, value));
+      e.target.value = value;
+      if (value !== this.value) {
+        this.$emit('change', value);
       }
-
-      if (value < this.min) {
-        value = this.min;
-      }
-      if (value > this.max) {
-        value = this.max;
-      }
-
-      this.$emit('change', value);
     },
 
+    // Only digits are typed in (and a minus sign when the minimum is below zero); the editing
+    // and moving keys, and the shortcuts (Ctrl+A, C, V, Z..), still work.
     validate(e) {
-      let allowedKeys = [
-          "ArrowRight",
-          "ArrowLeft",
-          "Enter",
-          "Backspace",
-          "Delete",
-          "Tab"
-      ];
-
-      // Check whether the Key is a Number..
-      if ((isNaN(e.key) || e.key === null) && !allowedKeys.includes(e.key)) {
-          e.preventDefault();
-          return false;
+      if (e.key === "Enter") {
+        this.onChange(e);
+        return true;
       }
-
-      return true;
+      if (e.ctrlKey || e.metaKey || e.altKey || e.key.length !== 1) {
+        return true;
+      }
+      if (/[0-9]/.test(e.key) || (e.key === "-" && this.min < 0)) {
+        return true;
+      }
+      e.preventDefault();
+      return false;
     },
 
     getElementId() {

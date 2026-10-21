@@ -21,6 +21,17 @@ export default {
     }
   },
 
+  computed: {
+    // A saved choice no longer in the list (a profile renamed or deleted elsewhere) is shown as
+    // missing, rather than the list silently showing (and saving) its first entry.
+    shownOptions() {
+      if (this.selected === undefined || this.options.some(option => option.key === this.selected)) {
+        return this.options;
+      }
+      return [{key: this.selected, value: this.$t('message.system.power.missing', {name: this.selected})}, ...this.options];
+    },
+  },
+
   methods: {
     selectedValue() {
       return this.$refs.selection.value;
@@ -61,7 +72,7 @@ export default {
     <Toggle :model-value="checked" @update:model-value="onCheckChange" :label="label" :aria-description="description"/>
     <span class="power-label" aria-hidden="true" @click="onCheckChange">{{ label }}</span>
     <select ref="selection" class="power-select" :disabled="!checked" :aria-label="label" @change="onSelectChange">
-      <option v-for="option of options" :key="option.key" :value="option.key" :selected="option.key === selected">
+      <option v-for="option of shownOptions" :key="option.key" :value="option.key" :selected="option.key === selected">
           {{ option.value }}
         </option>
     </select>

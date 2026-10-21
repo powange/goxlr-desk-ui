@@ -35,6 +35,12 @@ export default {
             saved: "Scène {name} enregistrée",
             ran: "Scène {name} appliquée",
             deleted: "Scène {name} supprimée",
+            updateTitle: "Remplacer {name} ?",
+            updateQuestion: "La scène {name} prendra les volumes, mutes, routage et effets actuels à la place des siens.",
+            updateYes: "Remplacer",
+            deleteTitle: "Supprimer {name} ?",
+            deleteQuestion: "La scène {name} sera supprimée. Ce n'est pas annulable.",
+            deleteYes: "Supprimer",
         },
         integrations: {
             title: "Intégrations",
@@ -383,7 +389,7 @@ export default {
 
                 accessibilityOpenPresetDirectory: "Ouvrir le répertoire des préréglages",
                 accessibilityPresetLoaded: "Préréglage {name} chargé dans {bank}",
-                accessibilityPresetSaved: "Préréglage {name} Enregistrer sous Library",
+                accessibilityPresetSaved: "Préréglage {name} enregistré dans la bibliothèque",
             },
             reverb: {
                 title: "Réverbération",
@@ -886,7 +892,11 @@ export default {
                     fade: "Durée du fondu",
                     fadeHelp: "Pour les modes de lecture avec fondu.",
                     resetOnClear: "Remettre le mode de lecture par défaut quand on vide un bouton",
-                    resetOnClearHelp: "Sinon, le bouton garde son mode et son ordre de lecture."
+                    resetOnClearHelp: "Sinon, le bouton garde son mode et son ordre de lecture.",
+                    vodLabel: "Comportement de {channel}",
+                    vodDescription: "Définit ce que transporte le canal {channel}",
+                    vodRoutable: "Routable",
+                    vodStreamNoMusic: "Stream Mix (sans musique)",
                 },
                 power: {
                     intro: "Ce que l'utilitaire fait tout seul quand il s'arrête, quand l'ordinateur se met en veille et quand il se réveille. La liste à droite ne s'active que si l'action est cochée."
@@ -905,6 +915,7 @@ export default {
                     latest: "Dernière version",
                     channel: "Canal",
                     hintUpdate: "Ne débranchez pas la GoXLR pendant la mise à jour.",
+                    hintDowngrade: "Cette GoXLR a une version plus récente que la dernière publiée : l'installer revient à une version plus ancienne.",
                     hintReinstall: "Rien à installer. Vous pouvez réinstaller la même version si l'appareil se comporte mal."
                 },
                 integrations: {
@@ -987,6 +998,8 @@ export default {
                 seeLogs: "Les journaux de l'utilitaire donnent le détail (Système, Paramètres de l'Utilitaire, Ouvrir les journaux).",
                 noInfo: "Les serveurs de mise à jour n'ont pas répondu : la dernière version n'est pas connue. Cette GoXLR est en {currentVersion}.",
                 updateTo: "Mettre à jour vers {version}",
+                downgradeTo: "Revenir à {version}",
+                confirmDowngrade: "{current} est installée : {version} est une version plus ancienne.",
                 reinstall: "Réinstaller {version}",
                 customButton: "Firmware personnalisé…",
                 confirmTitle: "Flasher le firmware ?",
@@ -1000,6 +1013,7 @@ export default {
 
             powerButton: "Actions d'alimentation",
             power: {
+                missing: "{name} (introuvable)",
                 shutdownTitle: "À l'arrêt de l'utilitaire",
                 shutdownDescription: "Ces actions seront exécutées lorsque l'utilitaire GoXLR sera arrêté en toute sécurité.",
 
@@ -1149,6 +1163,9 @@ export default {
             loadMicQuestion: "Les réglages du profil micro {current} qui n'ont pas été enregistrés seront perdus.",
             load: "Charger",
             saveThenLoad: "Enregistrer, puis charger",
+            createTitle: "Créer {name} ?",
+            create: "Créer",
+            saveThenCreate: "Enregistrer, puis créer",
             lighting: "Éclairage global",
             lightingTitle: "Éclairage global",
             profile: "Profil",
@@ -1250,6 +1267,7 @@ export default {
             folderCount: "{count} son(s)",
             restore: "Restaurer",
             deleteForever: "Supprimer",
+            deleteForeverConfirm: "Cliquez encore pour supprimer",
             trashRetention: "Les éléments sont supprimés définitivement après 30 jours.",
             emptyTrash: "Vider la corbeille",
             emptyTrashConfirm: "Cliquez encore pour tout supprimer",
