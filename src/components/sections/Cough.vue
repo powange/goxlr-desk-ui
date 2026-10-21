@@ -1,6 +1,7 @@
 <template>
     <GroupContainer :title="$t('message.configuration.cough.title')">
       <template #right>
+        <MicMuteButton/>
         <AppButton ref="lightingButton" @click="openLighting">
           <font-awesome-icon icon="fa-solid fa-lightbulb"/>
           <span>{{ $t('message.common.lighting') }}</span>
@@ -21,6 +22,7 @@
 </template>
 
 <script>
+import MicMuteButton from "@/components/MicMuteButton.vue";
 import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
@@ -32,7 +34,7 @@ import { driverMix2, driverPreVOD, driverVOD, firmwareSupportsMix2, isDeviceMini
 
 export default {
   name: "CoughButtonSettings",
-  components: {AppButton, CoughLighting, AccessibleModal, GroupContainer, RadioSelection},
+  components: {MicMuteButton, AppButton, CoughLighting, AccessibleModal, GroupContainer, RadioSelection},
 
   data() {
     return {

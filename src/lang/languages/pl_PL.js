@@ -23,6 +23,21 @@
 
 export default {
     message: {
+        micMute: {
+            mute: "Wycisz mikrofon",
+            muted: "Mikrofon wyciszony",
+            hint: "Wycisza mikrofon jak przycisk Mute urządzenia (M)",
+            holdMode: "Przycisk Mute jest w trybie przytrzymania: wycisza tylko, gdy jest przytrzymany na urządzeniu",
+        },
+        shortcuts: {
+            title: "Skróty klawiszowe",
+            save: "Zapisz profil i profil mikrofonu",
+            micMute: "Wycisz lub włącz mikrofon",
+            sections: "Przejdź do sekcji paska bocznego",
+            presets: "Presety efektów 1–6",
+            banks: "Banki samplera A, B i C",
+            help: "Pokaż te skróty",
+        },
         common: {
             close: "Zamknij",
             lighting: "Podświetlenie",
@@ -61,6 +76,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            unsaved: "Niezapisane zmiany",
+            revert: "Przywróć zapisaną wersję",
             saveBothHint: "Zapisz profil {profile} i profil mikrofonu {mic} (Ctrl+S)",
             saveMore: "Więcej opcji zapisu",
             saveProfileOnly: "Zapisz tylko profil {profile}",
@@ -339,6 +356,9 @@ export default {
         mixer: {
             otherInputs: "Inne Wejścia",
             strip: {
+                muteAllHint: "Prawy przycisk lub długie naciśnięcie: wycisz dla wszystkich",
+                notMuted: "Niewyciszony",
+                mutedAll: "Wyciszony dla wszystkich",
                 source: "Źródło",
                 mute: "Wycisz",
                 muteFunction: "Wycisz dla",
@@ -580,6 +600,8 @@ export default {
                 applyBanks: "Zastosuj do wszystkich banków",
             },
             pads: {
+                play: "Odtwórz {button}",
+                stop: "Zatrzymaj {button}",
                 title: "Przyciski",
                 empty: "Pusty",
                 count: "Sample: {count}",
@@ -1046,6 +1068,17 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            menuRename: "Zmień nazwę",
+            menuDuplicate: "Duplikuj",
+            nameLabel: "Nazwa",
+            nameEmpty: "Wpisz nazwę",
+            nameInvalid: "Tej nazwy nie można użyć jako nazwy pliku (znaki / \\ : * ? \" < > {'|'}, nazwa zastrzeżona albo kropka lub spacja na końcu)",
+            nameTaken: "{name} już istnieje",
+            copyName: "{name} kopia",
+            renameTitle: "Zmień nazwę {name}",
+            duplicateTitle: "Duplikuj {name}",
+            renamed: "Zmieniono nazwę {name} na {newName}",
+            duplicated: "Zduplikowano {name} jako {newName}",
             trashTitle: "Usunięte profile",
             trashEmpty: "Brak usuniętych profili. Usunięte profile są tu przechowywane przez 30 dni.",
             trashProfile: "Profil",

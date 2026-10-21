@@ -23,6 +23,21 @@
 
 export default {
     message: {
+        micMute: {
+            mute: "Mute mic",
+            muted: "Mic muted",
+            hint: "Mutes the microphone like the device's Mute button (M)",
+            holdMode: "The Mute button is in Hold mode: it only mutes while held on the device",
+        },
+        shortcuts: {
+            title: "Keyboard shortcuts",
+            save: "Save the profile and the mic profile",
+            micMute: "Mute or unmute the microphone",
+            sections: "Go to a section of the side bar",
+            presets: "Effect presets 1 to 6",
+            banks: "Sampler banks A, B and C",
+            help: "Show these shortcuts",
+        },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
             All: "All",
@@ -195,6 +210,9 @@ export default {
             outputs: "Outputs",
             otherInputs: "Other Inputs",
             strip: {
+                muteAllHint: "Right click or long press: mute for everyone",
+                notMuted: "Not muted",
+                mutedAll: "Muted for everyone",
                 source: "Source",
                 mute: "Mute",
                 muteFunction: "Mute to",
@@ -435,6 +453,8 @@ export default {
                 applyBanks: "Apply to all banks",
             },
             pads: {
+                play: "Play {button}",
+                stop: "Stop {button}",
                 title: "Buttons",
                 empty: "Empty",
                 count: "{count} sample(s)",
@@ -937,6 +957,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            unsaved: "Unsaved changes",
+            revert: "Revert to the saved version",
             saveBothHint: "Save the profile {profile} and the mic profile {mic} (Ctrl+S)",
             saveMore: "More save options",
             saveProfileOnly: "Save the profile {profile} only",
@@ -1062,6 +1084,17 @@ export default {
         },
 
         profileManager: {
+            menuRename: "Rename",
+            menuDuplicate: "Duplicate",
+            nameLabel: "Name",
+            nameEmpty: "Enter a name",
+            nameInvalid: "This name can't be used for a file (characters / \\ : * ? \" < > {'|'}, a reserved name, or a dot or space at the end)",
+            nameTaken: "{name} already exists",
+            copyName: "{name} copy",
+            renameTitle: "Rename {name}",
+            duplicateTitle: "Duplicate {name}",
+            renamed: "{name} renamed to {newName}",
+            duplicated: "{name} duplicated as {newName}",
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Save Profile {profileName}",
             createProfile: "Create Profile",

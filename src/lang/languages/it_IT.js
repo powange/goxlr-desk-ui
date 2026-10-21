@@ -4,6 +4,21 @@
 
 export default {
     message: {
+        micMute: {
+            mute: "Silenzia microfono",
+            muted: "Microfono silenziato",
+            hint: "Silenzia il microfono come il pulsante Mute del dispositivo (M)",
+            holdMode: "Il pulsante Mute è in modalità tenuta: silenzia solo finché viene tenuto premuto sul dispositivo",
+        },
+        shortcuts: {
+            title: "Scorciatoie da tastiera",
+            save: "Salva il profilo e il profilo microfono",
+            micMute: "Silenzia o riattiva il microfono",
+            sections: "Vai a una sezione della barra laterale",
+            presets: "Preset effetti da 1 a 6",
+            banks: "Banchi del sampler A, B e C",
+            help: "Mostra queste scorciatoie",
+        },
         common: {
             close: "Chiudi",
             lighting: "Illuminazione",
@@ -42,6 +57,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            unsaved: "Modifiche non salvate",
+            revert: "Torna alla versione salvata",
             saveBothHint: "Salva il profilo {profile} e il profilo microfono {mic} (Ctrl+S)",
             saveMore: "Altre opzioni di salvataggio",
             saveProfileOnly: "Salva solo il profilo {profile}",
@@ -319,6 +336,9 @@ export default {
         mixer: {
             otherInputs: "Altri Ingressi",
             strip: {
+                muteAllHint: "Clic destro o pressione lunga: silenzia per tutti",
+                notMuted: "Non silenziato",
+                mutedAll: "Silenziato per tutti",
                 source: "Fonte",
                 mute: "Muto",
                 muteFunction: "Muta verso",
@@ -560,6 +580,8 @@ export default {
                 applyBanks: "Applica a tutte le banche",
             },
             pads: {
+                play: "Riproduci {button}",
+                stop: "Ferma {button}",
                 title: "Tasti",
                 empty: "Vuoto",
                 count: "{count} campione/i",
@@ -1026,6 +1048,17 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            menuRename: "Rinomina",
+            menuDuplicate: "Duplica",
+            nameLabel: "Nome",
+            nameEmpty: "Inserisci un nome",
+            nameInvalid: "Questo nome non può essere usato per un file (caratteri / \\ : * ? \" < > {'|'}, nome riservato, o punto o spazio finale)",
+            nameTaken: "{name} esiste già",
+            copyName: "{name} copia",
+            renameTitle: "Rinomina {name}",
+            duplicateTitle: "Duplica {name}",
+            renamed: "{name} rinominato in {newName}",
+            duplicated: "{name} duplicato come {newName}",
             trashTitle: "Profili eliminati",
             trashEmpty: "Nessun profilo eliminato. I profili eliminati vengono conservati qui per 30 giorni.",
             trashProfile: "Profilo",

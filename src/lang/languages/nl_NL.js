@@ -23,6 +23,21 @@
 
 export default {
     message: {
+        micMute: {
+            mute: "Microfoon dempen",
+            muted: "Microfoon gedempt",
+            hint: "Dempt de microfoon zoals de Mute-knop van het apparaat (M)",
+            holdMode: "De Mute-knop staat op vasthouden: hij dempt alleen zolang je hem op het apparaat ingedrukt houdt",
+        },
+        shortcuts: {
+            title: "Sneltoetsen",
+            save: "Profiel en microfoonprofiel opslaan",
+            micMute: "Microfoon dempen of weer aanzetten",
+            sections: "Naar een onderdeel van de zijbalk gaan",
+            presets: "Effectpresets 1 tot 6",
+            banks: "Samplerbanken A, B en C",
+            help: "Deze sneltoetsen tonen",
+        },
         common: {
             close: "Sluiten",
             lighting: "Verlichting",
@@ -61,6 +76,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            unsaved: "Niet-opgeslagen wijzigingen",
+            revert: "Terug naar de opgeslagen versie",
             saveBothHint: "Profiel {profile} en microfoonprofiel {mic} opslaan (Ctrl+S)",
             saveMore: "Meer opslagopties",
             saveProfileOnly: "Alleen profiel {profile} opslaan",
@@ -339,6 +356,9 @@ export default {
         mixer: {
             otherInputs: "Andere ingangen",
             strip: {
+                muteAllHint: "Rechtsklik of lang indrukken: voor iedereen dempen",
+                notMuted: "Niet gedempt",
+                mutedAll: "Voor iedereen gedempt",
                 source: "Bron",
                 mute: "Dempen",
                 muteFunction: "Demp naar",
@@ -580,6 +600,8 @@ export default {
                 applyBanks: "Toepassen op alle banken",
             },
             pads: {
+                play: "{button} afspelen",
+                stop: "{button} stoppen",
                 title: "Knoppen",
                 empty: "Leeg",
                 count: "{count} sample(s)",
@@ -1046,6 +1068,17 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            menuRename: "Hernoemen",
+            menuDuplicate: "Dupliceren",
+            nameLabel: "Naam",
+            nameEmpty: "Voer een naam in",
+            nameInvalid: "Deze naam kan niet als bestandsnaam worden gebruikt (tekens / \\ : * ? \" < > {'|'}, een gereserveerde naam, of een punt of spatie aan het eind)",
+            nameTaken: "{name} bestaat al",
+            copyName: "{name} kopie",
+            renameTitle: "{name} hernoemen",
+            duplicateTitle: "{name} dupliceren",
+            renamed: "{name} hernoemd naar {newName}",
+            duplicated: "{name} gedupliceerd als {newName}",
             trashTitle: "Verwijderde profielen",
             trashEmpty: "Geen verwijderde profielen. Verwijderde profielen worden hier 30 dagen bewaard.",
             trashProfile: "Profiel",

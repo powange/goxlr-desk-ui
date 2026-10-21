@@ -8,9 +8,10 @@
       </div>
 
       <div class="pads" role="group" :aria-label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})">
-        <button v-for="option in getButtonOptions()" :key="option.id" type="button" class="pad"
+        <div v-for="option in getButtonOptions()" :key="option.id" class="pad-wrap">
+        <button type="button" class="pad"
                 :aria-pressed="option.id === activeButton"
-                :class="{ selected: option.id === activeButton, filled: getPadSamples(option.id).length > 0, drop: dropButton === option.id }"
+                :class="{ selected: option.id === activeButton, filled: getPadSamples(option.id).length > 0, drop: dropButton === option.id, playing: isPlaying(option.id) }"
                 @click="setActiveButton(option.id)"
                 @dragover="onPadDragOver($event, option.id)" @dragleave="onPadDragLeave(option.id)"
                 @drop="onPadDrop($event, option.id)">
@@ -21,6 +22,14 @@
           </span>
           <span class="pad-tip" v-if="dropButton === option.id">{{ $t('message.sampler.pads.dropHere') }}</span>
         </button>
+        <!-- Plays the pad like the device's button does (its function and play order) -->
+        <button v-if="getPadSamples(option.id).length > 0" type="button" class="pad-play"
+                :aria-label="isPlaying(option.id) ? $t('message.sampler.pads.stop', {button: option.label}) : $t('message.sampler.pads.play', {button: option.label})"
+                :title="isPlaying(option.id) ? $t('message.sampler.pads.stop', {button: option.label}) : $t('message.sampler.pads.play', {button: option.label})"
+                @click="togglePlay(option.id)">
+          <font-awesome-icon :icon="isPlaying(option.id) ? 'fa-solid fa-stop' : 'fa-solid fa-play'"/>
+        </button>
+        </div>
       </div>
 
       <div class="pad-row">
@@ -308,6 +317,17 @@ export default {
         samples.push({id: index.toString(), label: sample.name});
       });
       return samples;
+    },
+
+    isPlaying(button) {
+      return store.getActiveDevice().sampler.banks[this.activeBank][button].is_playing;
+    },
+
+    togglePlay(button) {
+      const command = this.isPlaying(button)
+          ? {StopSamplePlayback: [this.activeBank, button]}
+          : {PlayNextSample: [this.activeBank, button]};
+      websocket.send_command(store.getActiveSerial(), command);
     },
 
     setActiveBank(bank) {
@@ -627,6 +647,44 @@ export default {
 
 .pad-panel .pad:hover {
   background-color: var(--c-hover);
+}
+
+.pad-wrap {
+  position: relative;
+  display: grid;
+}
+
+/* Room for the play button */
+.pad-panel .pad-wrap .pad {
+  padding-right: 46px;
+}
+
+.pad-panel .pad.playing {
+  border-color: var(--c-ok);
+}
+
+.pad-play {
+  position: absolute;
+  right: 8px;
+  bottom: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 1px solid var(--c-field-border);
+  background-color: var(--c-raised-2);
+  color: var(--c-text);
+  cursor: pointer;
+}
+
+.pad-play:hover {
+  background-color: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-on-accent);
+}
+
+.pad-play:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
 }
 
 .pad-panel .pad.selected {

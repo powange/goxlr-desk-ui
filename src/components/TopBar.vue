@@ -10,6 +10,8 @@
                  :title="$t('message.topBar.saveBothHint', { profile: getActiveProfile(), mic: getActiveMicProfile() })">
         <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
         <span>{{ $t('message.topBar.save') }}</span>
+        <span v-if="isModified()" class="unsaved-dot" :title="$t('message.topBar.unsaved')"></span>
+        <span v-if="isModified()" class="screenreader-only">{{ $t('message.topBar.unsaved') }}</span>
       </AppButton>
       <AppButton variant="primary" class="save-more" :aria-expanded="saveMenuOpen" aria-haspopup="menu"
                  :aria-label="$t('message.topBar.saveMore')" @click="saveMenuOpen = !saveMenuOpen">
@@ -22,6 +24,9 @@
         <button type="button" role="menuitem" @click="save(false, true)">
           {{ $t('message.topBar.saveMicOnly', { mic: getActiveMicProfile() }) }}
         </button>
+        <button v-if="isModified()" type="button" role="menuitem" class="revert" @click="revert()">
+          {{ $t('message.topBar.revert') }}
+        </button>
       </div>
     </div>
 
@@ -29,6 +34,8 @@
                 :label="$t('message.topBar.micProfileLabel')" @select="askLoad($event, true)">
       <template #prefix><span class="picker-label">{{ $t('message.topBar.micProfile') }}</span></template>
     </SelectMenu>
+
+    <MicMuteButton/>
 
     <AppButton ref="lighting" @click="openLighting">
       <font-awesome-icon icon="fa-solid fa-lightbulb"/>
@@ -80,10 +87,11 @@ import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import GlobalLighting from "@/components/sections/lighting/GlobalLighting.vue";
 import SelectMenu from "@/components/design/SelectMenu.vue";
+import MicMuteButton from "@/components/MicMuteButton.vue";
 
 export default {
   name: "TopBar",
-  components: {AppButton, SelectMenu, GlobalLighting, ModalButton, AccessibleModal},
+  components: {MicMuteButton, AppButton, SelectMenu, GlobalLighting, ModalButton, AccessibleModal},
 
   data() {
     return {
@@ -160,7 +168,25 @@ export default {
       return store.getMicProfileFiles().slice().sort(Intl.Collator().compare).map(name => ({id: name, label: name}));
     },
 
+    // Unsaved changes in the profile and / or mic profile (tracked by the daemon)
+    isModified(profile = true, mic = true) {
+      const device = store.getActiveDevice();
+      return (profile && device.profile_modified === true) || (mic && device.mic_profile_modified === true);
+    },
+
+    // Loads the saved versions back, dropping the changes
+    revert() {
+      this.saveMenuOpen = false;
+      if (this.isModified(true, false)) this.loadProfile(this.getActiveProfile());
+      if (this.isModified(false, true)) this.loadMicProfile(this.getActiveMicProfile());
+    },
+
     askLoad(name, mic) {
+      // Nothing would be lost: load straight away
+      if (!this.isModified(!mic, mic)) {
+        if (mic) this.loadMicProfile(name); else this.loadProfile(name);
+        return;
+      }
       const current = mic ? this.getActiveMicProfile() : this.getActiveProfile();
       this.pendingLoad = {name, mic, current};
       this.$refs.loadModal.openModal(this.$refs.loadOk);
@@ -280,6 +306,18 @@ export default {
   text-align: left;
   white-space: nowrap;
   cursor: pointer;
+}
+
+.save-menu button.revert {
+  color: var(--c-danger);
+}
+
+.unsaved-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--c-warn);
+  box-shadow: 0 0 0 2px var(--c-accent);
 }
 
 .save-menu button:hover, .save-menu button:focus-visible {

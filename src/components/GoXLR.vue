@@ -14,6 +14,11 @@
           </div>
         </template>
         <template #nav-bottom>
+          <AppButton variant="link" class="shortcuts-link" @click="$refs.shortcuts.$refs.help.openModal(undefined, $event.currentTarget)">
+            <font-awesome-icon icon="fa-solid fa-keyboard"/>
+            <span>{{ $t('message.shortcuts.title') }}</span>
+            <kbd class="key">?</kbd>
+          </AppButton>
           <div class="theme-switch">
             <SegmentedControl :options="getThemeOptions()" :selected="themeMode" @selection-changed="changeTheme"
                               :label="$t('message.theme.label')"/>
@@ -83,6 +88,7 @@
     <Language v-if="!utilitySupportsLanguages()" />
     <A11yNotifications/>
     <AppToasts/>
+    <AppShortcuts v-if="isDeviceSet()" ref="shortcuts"/>
 
     <AccessibleModal id="firmware_update_progress_modal" ref="firmware_update_progress_modal" width="620px" :show_footer=false :show_close=false>
       <template v-slot:title>{{$t('message.system.firmwareUpdate.title')}}</template>
@@ -153,6 +159,7 @@
 <script>
 import A11yNotifications from "./A11yNotifications.vue";
 import AppToasts from "./Toasts.vue";
+import AppShortcuts from "./Shortcuts.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
 import AppButton from "@/components/design/AppButton.vue";
@@ -207,6 +214,7 @@ export default {
     GoXLRVisualiser,
     A11yNotifications,
     AppToasts,
+    AppShortcuts,
     ContentContainer,
     SamplerTab,
     SampleAssignModal,
@@ -722,6 +730,21 @@ export default {
   margin: 4px 0 0;
   color: var(--c-muted);
   font-size: 13px;
+}
+
+.shortcuts-link {
+  margin: 0 16px 8px;
+  justify-content: flex-start;
+  font-size: 12px;
+  color: var(--c-muted);
+}
+
+.shortcuts-link .key {
+  font-family: var(--f-mono);
+  font-size: 11px;
+  padding: 0 5px;
+  border: 1px solid var(--c-field-border);
+  border-radius: 3px;
 }
 
 .reconnecting {

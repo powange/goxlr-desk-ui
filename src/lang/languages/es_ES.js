@@ -1,5 +1,20 @@
 export default {
     message: {
+        micMute: {
+            mute: "Silenciar micro",
+            muted: "Micro silenciado",
+            hint: "Silencia el micrófono como el botón Mute del dispositivo (M)",
+            holdMode: "El botón Mute está en modo mantener: solo silencia mientras se mantiene pulsado en el dispositivo",
+        },
+        shortcuts: {
+            title: "Atajos de teclado",
+            save: "Guardar el perfil y el perfil de micrófono",
+            micMute: "Silenciar o activar el micrófono",
+            sections: "Ir a una sección de la barra lateral",
+            presets: "Preajustes de efectos 1 a 6",
+            banks: "Bancos del sampler A, B y C",
+            help: "Mostrar estos atajos",
+        },
         common: {
             close: "Cerrar",
             lighting: "Iluminación",
@@ -38,6 +53,8 @@ export default {
             system: "Automático",
         },
         topBar: {
+            unsaved: "Cambios sin guardar",
+            revert: "Volver a la versión guardada",
             saveBothHint: "Guardar el perfil {profile} y el perfil de micrófono {mic} (Ctrl+S)",
             saveMore: "Más opciones de guardado",
             saveProfileOnly: "Guardar solo el perfil {profile}",
@@ -307,6 +324,9 @@ export default {
         mixer: {
             otherInputs: "Otras Entradas",
             strip: {
+                muteAllHint: "Clic derecho o pulsación larga: silenciar para todos",
+                notMuted: "Sin silenciar",
+                mutedAll: "Silenciado para todos",
                 source: "Fuente",
                 mute: "Silenciar",
                 muteFunction: "Silenciar para",
@@ -538,6 +558,8 @@ export default {
                 applyBanks: "Aplicar a todos los bancos",
             },
             pads: {
+                play: "Reproducir {button}",
+                stop: "Detener {button}",
                 title: "Botones",
                 empty: "Vacío",
                 count: "{count} muestra(s)",
@@ -989,6 +1011,17 @@ export default {
         },
 
         profileManager: {
+            menuRename: "Renombrar",
+            menuDuplicate: "Duplicar",
+            nameLabel: "Nombre",
+            nameEmpty: "Introduce un nombre",
+            nameInvalid: "Este nombre no puede usarse como nombre de archivo (caracteres / \\ : * ? \" < > {'|'}, nombre reservado, o punto o espacio al final)",
+            nameTaken: "{name} ya existe",
+            copyName: "{name} copia",
+            renameTitle: "Renombrar {name}",
+            duplicateTitle: "Duplicar {name}",
+            renamed: "{name} renombrado como {newName}",
+            duplicated: "{name} duplicado como {newName}",
             trashTitle: "Perfiles eliminados",
             trashEmpty: "No hay perfiles eliminados. Los perfiles eliminados se conservan aquí durante 30 días.",
             trashProfile: "Perfil",

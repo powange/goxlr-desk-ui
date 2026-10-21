@@ -23,11 +23,56 @@
 
 export default {
     message: {
+        common: {
+            close: "Fermer",
+            lighting: "Éclairage",
+            clear: "Effacer",
+            collapseSection: "Replier la section",
+            expandSection: "Déplier la section",
+            activeProfile: "Profil actif",
+            switchDevice: "Changer d'appareil",
+            removeSample: "Retirer le son",
+            waterfallAnimationUp: "Animation cascade vers le haut",
+            waterfallAnimationDown: "Animation cascade vers le bas",
+            unknown: "Inconnu",
+            tabList: "Liste des onglets",
+        },
+        versionCheck: {
+            updateAvailable: "Mise à jour disponible",
+            firmwareDirectionAvailable: "{direction} du firmware disponible",
+            firmwareDirections: {
+                update: "Mise à jour",
+                downgrade: "Rétrogradation",
+                unknown: "INCONNU",
+            },
+            incompatibleDriver: "Les pilotes installés sont incompatibles avec ce firmware, cliquez ici pour télécharger le dernier pilote.",
+        },
+        micMute: {
+            mute: "Couper le micro",
+            muted: "Micro coupé",
+            hint: "Coupe le micro comme le bouton Mute de l'appareil (M)",
+            holdMode: "Le bouton Mute est en mode maintien : il ne coupe que tant qu'on le maintient sur l'appareil",
+        },
+        shortcuts: {
+            title: "Raccourcis clavier",
+            save: "Enregistrer le profil et le profil micro",
+            micMute: "Couper ou rétablir le micro",
+            sections: "Aller à une section de la barre latérale",
+            presets: "Préréglages d'effets 1 à 6",
+            banks: "Banques du sampler A, B et C",
+            help: "Afficher ces raccourcis",
+        },
         deviceSelector: {
+            title: "Sélectionner un appareil",
+            connecting: "Connexion à l'utilitaire GoXLR en cours…",
+            disconnected: "Impossible de se connecter à l'utilitaire GoXLR, vérifiez qu'il est bien lancé.\n\nCette page tentera de se reconnecter automatiquement…",
+            noDevices: "Aucun appareil GoXLR trouvé",
             reconnecting: "Connexion au GoXLR Utility perdue, reconnexion…",
         },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
+            StreamMix1: "Stream Mix 1",
+            StreamMix2: "Stream Mix 2",
             All: "Tous",
             Mic: "Microphone",
             Chat: "Discussion vocale",
@@ -64,6 +109,8 @@ export default {
         },
 
         modalButtons: {
+            continue: "Continuer",
+            close: "Fermer",
             ok: "Ok",
             yes: "Oui",
             no: "Non",
@@ -179,6 +226,9 @@ export default {
             outputs: "Sorties",
             otherInputs: "Autres entrées",
             strip: {
+                muteAllHint: "Clic droit ou appui long : couper pour tout le monde",
+                notMuted: "Non coupé",
+                mutedAll: "Coupé pour tout le monde",
                 source: "Source",
                 mute: "Couper",
                 muteFunction: "Coupe vers",
@@ -200,6 +250,7 @@ export default {
         configuration: {
             // This is common between Faders and Cough Buttons
             mute_behaviour: {
+                base: "Muet vers {channel}",
                 all: "Muet vers @:message.channels.All",
             },
             muteBehaviourTitle: "Comportement de mise en sourdine",
@@ -417,6 +468,8 @@ export default {
                 applyBanks: "Appliquer à toutes les banques",
             },
             pads: {
+                play: "Jouer {button}",
+                stop: "Arrêter {button}",
                 title: "Boutons",
                 empty: "Vide",
                 count: "{count} son(s)",
@@ -458,6 +511,7 @@ export default {
 
             samplesTitle: "Sons",
             samples: {
+                genericError: "Une erreur inconnue s'est produite.",
                 samplesTitle: "Sons",
                 samplesLabel: "Son pour {activeButton} le bouton dans la banque {activeBank}",
 
@@ -527,7 +581,6 @@ export default {
             },
             // These are some common strings that are used in multiple places
             common: {
-            lighting: "Éclairage",
 
                 activeColour: "Actif",
 
@@ -686,6 +739,7 @@ export default {
 
             output: "Sorties",
             outputs: {
+                StreamMix2: "@:message.channels.StreamMix2",
                 Headphones: "@:message.channels.Headphones",
                 BroadcastMix: "@:message.channels.StreamMix",
                 ChatMic: "@:message.channels.ChatMic",
@@ -696,6 +750,12 @@ export default {
         },
 
         system: {
+            firmwareUpdateButton: {
+                update: "Mettre à jour le firmware",
+                downgrade: "Rétrograder le firmware",
+                reinstall: "Réinstaller le firmware",
+                custom: "Firmware personnalisé",
+            },
             networkAccess: {
                 title: "Accès depuis le réseau",
                 explain: "Sur un autre appareil de votre réseau (tablette, téléphone, ordinateur), ouvrez une fois l'un de ces liens. L'accès est ensuite mémorisé.",
@@ -706,6 +766,32 @@ export default {
                 regenerate: "Nouveau lien (les liens précédents ne marchent plus)",
             },
             firmwareUpdate: {
+                newVersionAvailable: "Une version plus récente du firmware ({latestVersion}) est disponible pour votre appareil.\nVoulez-vous mettre à jour l'appareil maintenant ?",
+                currentVersionIsNewer: "Votre version actuelle du firmware ({currentVersion}) est plus récente que la dernière version disponible ({latestVersion}) pour votre appareil.\nVoulez-vous rétrograder vers la dernière version du firmware ?",
+                currentIsUpToDate: "Votre firmware est déjà à jour.\nVoulez-vous réinstaller la version actuelle du firmware ?",
+                customFirmware: "Vous êtes sur le point d'installer un firmware personnalisé.\nCe n'est pas recommandé, sauf si vous savez ce que vous faites.\nÊtes-vous sûr de vouloir continuer ?",
+                warning: "Vous êtes sur le point de flasher une nouvelle version du firmware sur votre appareil.\nLes développeurs de l'utilitaire GoXLR ne sont pas responsables des dommages pouvant résulter de cette opération. ",
+                warningInfo: "En savoir plus",
+                betaWarning: "Vous êtes sur le point d'installer une version bêta du firmware.\nCette version ne bénéficie d'aucun support officiel et peut contenir des bugs ou des problèmes que nous ne pouvons pas corriger.",
+                updatePaused: "Vous êtes sur le point d'installer la version {version} du firmware. Êtes-vous sûr de vouloir continuer ?",
+                updateInProgress: "Mise à jour du firmware en cours. Veuillez patienter et ne débranchez pas votre appareil !",
+                completed: "La mise à jour du firmware s'est terminée avec succès.",
+                failed: "Un problème est survenu pendant la mise à jour du firmware. Veuillez réessayer.",
+                changelog: "Notes de version {version} :",
+                title: "Installation du firmware…",
+                progress: {
+                    starting: "Démarrage…",
+                    manifest: "Récupération du manifeste…",
+                    download: "Téléchargement du firmware…",
+                    pause: "Mise à jour en pause",
+                    clearNVR: "Préparation de la partition de mise à jour…",
+                    uploadFirmware: "Envoi du firmware…",
+                    validateUpload: "Vérification du firmware envoyé…",
+                    hardwareWrite: "Écriture du firmware…",
+                    hardwareValidate: "Vérification du firmware…",
+                    complete: "Mise à jour terminée",
+                    failed: "Échec de la mise à jour du firmware",
+                },
                 seeLogs: "Les journaux de l'utilitaire donnent le détail (Système, Paramètres de l'Utilitaire, Ouvrir les journaux).",
                 noInfo: "Les serveurs de mise à jour n'ont pas répondu : la dernière version n'est pas connue. Cette GoXLR est en {currentVersion}.",
                 updateTo: "Mettre à jour vers {version}",
@@ -746,6 +832,8 @@ export default {
 
             deviceButton: "Paramètres de l'appareil",
             device: {
+                samplerFadeDuration: "Durée du fondu du sampler",
+                samplerFadeDurationAccessibility: "Durée en millisecondes du fondu de sortie du sampler à l'arrêt de la lecture",
                 holdDuration: "Durée du maintien du bouton de sourdine pour mettre en sourdine tout.",
                 holdDurationAccessibility: "La durée en millisecondes pendant laquelle le bouton de sourdine doit être maintenu enfoncé pour mettre en sourdine tous les canaux.",
 
@@ -767,6 +855,16 @@ export default {
 
             settingsButton: "Paramètres de l'Utilitaire",
             settings: {
+                firmwareSource: "Canal de mise à jour du firmware",
+                firmwareSources: {
+                    live: "Stable",
+                    beta: "Bêta",
+                },
+                shutdownConfirmTitle: "Êtes-vous sûr ?",
+                shutdownConfirmMessage: "Êtes-vous sûr de vouloir arrêter l'utilitaire GoXLR ?",
+                settingsRegionAccessibility: "paramètres",
+                macosAggregateManagement: "Désactiver la gestion des périphériques agrégés MacOS (redémarrage requis)",
+                macosAggregateManagementAccessibility: "Désactiver la gestion des périphériques agrégés par l'utilitaire sur MacOS (redémarrage requis)",
                 recoverConfirmTitle: "Restaurer les fichiers par défaut ?",
                 recoverConfirmMessage: "Les {type} par défaut qui manquent seront ajoutés. Les fichiers existants ne sont pas modifiés.",
                 recoverConfirmOk: "Restaurer",
@@ -844,6 +942,8 @@ export default {
             system: "Auto",
         },
         topBar: {
+            unsaved: "Modifications non enregistrées",
+            revert: "Revenir à la version enregistrée",
             saveBothHint: "Enregistrer le profil {profile} et le profil micro {mic} (Ctrl+S)",
             saveMore: "Autres options d'enregistrement",
             saveProfileOnly: "Enregistrer seulement le profil {profile}",
@@ -969,6 +1069,17 @@ export default {
         },
 
         profileManager: {
+            menuRename: "Renommer",
+            menuDuplicate: "Dupliquer",
+            nameLabel: "Nom",
+            nameEmpty: "Saisissez un nom",
+            nameInvalid: "Ce nom ne peut pas servir de nom de fichier (caractères / \\ : * ? \" < > {'|'}, nom réservé, ou point ou espace à la fin)",
+            nameTaken: "{name} existe déjà",
+            copyName: "{name} copie",
+            renameTitle: "Renommer {name}",
+            duplicateTitle: "Dupliquer {name}",
+            renamed: "{name} renommé en {newName}",
+            duplicated: "{name} dupliqué en {newName}",
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Sauvegarder profil {profileName}",
             createProfile: "Crée un profil",

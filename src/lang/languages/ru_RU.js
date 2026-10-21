@@ -23,6 +23,21 @@
 
 export default {
     message: {
+        micMute: {
+            mute: "Выключить микрофон",
+            muted: "Микрофон выключен",
+            hint: "Выключает микрофон, как кнопка Mute на устройстве (M)",
+            holdMode: "Кнопка Mute в режиме удержания: она выключает звук, только пока её удерживают на устройстве",
+        },
+        shortcuts: {
+            title: "Горячие клавиши",
+            save: "Сохранить профиль и профиль микрофона",
+            micMute: "Выключить или включить микрофон",
+            sections: "Перейти к разделу боковой панели",
+            presets: "Пресеты эффектов 1–6",
+            banks: "Банки сэмплера A, B и C",
+            help: "Показать эти клавиши",
+        },
         common: {
             close: "Закрыть",
             lighting: "Подсветка",
@@ -61,6 +76,8 @@ export default {
             system: "Авто",
         },
         topBar: {
+            unsaved: "Несохранённые изменения",
+            revert: "Вернуть сохранённую версию",
             saveBothHint: "Сохранить профиль {profile} и профиль микрофона {mic} (Ctrl+S)",
             saveMore: "Другие варианты сохранения",
             saveProfileOnly: "Сохранить только профиль {profile}",
@@ -339,6 +356,9 @@ export default {
         mixer: {
             otherInputs: "Другие Вводы",
             strip: {
+                muteAllHint: "Правый клик или долгое нажатие: выключить для всех",
+                notMuted: "Не выключен",
+                mutedAll: "Выключен для всех",
                 source: "Источник",
                 mute: "Заглушить",
                 muteFunction: "Заглушить для",
@@ -580,6 +600,8 @@ export default {
                 applyBanks: "Применить ко всем банкам",
             },
             pads: {
+                play: "Воспроизвести {button}",
+                stop: "Остановить {button}",
                 title: "Кнопки",
                 empty: "Пусто",
                 count: "Сэмплов: {count}",
@@ -1046,6 +1068,17 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            menuRename: "Переименовать",
+            menuDuplicate: "Дублировать",
+            nameLabel: "Имя",
+            nameEmpty: "Введите имя",
+            nameInvalid: "Это имя нельзя использовать для файла (символы / \\ : * ? \" < > {'|'}, зарезервированное имя или точка либо пробел в конце)",
+            nameTaken: "{name} уже существует",
+            copyName: "{name} копия",
+            renameTitle: "Переименовать {name}",
+            duplicateTitle: "Дублировать {name}",
+            renamed: "{name} переименован в {newName}",
+            duplicated: "{name} скопирован как {newName}",
             trashTitle: "Удалённые Профили",
             trashEmpty: "Нет удалённых Профилей. Удалённые Профили хранятся здесь 30 дней.",
             trashProfile: "Профиль",

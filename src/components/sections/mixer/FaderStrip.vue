@@ -19,10 +19,16 @@
       <slot></slot>
     </div>
 
-    <button type="button" class="mute" :class="{ muted: isMuted() }" :aria-pressed="isMuted()" @click="toggleMute">
+    <!-- Click: the mute function below. Right click or a long press: mute for everyone, like a
+         long press on the device. -->
+    <button type="button" class="mute" :class="{ muted: isMuted() }" :aria-pressed="isMuted()"
+            :aria-describedby="`mute-target-${fader}`" :title="$t('message.mixer.strip.muteAllHint')"
+            @click="onMuteClick" @contextmenu.prevent="muteToAll" @keydown.shift.enter.prevent="muteToAll"
+            @pointerdown="startHold" @pointerup="cancelHold" @pointerleave="cancelHold" @pointercancel="cancelHold">
       <font-awesome-icon :icon="isMuted() ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high'"/>
       <span>{{ $t('message.mixer.strip.mute') }}</span>
     </button>
+    <span :id="`mute-target-${fader}`" class="mute-target" :class="{ muted: isMuted() }">{{ muteTarget() }}</span>
 
     <div class="field">
       <span class="field-label">{{ $t('message.mixer.strip.muteFunction') }}</span>
@@ -67,6 +73,43 @@ export default {
 
     isMuted() {
       return store.getActiveDevice().fader_status[this.fader].mute_state !== "Unmuted";
+    },
+
+    // Who doesn't hear the channel: nobody, everyone, or the mute function's target
+    muteTarget() {
+      const state = store.getActiveDevice().fader_status[this.fader].mute_state;
+      if (state === "Unmuted") return this.$t('message.mixer.strip.notMuted');
+      if (state === "MutedToAll" || this.getActiveMuteBehaviour() === "All") return this.$t('message.mixer.strip.mutedAll');
+      const option = this.getMuteBehaviour().find(option => option.id === this.getActiveMuteBehaviour());
+      return option ? option.label : "";
+    },
+
+    startHold() {
+      this.cancelHold();
+      this.holdTimer = setTimeout(() => {
+        this.holdTimer = undefined;
+        this.held = true;
+        this.muteToAll();
+      }, 600);
+    },
+
+    cancelHold() {
+      clearTimeout(this.holdTimer);
+      this.holdTimer = undefined;
+    },
+
+    onMuteClick() {
+      // The click that ends a long press doesn't toggle again
+      if (this.held) {
+        this.held = false;
+        return;
+      }
+      this.toggleMute();
+    },
+
+    muteToAll() {
+      this.cancelHold();
+      websocket.send_command(store.getActiveSerial(), {SetFaderMuteState: [this.fader, "MutedToAll"]});
     },
 
     toggleMute() {
@@ -159,6 +202,17 @@ export default {
 .strip-slider {
   display: flex;
   justify-content: center;
+}
+
+.mute-target {
+  margin-top: -6px;
+  font-size: 11px;
+  color: var(--c-muted);
+  text-align: center;
+}
+
+.mute-target.muted {
+  color: var(--c-danger);
 }
 
 .mute {

@@ -25,6 +25,11 @@
     />
   </div>
 
+  <NameDialog ref="nameDialog" :id="'profileNameDialog'" :taken="getProfileList()"
+              :title="nameAction.slug === 'rename' ? $t('message.profileManager.renameTitle', {name: nameAction.from}) : $t('message.profileManager.duplicateTitle', {name: nameAction.from})"
+              :ok-label="nameAction.slug === 'rename' ? $t('message.profileManager.menuRename') : $t('message.profileManager.menuDuplicate')"
+              @submit="applyName"/>
+
   <AccessibleModal ref="deleteModal" id="delProfile">
     <template v-slot:title>{{$t('message.profileManager.deleteTitle')}}</template>
     <template v-slot:default>{{$t('message.profileManager.deleteQuestion', { profileName: selectedProfile })}}</template>
@@ -46,14 +51,17 @@ import { runCommand, websocket } from "@/util/sockets";
 import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
+import NameDialog from "@/components/profiles/NameDialog.vue";
 
 export default {
   name: "ProfileHandler",
-  components: { ModalButton, AccessibleModal, ProfileManager },
+  components: { NameDialog, ModalButton, AccessibleModal, ProfileManager },
 
   data() {
     return {
       selectedProfile: "",
+      // The rename / duplicate waiting for a name
+      nameAction: {slug: "", from: ""},
     };
   },
 
@@ -62,8 +70,17 @@ export default {
       return [
         { name: this.$t('message.profileManager.menuLoadProfile'), slug: "load" },
         { name: this.$t('message.profileManager.menuLoadProfileColours'), slug: "colours" },
+        { name: this.$t('message.profileManager.menuRename'), slug: "rename" },
+        { name: this.$t('message.profileManager.menuDuplicate'), slug: "duplicate" },
         { name: this.$t('message.profileManager.menuDeleteProfile'), slug: "delete" },
       ];
+    },
+
+    applyName(name) {
+      const {slug, from} = this.nameAction;
+      const command = slug === "rename" ? {RenameProfile: [from, name]} : {DuplicateProfile: [from, name]};
+      const done = slug === "rename" ? 'message.profileManager.renamed' : 'message.profileManager.duplicated';
+      runCommand(store.getActiveSerial(), command, {ok: this.$t(done, {name: from, newName: name})});
     },
 
     getProfileList() {
@@ -75,6 +92,14 @@ export default {
     },
 
     menuItemPressed(event) {
+      if (event.option.slug === "rename" || event.option.slug === "duplicate") {
+        this.nameAction = {slug: event.option.slug, from: event.item};
+        const button = this.$refs.manager.$refs[this.$refs.manager.getButtonId(event.item)][0];
+        const name = event.option.slug === "rename" ? event.item : this.$t('message.profileManager.copyName', {name: event.item});
+        this.$refs.nameDialog.open(name, button);
+        return;
+      }
+
       if (event.option.slug === "colours") {
         this.loadProfileColours(event.item);
       }
