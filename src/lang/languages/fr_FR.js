@@ -231,10 +231,11 @@ export default {
 
         effects: {
             preset: {
+                name: "Nom",
                 title: "Préréglages",
                 group: "Groupe",
 
-                menuLoad: "Charge",
+                menuLoad: "Charger",
                 menuRename: "Renommer",
                 menuSave: "Sauvegarder",
 

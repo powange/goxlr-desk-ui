@@ -254,6 +254,7 @@ export default {
 
         effects: {
             preset: {
+                name: "Name",
                 title: "Preset",
                 group: "Group",
 

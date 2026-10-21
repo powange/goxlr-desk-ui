@@ -1,21 +1,30 @@
 <template>
+  <div class="preset-bar" role="group" :aria-label="$t('message.effects.preset.title')">
+    <label class="preset-field">
+      <span class="preset-label">{{ $t('message.effects.preset.title') }}</span>
+      <select :value="getActivePreset()" @change="onEffectSelectionChange($event.target.value)"
+              :aria-label="$t('message.effects.preset.group')">
+        <option v-for="option in getEffectOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
+      </select>
+    </label>
+    <label class="preset-field">
+      <span class="preset-label">{{ $t('message.effects.preset.name') }}</span>
+      <input ref="nameInput" class="preset-name" type="text" v-model="nameDraft" maxlength="64"
+             :aria-label="$t('message.effects.preset.menuRename')"
+             @keydown.enter="commitName" @keydown.esc="nameDraft = getCurrentPresetName(); $refs.nameInput.blur()"
+             @blur="commitName"/>
+    </label>
+    <button ref="saveButton" type="button" class="preset-button primary" @click="savePressed">
+      <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
+      <span>{{ $t('message.effects.preset.menuSave') }}</span>
+    </button>
+    <button ref="loadButton" type="button" class="preset-button" @click="$refs.select_preset_modal.openModal(undefined, $refs.loadButton)">
+      <font-awesome-icon icon="fa-solid fa-folder"/>
+      <span>{{ $t('message.effects.preset.menuLoad') }}</span>
+    </button>
+  </div>
+
   <div class="effects-page">
-    <div>
-      <GroupContainer :title="$t('message.effects.preset.title')">
-        <RadioSelection
-            :title="$t('message.effects.preset.group')"
-            group="preset_select"
-            max-width="200px"
-            :options="getEffectOptions()"
-            :selected="getActivePreset()"
-            :menu="getMenuOptions()"
-            menu_id="preset_buttons"
-            @menu-opened="menuOpened"
-            @menu-selected="optionClicked"
-            @selection-changed="onEffectSelectionChange"
-        />
-      </GroupContainer>
-    </div>
     <ReverbEffect/>
     <EchoEffect/>
     <PitchEffect/>
@@ -26,18 +35,6 @@
   </div>
 
   <!-- Modals -->
-  <AccessibleModal ref="renamePresetModal" id="renameEffect" :show_close="false">
-    <template v-slot:title>{{ $t('message.effects.preset.renamePresetTitle') }}</template>
-    <template v-slot:default>
-      <ModalInput ref="newName" v-model="newPresetName"
-                  :placeholder="$t('message.effects.preset.renamePresetPlaceholder')"
-                  @on-enter="renamePreset();" />
-    </template>
-    <template v-slot:footer>
-      <ModalButton ref="focusOk" @click="renamePreset();">{{ $t('message.effects.preset.renamePresetOk') }}</ModalButton>
-      <ModalButton @click="$refs.renamePresetModal.closeModal(); this.newPresetName = ''">{{ $t('message.effects.preset.renamePresetCancel') }}</ModalButton>
-    </template>
-  </AccessibleModal>
 
   <AccessibleModal
       ref="select_preset_modal"
@@ -109,9 +106,6 @@ import {EffectPresets} from "@/util/mixerMapping";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
-import ModalInput from "@/components/design/modal/ModalInput.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import GroupContainer from "@/components/containers/GroupContainer.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ScrollingRadioList from "@/components/lists/ScrollingRadioList.vue";
 
@@ -122,9 +116,6 @@ export default {
   components: {
     ScrollingRadioList,
     AccessibleModal,
-    GroupContainer,
-    RadioSelection,
-    ModalInput,
     ModalButton,
     HardTuneEffect,
     RobotEffect, MegaphoneEffect, GenderEffect, PitchEffect, EchoEffect, ReverbEffect,
@@ -133,20 +124,49 @@ export default {
   data() {
     return {
       effectPresets: EffectPresets,
-      showRenameModal: false,
-      newPresetName: '',
 
       selectedPreset: undefined,
+      // The name being edited in the preset bar
+      nameDraft: "",
     };
   },
 
+  created() {
+    this.nameDraft = this.getCurrentPresetName();
+  },
+
+  watch: {
+    // Another preset, or a rename from elsewhere, refreshes the name field
+    currentPresetName(name) {
+      this.nameDraft = name;
+    },
+  },
+
+  computed: {
+    currentPresetName() {
+      return this.getCurrentPresetName();
+    },
+  },
+
   methods: {
-    getMenuOptions() {
-      return [
-        {name: this.$t('message.effects.preset.menuLoad'), slug: "load"},
-        {name: this.$t('message.effects.preset.menuRename'), slug: 'rename'},
-        {name: this.$t('message.effects.preset.menuSave'), slug: 'save'}
-      ];
+    commitName() {
+      const name = this.nameDraft.trim();
+      if (name === "" || name === this.getCurrentPresetName()) {
+        this.nameDraft = this.getCurrentPresetName();
+        return;
+      }
+      websocket.send_command(store.getActiveSerial(), {"RenameActivePreset": name}).then(() => {
+        store.getActiveDevice().effects.preset_names[store.getActiveDevice().effects.active_preset] = name;
+      });
+    },
+
+    savePressed() {
+      // Saving under a name that's already in the library asks before overwriting it
+      if (store.getPresetFiles().includes(this.getCurrentPresetName())) {
+        this.$refs.overwrite_library_save.openModal(this.$refs.overwriteConfirm, this.$refs.saveButton);
+      } else {
+        this.saveActivePreset();
+      }
     },
 
     getCurrentPresetName() {
@@ -229,54 +249,12 @@ export default {
       return store.getActiveDevice().effects.active_preset;
     },
 
-    getButtonId(preset_name) {
-      return preset_name.toLowerCase().replace(" ", "_").replace("(", "_").replace(")", "_") + "_profile_button";
-    },
-
     getLabel(id, key) {
       return (id + 1).toString() + ": " + store.getActiveDevice().effects.preset_names[key];
     },
 
     isActive(key) {
       return store.getActiveDevice().effects.active_preset === key;
-    },
-
-    buttonPressed(id) {
-      if (!this.isActive(id)) {
-        websocket.send_command(store.getActiveSerial(), {"SetActiveEffectPreset": id});
-      }
-    },
-
-    menuOpened(event, return_id, item) {
-      if (!this.isActive(item)) {
-        websocket.send_command(store.getActiveSerial(), {"SetActiveEffectPreset": item});
-      }
-    },
-
-    menuPressed(event, return_id, item) {
-      // If this wasn't on the active profile, load the selected one..
-      if (!this.isActive(item)) {
-        websocket.send_command(store.getActiveSerial(), {"SetActiveEffectPreset": item});
-      }
-      this.$refs.contextMenu.showMenu(event, item, return_id, this.$refs.buttonList.getScrollTop());
-    },
-
-    renamePreset() {
-      if (this.newPresetName === undefined || this.newPresetName === "") {
-        return;
-      }
-
-      let command = {"RenameActivePreset": this.newPresetName}
-
-      websocket.send_command(store.getActiveSerial(), command).then(() => {
-        store.getActiveDevice().effects.preset_names[store.getActiveDevice().effects.active_preset] = this.newPresetName;
-      }).finally(() => {
-        let self = this;
-        this.newPresetName = ''
-        setTimeout(() => {
-          self.$refs.renamePresetModal.closeModal();
-        }, 10);
-      });
     },
 
     saveActivePreset() {
@@ -289,42 +267,95 @@ export default {
       );
     },
 
-    optionClicked(event) {
-      if (event.option.slug === "load") {
-        let element = document.getElementById(event.return_id);
-        this.$refs.select_preset_modal.openModal(undefined, element);
-      }
-
-      if (event.option.slug === "rename") {
-        let element = document.getElementById(event.return_id);
-        this.$refs.renamePresetModal.openModal(this.$refs.newName, element);
-      }
-
-      if (event.option.slug === "save") {
-        // Get the Current Preset..
-        let current = this.getCurrentPresetName();
-
-        // Does this exist in the library?
-        if (store.getPresetFiles().includes(current)) {
-          let element = document.getElementById(event.return_id);
-          this.$refs.overwrite_library_save.openModal(this.$refs.overwriteConfirm, element);
-        } else {
-          this.saveActivePreset();
-        }
-      }
-    }
   }
 }
 </script>
 
 <style scoped>
+/* The active preset: pick it, rename it in place, save it or load one from the library */
+.preset-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+  margin: 24px 40px 0;
+  padding: 12px 14px;
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-line);
+  border-radius: 8px;
+}
+
+.preset-field {
+  display: grid;
+  gap: 4px;
+}
+
+.preset-label {
+  font-family: var(--f-mono);
+  font-size: 10px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--c-muted);
+}
+
+.preset-field select, .preset-name {
+  padding: 7px 10px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-size: 13px;
+}
+
+.preset-field select {
+  min-width: 200px;
+}
+
+.preset-name {
+  width: 220px;
+}
+
+.preset-field select:focus-visible, .preset-name:focus {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 1px;
+}
+
+.preset-bar .preset-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  border: 1px solid var(--c-line);
+  border-radius: 6px;
+  background-color: var(--c-raised);
+  color: var(--c-text);
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.preset-bar .preset-button.primary {
+  background-color: var(--c-accent);
+  border-color: var(--c-accent);
+  color: var(--c-on-accent);
+}
+
+.preset-bar .preset-button:hover {
+  filter: brightness(1.1);
+}
+
+.preset-bar .preset-button:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 2px;
+}
+
 /* The cards wrap onto several rows instead of one long scrolling row */
 .effects-page {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 16px;
-  padding: 24px 40px 40px;
+  padding: 16px 40px 40px;
 }
 
 button {
@@ -344,7 +375,6 @@ button:focus {
   background-color: transparent;
   padding: 0;
   margin-left: 5px;
-
 
   display: inline-block;
   color: var(--c-muted);
