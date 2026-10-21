@@ -104,7 +104,7 @@ export default {
   components: {RadioList},
 
   // Paths are relative to the samples folder, '/' separated.
-  emits: ['rename-folder', 'delete-folder', 'rename-sample', 'move-sample', 'move-samples', 'edit-sample',
+  emits: ['rename-folder', 'delete-folder', 'rename-sample', 'move-sample', 'move-many', 'move-samples', 'edit-sample',
     'delete-samples', 'duplicate-sample', 'import-files', 'end-multi'],
 
   props: {
@@ -445,12 +445,17 @@ export default {
 
       let paths = this.dragging;
       this.onSampleDragEnd();
+      // All the moves at once, so their errors are reported together
+      let moves = [];
       for (let path of paths) {
         let name = this.nameOf(path);
         let to = folder.length > 0 ? `${folder}/${name}` : name;
         if (to !== path) {
-          this.$emit('move-sample', path, to);
+          moves.push([path, to]);
         }
+      }
+      if (moves.length > 0) {
+        this.$emit('move-many', moves);
       }
     },
 
