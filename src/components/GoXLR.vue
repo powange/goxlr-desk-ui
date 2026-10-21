@@ -58,6 +58,9 @@
             <Panel :title="$t('message.navigation.profiles')">
               <ProfileHandler/>
             </Panel>
+            <Panel :title="$t('message.microphone.profiles.title')">
+              <MicProfileHandler bare/>
+            </Panel>
           </div>
         </Tab>
         <Tab id="presets" v-if="!isDeviceMini()" icon="fa-solid fa-layer-group" :group="$t('message.navigation.library')" :name="$t('message.navigation.presets')">
@@ -157,6 +160,7 @@ import SystemComponent from "@/components/sections/System.vue";
 import TopBar from "@/components/TopBar.vue";
 import Panel from "@/components/design/Panel.vue";
 import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
+import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
 import SampleHandler from "@/components/sections/files/SampleHandler.vue";
 import PresetHandler from "@/components/sections/files/PresetHandler.vue";
 import EffectsTab from "@/components/sections/EffectsTab.vue";
@@ -204,6 +208,7 @@ export default {
     TopBar,
     Panel,
     ProfileHandler,
+    MicProfileHandler,
     SampleHandler,
     PresetHandler,
     SystemComponent,

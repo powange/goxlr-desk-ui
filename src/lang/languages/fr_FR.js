@@ -101,6 +101,21 @@ export default {
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
         microphone: {
+            chain: {
+                title: "Chaîne de traitement",
+                input: "Entrée",
+                gate: "Gate",
+                gateToggle: "Suppression de bruit activée",
+                threshold: "Seuil",
+                equaliser: "Égaliseur",
+                bands: "{count} bandes",
+                flat: "Plat",
+                eqPeak: "{gain} dB à {freq}",
+                compressor: "Compresseur",
+                compressorDetail: "Seuil {threshold} dB",
+                curveHint: "tirer un point pour régler sa bande",
+                types: {Dynamic: "Dynamique (XLR)", Condenser: "Condensateur (XLR, +48 V)", Jack: "Jack"},
+            },
             profiles: {
                 title: "Profils de Micro"
             },

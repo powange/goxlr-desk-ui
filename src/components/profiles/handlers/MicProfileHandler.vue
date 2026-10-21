@@ -1,6 +1,6 @@
 <template>
-  <div class="profile-border">
-    <div class="title">
+  <div :class="{ 'profile-border': !bare }">
+    <div v-if="!bare" class="title">
       {{ $t('message.microphone.profiles.title') }}
     </div>
     <div style="height: 30px; text-align: right">
@@ -44,6 +44,10 @@ import ModalButton from "@/components/design/modal/ModalButton.vue";
 import {FontAwesomeIcon} from "@fortawesome/vue-fontawesome";
 
 export default {
+  props: {
+    // Without its own frame and title, when placed in a titled panel
+    bare: {type: Boolean, default: false},
+  },
   name: "MicProfileHandler",
   components: {FontAwesomeIcon, ModalButton, AccessibleModal, ProfileManager},
 
