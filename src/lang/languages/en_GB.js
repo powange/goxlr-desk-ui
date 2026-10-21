@@ -200,7 +200,6 @@ export default {
             strip: {
                 source: "Source",
                 mute: "Mute",
-                muted: "Muted",
                 muteFunction: "Mute to",
                 lighting: "{channel} lighting",
                 lightingTitle: "Lighting · {channel}",

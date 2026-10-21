@@ -21,7 +21,7 @@
 
     <button type="button" class="mute" :class="{ muted: isMuted() }" :aria-pressed="isMuted()" @click="toggleMute">
       <font-awesome-icon :icon="isMuted() ? 'fa-solid fa-volume-xmark' : 'fa-solid fa-volume-high'"/>
-      <span>{{ isMuted() ? $t('message.mixer.strip.muted') : $t('message.mixer.strip.mute') }}</span>
+      <span>{{ $t('message.mixer.strip.mute') }}</span>
     </button>
 
     <div class="field">

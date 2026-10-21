@@ -1,6 +1,7 @@
 <template>
   <div class="system-page">
-    <nav class="system-menu" role="tablist" aria-orientation="vertical" :aria-label="$t('message.system.title')">
+    <!-- A menu of pages: the current one is marked with aria-current -->
+    <nav class="system-menu" :aria-label="$t('message.system.title')">
       <template v-for="item in getItems()" :key="item.id">
         <a v-if="item.href" class="menu-item" :href="item.href" target="_blank" rel="noopener">
           <font-awesome-icon :icon="item.icon" fixed-width/>
@@ -8,7 +9,8 @@
           <font-awesome-icon icon="fa-solid fa-up-right-from-square" class="external"/>
         </a>
         <button v-else type="button" class="menu-item" :class="{ active: item.id === selected }"
-                :role="item.action ? undefined : 'tab'" :aria-selected="item.action ? undefined : item.id === selected"
+                :id="item.action ? undefined : `system-menu-${item.id}`"
+                :aria-current="!item.action && item.id === selected ? 'page' : undefined"
                 @click="choose(item)">
           <font-awesome-icon :icon="item.icon" fixed-width/>
           <span>{{ item.label }}</span>
@@ -16,7 +18,7 @@
       </template>
     </nav>
 
-    <div class="system-content" role="tabpanel">
+    <div class="system-content" role="region" :aria-labelledby="`system-menu-${selected}`">
       <component :is="getSelected().component" :key="selected" inline/>
     </div>
   </div>

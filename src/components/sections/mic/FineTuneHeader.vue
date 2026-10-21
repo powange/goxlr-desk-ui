@@ -50,7 +50,7 @@ export default {
 
     colour: {type: String, required: false, default: "var(--c-accent-light)"},
     backgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
-    rangeBackgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
+    rangeBackgroundColour: {type: String, required: false, default: 'var(--c-track)'},
 
     step: {type: Number, required: false, default: 1},
 

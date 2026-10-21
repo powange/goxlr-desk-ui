@@ -50,7 +50,7 @@ export default {
 
     backgroundColour: {type: String, required: false, default: "var(--c-raised)"},
     inputBackgroundColour: {type: String, required: false, default: "var(--c-raised-2)"},
-    rangeBackgroundColour: {type: String, required: false, default: 'var(--c-bg)'},
+    rangeBackgroundColour: {type: String, required: false, default: 'var(--c-track)'},
     rangeColour: { type: String, required: false, default: 'var(--c-accent)' },
     textColour: {type: String, required: false, default: 'var(--c-accent)' },
     labelColour: {type: String, required: false, default: 'var(--c-text)'},

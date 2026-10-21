@@ -26,7 +26,7 @@ export default {
 input[type=text] {
   width: calc(100% - 10px);
   background-color: var(--c-disabled);
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--c-field-border);
   padding: 5px;
   color: var(--c-text);
 }

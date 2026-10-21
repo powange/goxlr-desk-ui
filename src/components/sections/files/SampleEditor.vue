@@ -471,7 +471,7 @@ button.primary {
 
 .save input[type=text] {
   background-color: var(--c-disabled);
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--c-field-border);
   padding: 5px;
   color: var(--c-text);
 }

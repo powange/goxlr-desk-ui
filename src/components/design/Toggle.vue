@@ -26,7 +26,7 @@ export default {
   padding: 0;
   border: none;
   border-radius: 9px;
-  background-color: var(--c-line-strong);
+  background-color: var(--c-field-border);
   cursor: pointer;
   flex: none;
 }

@@ -13,6 +13,8 @@
   --c-disabled: #13181a;
   --c-line: #2a3337;
   --c-line-strong: #4a575d;
+  --c-field-border: #6f7d82;  /* fields, menus, switches: 3:1 at least against panels */
+  --c-track: #0e1113;         /* the empty part of slider tracks */
   --c-text: #e6eced;
   --c-text-soft: #c3ccce;
   --c-muted: #8a979c;
@@ -48,6 +50,8 @@
   --c-disabled: #eef1f1;
   --c-line: #d5dddd;
   --c-line-strong: #a9b6b8;
+  --c-field-border: #7f8c90;
+  --c-track: #b8c4c6;
   --c-text: #142023;
   --c-text-soft: #2d3b3f;
   --c-muted: #5b6b70;

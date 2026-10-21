@@ -153,7 +153,7 @@ export default {
   width: 100%;
   box-sizing: border-box;
   padding: 6px 10px;
-  border: 1px solid var(--c-line-strong);
+  border: 1px solid var(--c-field-border);
   border-radius: 6px;
   background-color: var(--c-raised);
   color: var(--c-text);

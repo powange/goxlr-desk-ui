@@ -285,7 +285,7 @@ input[type=text] {
   min-width: 0;
   flex: 1;
   padding: 6px 8px;
-  border: 1px solid var(--c-line);
+  border: 1px solid var(--c-field-border);
   border-radius: 6px;
   background-color: var(--c-panel);
   color: var(--c-text);

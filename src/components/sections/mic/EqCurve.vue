@@ -302,7 +302,7 @@ export default {
 .gain-label {
   font-family: var(--f-mono);
   font-size: 10px;
-  fill: var(--c-faint);
+  fill: var(--c-muted);
 }
 
 .area {

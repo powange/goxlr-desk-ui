@@ -7,9 +7,9 @@
                           :label="$t('message.sampler.banks.bankTitle')"/>
       </div>
 
-      <div class="pads" role="radiogroup" :aria-label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})">
-        <button v-for="option in getButtonOptions()" :key="option.id" type="button" role="radio" class="pad"
-                :aria-checked="option.id === activeButton"
+      <div class="pads" role="group" :aria-label="$t('message.sampler.banks.buttonLabel', {activeBank: activeBank})">
+        <button v-for="option in getButtonOptions()" :key="option.id" type="button" class="pad"
+                :aria-pressed="option.id === activeButton"
                 :class="{ selected: option.id === activeButton, filled: getPadSamples(option.id).length > 0, drop: dropButton === option.id }"
                 @click="setActiveButton(option.id)"
                 @dragover="onPadDragOver($event, option.id)" @dragleave="onPadDragLeave(option.id)"

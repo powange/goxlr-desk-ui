@@ -151,13 +151,13 @@ export default {
         if (index < 3) {
           return "var(--c-raised)";
         }
-        return "var(--c-bg)";
+        return "var(--c-track)";
       }
 
       if (index < 5) {
         return "var(--c-raised)";
       }
-      return "var(--c-bg)";
+      return "var(--c-track)";
     },
 
     getMinEqValue(index) {

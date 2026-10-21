@@ -182,7 +182,6 @@ export default {
             strip: {
                 source: "Source",
                 mute: "Couper",
-                muted: "Coupé",
                 muteFunction: "Coupe vers",
                 lighting: "Éclairage de {channel}",
                 lightingTitle: "Éclairage · {channel}",

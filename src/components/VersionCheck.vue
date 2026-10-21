@@ -204,17 +204,17 @@ export default {
  .version {
    font-family: sans-serif;
    text-align: center;
-   color: var(--c-faint);
+   color: var(--c-muted);
    margin-bottom: 8px;
    padding: 3px;
  }
 
  .version a {
-   color: var(--c-faint);
+   color: var(--c-muted);
  }
 
  .version span.click {
-   color: var(--c-faint);
+   color: var(--c-muted);
    cursor: pointer;
    text-decoration: underline;
  }
@@ -234,7 +234,7 @@ export default {
  }
 
  .warning a {
-   color: var(--c-faint);
-   text-decoration: none;
+   color: var(--c-text);
+   text-decoration: underline;
  }
 </style>

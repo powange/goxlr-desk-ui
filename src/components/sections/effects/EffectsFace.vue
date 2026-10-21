@@ -1,8 +1,10 @@
 <template>
   <div class="face">
-    <div class="knobs" role="radiogroup" :aria-label="$t('message.effects.face.label')">
-      <button v-for="knob in getKnobs()" :key="knob.id" type="button" role="radio" class="knob"
-              :class="{ selected: selected === knob.id }" :aria-checked="selected === knob.id"
+    <!-- Selecting a knob or button shows its settings: plain buttons with aria-pressed, the power
+         switches sit next to them -->
+    <div class="knobs" role="group" :aria-label="$t('message.effects.face.label')">
+      <button v-for="knob in getKnobs()" :key="knob.id" type="button" class="knob"
+              :class="{ selected: selected === knob.id }" :aria-pressed="selected === knob.id"
               @click="$emit('select', knob.id)">
         <svg viewBox="0 0 70 70" aria-hidden="true">
           <path :d="arc(START, END)" class="track"/>
@@ -18,7 +20,7 @@
 
       <div v-for="button in getButtons()" :key="button.id" class="fx-button"
            :class="{ on: button.enabled, selected: selected === button.id }">
-        <button type="button" role="radio" class="fx-name" :aria-checked="selected === button.id"
+        <button type="button" class="fx-name" :aria-pressed="selected === button.id"
                 @click="$emit('select', button.id)">{{ button.name }}</button>
         <button type="button" role="switch" class="fx-power" :aria-checked="button.enabled"
                 :aria-label="$t('message.effects.face.power', { effect: button.name })"
