@@ -11,12 +11,11 @@
 
     <section v-if="animationSupported()" class="sect">
       <h3>{{ $t('message.lighting.global.animations.title') }}</h3>
-      <label class="row">
+      <div class="row">
         <span class="row-label">{{ $t('message.lighting.global.animations.mode') }}</span>
-        <select :value="animationModeSelected()" @change="onAnimationModeChange($event.target.value)">
-          <option v-for="option in getAnimationOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-        </select>
-      </label>
+        <SelectMenu class="row-select" :options="getAnimationOptions()" :selected="animationModeSelected()"
+                    @select="onAnimationModeChange" :label="$t('message.lighting.global.animations.mode')"/>
+      </div>
       <label class="row" :class="{ disabled: !isMod1Enabled() }">
         <span class="row-label">{{ $t('message.lighting.global.animations.mod1') }}</span>
         <span class="range">
@@ -44,6 +43,7 @@
 
 <script>
 import LightingGlobal from "@/components/sections/lighting/subTabs/LightingGlobal.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 import SegmentedControl from "@/components/design/SegmentedControl.vue";
 import {store} from "@/store";
@@ -54,7 +54,7 @@ import {websocket} from "@/util/sockets";
 export default {
   name: "GlobalLighting",
   extends: LightingGlobal,
-  components: {ColourPicker, SegmentedControl},
+  components: {SelectMenu, ColourPicker, SegmentedControl},
 
   methods: {
     areaColour(area) {
@@ -132,15 +132,10 @@ export default {
   font-size: 12px;
 }
 
-select {
+.row-select {
   justify-self: start;
   min-width: 200px;
-  padding: 6px 8px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
+  max-width: 260px;
 }
 
 .range {

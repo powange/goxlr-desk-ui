@@ -858,6 +858,11 @@ export default {
             system: "Auto",
         },
         topBar: {
+            loadTitle: "Charger {name} ?",
+            loadQuestion: "Les réglages de {current} qui n'ont pas été enregistrés seront perdus.",
+            loadMicQuestion: "Les réglages du profil micro {current} qui n'ont pas été enregistrés seront perdus.",
+            load: "Charger",
+            saveThenLoad: "Enregistrer, puis charger",
             lighting: "Éclairage global",
             lightingTitle: "Éclairage global",
             profile: "Profil",
@@ -990,7 +995,11 @@ export default {
 
             // Dialog Popup when clicking the 'Delete' Menu Item
             deleteTitle: "Confirmation de suppression",
-            deleteQuestion: "Êtes-vous sûr de vouloir supprimer le profil ? {profileName}?",
+            deleteQuestion: "Supprimer le profil {profileName} ? Il est gardé 30 jours dans la corbeille, d'où il peut être restauré (Bibliothèque > Profils).",
+            trashTitle: "Profils supprimés",
+            trashEmpty: "Aucun profil supprimé. Les profils supprimés sont gardés ici 30 jours.",
+            trashProfile: "Profil",
+            trashMic: "Profil micro",
             deleteYes: "@:message.modalButtons.yes",
             deleteNo: "@:message.modalButtons.no",
 

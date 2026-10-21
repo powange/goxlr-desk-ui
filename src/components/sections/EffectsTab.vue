@@ -1,12 +1,10 @@
 <template>
   <div class="preset-bar" role="group" :aria-label="$t('message.effects.preset.title')">
-    <label class="preset-field">
+    <div class="preset-field">
       <span class="preset-label">{{ $t('message.effects.preset.title') }}</span>
-      <select :value="getActivePreset()" @change="onEffectSelectionChange($event.target.value)"
-              :aria-label="$t('message.effects.preset.group')">
-        <option v-for="option in getEffectOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-      </select>
-    </label>
+      <SelectMenu class="preset-select" :options="getEffectOptions()" :selected="getActivePreset()"
+                  @select="onEffectSelectionChange" :label="$t('message.effects.preset.group')"/>
+    </div>
     <label class="preset-field">
       <span class="preset-label">{{ $t('message.effects.preset.name') }}</span>
       <input ref="nameInput" class="preset-name" type="text" v-model="nameDraft" maxlength="64"
@@ -114,6 +112,7 @@
 
 <script>
 import ReverbEffect from "@/components/sections/effects/ReverbEffect.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import EchoEffect from "@/components/sections/effects/EchoEffect.vue";
 import PitchEffect from "@/components/sections/effects/PitchEffect.vue";
 import GenderEffect from "@/components/sections/effects/GenderEffect.vue";
@@ -142,7 +141,7 @@ export default {
   emits: ["on-effect-preset-change"],
 
   name: "EffectsTab",
-  components: {
+  components: {SelectMenu, 
     EffectsLighting,
     EffectsFace,
     Toggle,
@@ -233,8 +232,11 @@ export default {
     },
 
     savePressed() {
-      // Saving under a name that's already in the library asks before overwriting it
-      if (store.getPresetFiles().includes(this.getCurrentPresetName())) {
+      // Saving under a name that's already in the library asks before overwriting it. The name
+      // typed may not have reached the device yet, so check that one.
+      const name = this.nameDraft.trim() || this.getCurrentPresetName();
+      if (name !== this.getCurrentPresetName()) this.commitName();
+      if (store.getPresetFiles().includes(name)) {
         this.$refs.overwrite_library_save.openModal(this.$refs.overwriteConfirm, this.$refs.saveButton);
       } else {
         this.saveActivePreset();
@@ -379,7 +381,7 @@ export default {
   font-size: 13px;
 }
 
-.preset-field select {
+.preset-select {
   min-width: 200px;
 }
 

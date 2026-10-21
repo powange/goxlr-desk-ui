@@ -136,6 +136,10 @@ export const store = reactive({
         return this.status.files.sample_trash || [];
     },
 
+    getProfileTrash() {
+        return this.status.files.profile_trash || [];
+    },
+
     getIconFiles() {
         return this.status.files.icons;
     },

@@ -6,12 +6,11 @@
                     @colour-changed="$emit('active-changed', $event)"/>
     </div>
     <slot></slot>
-    <label class="row">
+    <div class="row">
       <span class="row-label">{{ $t('message.lighting.common.restLabel') }}</span>
-      <select :value="offStyle" @change="$emit('off-style-changed', $event.target.value)">
-        <option v-for="option in getLightingInactiveOptions($t)" :key="option.id" :value="option.id">{{ option.label }}</option>
-      </select>
-    </label>
+      <SelectMenu class="row-select" :options="getLightingInactiveOptions($t)" :selected="offStyle"
+                  @select="$emit('off-style-changed', $event)" :label="$t('message.lighting.common.restLabel')"/>
+    </div>
     <div v-if="offStyle !== 'Dimmed'" class="row">
       <span class="row-label">{{ $t('message.lighting.common.restColour') }}</span>
       <ColourPicker inline :title="$t('message.lighting.common.restColour')" :color-value="inactiveColour"
@@ -26,13 +25,14 @@
 
 <script>
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import {getLightingInactiveOptions} from "@/util/mixerMapping";
 
 // A button's lighting: its colour when active, and how it looks at rest (the active colour dimmed,
 // or a colour of its own, dimmed or not). The rest colour is only asked for when it's used.
 export default {
   name: "ButtonLighting",
-  components: {ColourPicker},
+  components: {SelectMenu, ColourPicker},
   emits: ["active-changed", "inactive-changed", "off-style-changed"],
 
   props: {
@@ -78,13 +78,9 @@ export default {
   font-size: 12px;
 }
 
-select {
-  padding: 6px 8px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-panel);
-  color: var(--c-text);
-  font-size: 12px;
+.row-select {
+  justify-self: start;
+  min-width: 200px;
   max-width: 260px;
 }
 

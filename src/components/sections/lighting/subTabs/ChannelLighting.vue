@@ -39,17 +39,16 @@
           <ColourPicker inline :title="$t('message.lighting.mixer.screen.backgroundColour')" :color-value="getScreenColour()"
                         @colour-changed="onScreenColourChange"/>
         </div>
-        <label class="row">
+        <div class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.screen.icons') }}</span>
           <span class="inline-controls">
-            <select :value="getSelectedIcon() || ''" @change="onIconSelectionChange($event.target.value || null)">
-              <option v-for="option in getIconOptions()" :key="option.id || 'none'" :value="option.id || ''">{{ option.label }}</option>
-            </select>
+            <SelectMenu class="icon-select" :options="getIconOptions()" :selected="getSelectedIcon()"
+                        @select="onIconSelectionChange" :label="$t('message.lighting.mixer.screen.icons')"/>
             <button type="button" class="small-button" @click="openIcons" :title="$t('message.lighting.channel.openIcons')">
               <font-awesome-icon icon="fa-solid fa-folder"/>
             </button>
           </span>
-        </label>
+        </div>
         <label class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.screen.options.text') }}</span>
           <input type="text" class="text-input" v-model="textValue" @blur="applyUpdate" @keyup.enter="applyUpdate"
@@ -116,11 +115,12 @@
 
 <script>
 import LightingMixer from "@/components/sections/lighting/subTabs/LightingMixer.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 import Toggle from "@/components/design/Toggle.vue";
 import {store} from "@/store";
-import {getBaseHTTPAddress} from "@/util/sockets";
+import {getBaseHTTPAddress, websocket} from "@/util/sockets";
 
 // As on the device (and the visualiser): 15 LEDs, lit up to the fader position
 const LED_COUNT = 15;
@@ -136,9 +136,17 @@ function mix(a, b, t) {
 export default {
   name: "ChannelLighting",
   extends: LightingMixer,
-  components: {ColourPicker, ButtonLighting, Toggle},
+  components: {SelectMenu, ColourPicker, ButtonLighting, Toggle},
 
   methods: {
+    // Only sends the screen text when it changed (leaving the field unchanged must not write
+    // an older text back)
+    applyUpdate(event) {
+      const value = event.target.value;
+      if (value === this.getBottomText()) return;
+      websocket.send_command(store.getActiveSerial(), {"SetScribbleText": [this.activeChannel, value]});
+    },
+
     // What each style does with the two colours
     getStyleHint() {
       const gradient = this.styleContains('Gradient'), meter = this.styleContains('Meter');
@@ -284,7 +292,7 @@ select, .text-input {
   font-size: 12px;
 }
 
-select {
+.icon-select {
   min-width: 180px;
 }
 

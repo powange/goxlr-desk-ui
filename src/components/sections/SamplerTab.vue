@@ -23,13 +23,12 @@
         </button>
       </div>
 
-      <label class="pad-row">
+      <div class="pad-row">
         <span class="field-label">{{ $t('message.sampler.banks.functionTitle') }}</span>
-        <select class="pad-select" :value="getActiveFunction()" @change="setActiveFunction($event.target.value)"
-                :aria-label="$t('message.sampler.banks.functionLabel', {activeButton: activeButton, activeBank: activeBank})">
-          <option v-for="option in getFunctionOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-        </select>
-      </label>
+        <SelectMenu class="pad-select" :options="getFunctionOptions()" :selected="getActiveFunction()"
+                    @select="setActiveFunction"
+                    :label="$t('message.sampler.banks.functionLabel', {activeButton: activeButton, activeBank: activeBank})"/>
+      </div>
 
       <div class="pad-row">
         <span class="field-label">{{ $t('message.sampler.banks.playOrderTitle') }}</span>
@@ -163,6 +162,7 @@
 
 <script>
 import {store} from "@/store";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import AudioVisualiser from "@/components/sections/sampler/AudioVisualiser.vue";
 import RadioSelection from "@/components/lists/RadioSelection.vue";
 import GroupContainer from "@/components/containers/GroupContainer.vue";
@@ -180,7 +180,7 @@ export default {
   emits: ["on-sample-bank-change", "sample-drop"],
 
   name: "SamplerTab",
-  components: {
+  components: {SelectMenu, 
     Slider,
     SegmentedControl,
     SamplerLighting,
@@ -599,12 +599,6 @@ export default {
 .pad-select {
   flex: 1;
   max-width: 220px;
-  padding: 6px 8px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
 }
 
 .pads {

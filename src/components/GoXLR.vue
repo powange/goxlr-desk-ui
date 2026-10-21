@@ -62,6 +62,9 @@
             <Panel :title="$t('message.microphone.profiles.title')">
               <MicProfileHandler bare/>
             </Panel>
+            <Panel :title="$t('message.profileManager.trashTitle')">
+              <ProfileTrash/>
+            </Panel>
           </div>
         </Tab>
 
@@ -157,6 +160,7 @@ import {getThemeMode, setThemeMode} from "@/util/theme";
 import Panel from "@/components/design/Panel.vue";
 import ProfileHandler from "@/components/profiles/handlers/ProfileHandler.vue";
 import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
+import ProfileTrash from "@/components/profiles/ProfileTrash.vue";
 import SampleHandler from "@/components/sections/files/SampleHandler.vue";
 import EffectsTab from "@/components/sections/EffectsTab.vue";
 import {isDeviceMini} from "@/util/util";
@@ -203,6 +207,7 @@ export default {
     Panel,
     ProfileHandler,
     MicProfileHandler,
+    ProfileTrash,
     SampleHandler,
     SystemComponent,
     DeviceSelector,

@@ -9,13 +9,11 @@
       </button>
     </div>
 
-    <label class="field">
+    <div class="field">
       <span class="field-label">{{ $t('message.mixer.strip.source') }}</span>
-      <select :value="getActiveSource()" @change="sourceChanged($event.target.value)"
-              :aria-label="$t('message.configuration.faders.sourceLabel', { channel: getFaderName() })">
-        <option v-for="option in getSourceOptions()" :key="option.id" :value="option.id">{{ option.label }}</option>
-      </select>
-    </label>
+      <SelectMenu :options="getSourceOptions()" :selected="getActiveSource()" @select="sourceChanged"
+                  :label="$t('message.configuration.faders.sourceLabel', { channel: getFaderName() })"/>
+    </div>
 
     <div class="strip-slider">
       <slot></slot>
@@ -26,20 +24,17 @@
       <span>{{ isMuted() ? $t('message.mixer.strip.muted') : $t('message.mixer.strip.mute') }}</span>
     </button>
 
-    <label class="field">
+    <div class="field">
       <span class="field-label">{{ $t('message.mixer.strip.muteFunction') }}</span>
-      <select :value="getActiveMuteBehaviour()" @change="muteFunctionChanged($event.target.value)"
-              :aria-label="$t('message.configuration.muteBehaviourLabel', { channel: getFaderName() })">
-        <option v-for="option in getMuteBehaviour()" :key="option.id" :value="option.id" :disabled="option.disabled">
-          {{ option.label }}
-        </option>
-      </select>
-    </label>
+      <SelectMenu :options="getMuteBehaviour()" :selected="getActiveMuteBehaviour()" @select="muteFunctionChanged"
+                  :label="$t('message.configuration.muteBehaviourLabel', { channel: getFaderName() })"/>
+    </div>
   </div>
 </template>
 
 <script>
 import Faders from "@/components/sections/Faders.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 

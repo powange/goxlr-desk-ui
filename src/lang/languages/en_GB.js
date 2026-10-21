@@ -958,6 +958,11 @@ export default {
             system: "Auto",
         },
         topBar: {
+            loadTitle: "Load {name}?",
+            loadQuestion: "Settings of {current} that weren't saved will be lost.",
+            loadMicQuestion: "Settings of the mic profile {current} that weren't saved will be lost.",
+            load: "Load",
+            saveThenLoad: "Save, then load",
             lighting: "Global lighting",
             lightingTitle: "Global lighting",
             profile: "Profile",
@@ -1090,7 +1095,11 @@ export default {
 
             // Dialog Popup when clicking the 'Delete' Menu Item
             deleteTitle: "Delete Confirmation",
-            deleteQuestion: "Are you sure you want to delete the profile {profileName}?",
+            deleteQuestion: "Delete the profile {profileName}? It goes to the trash for 30 days, it can be restored from Library > Profiles.",
+            trashTitle: "Deleted profiles",
+            trashEmpty: "No deleted profile. Deleted profiles are kept here for 30 days.",
+            trashProfile: "Profile",
+            trashMic: "Mic profile",
             deleteYes: "@:message.modalButtons.yes",
             deleteNo: "@:message.modalButtons.no",
 

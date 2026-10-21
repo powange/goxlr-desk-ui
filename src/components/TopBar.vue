@@ -1,25 +1,19 @@
 <template>
   <header class="topbar">
-    <label class="picker">
-      <span class="picker-label">{{ $t('message.topBar.profile') }}</span>
-      <select :value="getActiveProfile()" @change="loadProfile($event.target.value)"
-              :aria-label="$t('message.topBar.profileLabel')">
-        <option v-for="name in getProfiles()" :key="name" :value="name">{{ name }}</option>
-      </select>
-    </label>
+    <SelectMenu class="picker" button-class="picker-button" :options="getProfiles()" :selected="getActiveProfile()"
+                :label="$t('message.topBar.profileLabel')" @select="askLoad($event, false)">
+      <template #prefix><span class="picker-label">{{ $t('message.topBar.profile') }}</span></template>
+    </SelectMenu>
     <button ref="save" class="bar-button primary" @click="$refs.saveModal.openModal($refs.saveOk, $refs.save)"
             :title="$t('message.profileManager.saveProfileName', { profileName: getActiveProfile() })">
       <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
       <span>{{ $t('message.topBar.save') }}</span>
     </button>
 
-    <label class="picker">
-      <span class="picker-label">{{ $t('message.topBar.micProfile') }}</span>
-      <select :value="getActiveMicProfile()" @change="loadMicProfile($event.target.value)"
-              :aria-label="$t('message.topBar.micProfileLabel')">
-        <option v-for="name in getMicProfiles()" :key="name" :value="name">{{ name }}</option>
-      </select>
-    </label>
+    <SelectMenu class="picker" button-class="picker-button" :options="getMicProfiles()" :selected="getActiveMicProfile()"
+                :label="$t('message.topBar.micProfileLabel')" @select="askLoad($event, true)">
+      <template #prefix><span class="picker-label">{{ $t('message.topBar.micProfile') }}</span></template>
+    </SelectMenu>
 
     <button ref="lighting" class="bar-button" @click="openLighting">
       <font-awesome-icon icon="fa-solid fa-lightbulb"/>
@@ -46,6 +40,19 @@
     <GlobalLighting v-if="lightingOpen"/>
   </AccessibleModal>
 
+  <!-- Loading another profile replaces the current one, including what wasn't saved -->
+  <AccessibleModal ref="loadModal" id="topBarLoad" :show_close="false">
+    <template v-slot:title>{{ $t('message.topBar.loadTitle', { name: pendingLoad.name }) }}</template>
+    <template v-slot:default>
+      {{ $t(pendingLoad.mic ? 'message.topBar.loadMicQuestion' : 'message.topBar.loadQuestion', { current: pendingLoad.current }) }}
+    </template>
+    <template v-slot:footer>
+      <ModalButton ref="loadOk" @click="confirmLoad(false)">{{ $t('message.topBar.load') }}</ModalButton>
+      <ModalButton @click="confirmLoad(true)">{{ $t('message.topBar.saveThenLoad') }}</ModalButton>
+      <ModalButton @click="$refs.loadModal.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
+    </template>
+  </AccessibleModal>
+
   <AccessibleModal ref="saveModal" id="topBarSave" :show_close="false">
     <template v-slot:title>{{ $t('message.profileManager.overwriteTitle') }}</template>
     <template v-slot:default>{{ $t('message.profileManager.overwriteQuestion', { activeProfile: getActiveProfile() }) }}</template>
@@ -63,14 +70,17 @@ import {isDeviceMini} from "@/util/util";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import GlobalLighting from "@/components/sections/lighting/GlobalLighting.vue";
+import SelectMenu from "@/components/design/SelectMenu.vue";
 
 export default {
   name: "TopBar",
-  components: {GlobalLighting, ModalButton, AccessibleModal},
+  components: {SelectMenu, GlobalLighting, ModalButton, AccessibleModal},
 
   data() {
     return {
       lightingOpen: false,
+      // The profile chosen in a picker, waiting for confirmation
+      pendingLoad: {name: "", mic: false, current: ""},
     };
   },
   emits: ["toggle-visualiser"],
@@ -100,11 +110,32 @@ export default {
     },
 
     getProfiles() {
-      return store.getProfileFiles().slice().sort(Intl.Collator().compare);
+      return store.getProfileFiles().slice().sort(Intl.Collator().compare).map(name => ({id: name, label: name}));
     },
 
     getMicProfiles() {
-      return store.getMicProfileFiles().slice().sort(Intl.Collator().compare);
+      return store.getMicProfileFiles().slice().sort(Intl.Collator().compare).map(name => ({id: name, label: name}));
+    },
+
+    askLoad(name, mic) {
+      const current = mic ? this.getActiveMicProfile() : this.getActiveProfile();
+      this.pendingLoad = {name, mic, current};
+      this.$refs.loadModal.openModal(this.$refs.loadOk);
+    },
+
+    // Optionally saves the current profile first, then loads the chosen one
+    async confirmLoad(saveFirst) {
+      const {name, mic} = this.pendingLoad;
+      this.$refs.loadModal.closeModal();
+      const serial = store.getActiveSerial();
+      if (saveFirst) {
+        await sendHttpCommand(serial, mic ? {SaveMicProfile: []} : {SaveProfile: []}).catch(error => console.log(error));
+      }
+      if (mic) {
+        this.loadMicProfile(name);
+      } else {
+        this.loadProfile(name);
+      }
     },
 
     getActiveProfile() {
@@ -144,46 +175,24 @@ export default {
 }
 
 .picker {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 0 4px 0 10px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
+  min-width: 170px;
+  max-width: 260px;
+}
+
+.picker :deep(.picker-button) {
+  padding: 7px 10px;
+  border-color: var(--c-line-strong);
+  font-weight: 600;
+  font-size: 13px;
 }
 
 .picker-label {
   font-family: var(--f-mono);
   font-size: 10px;
+  font-weight: normal;
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--c-muted);
-}
-
-.picker select {
-  appearance: none;
-  border: none;
-  background: transparent;
-  color: var(--c-text);
-  font-weight: 600;
-  font-size: 13px;
-  padding: 7px 22px 7px 2px;
-  cursor: pointer;
-  max-width: 220px;
-  background-image: linear-gradient(45deg, transparent 50%, var(--c-muted) 50%), linear-gradient(135deg, var(--c-muted) 50%, transparent 50%);
-  background-position: calc(100% - 11px) 50%, calc(100% - 6px) 50%;
-  background-size: 5px 5px;
-  background-repeat: no-repeat;
-}
-
-.picker select option {
-  background-color: var(--c-panel);
-  color: var(--c-text);
-}
-
-.picker:focus-within {
-  border-color: var(--c-accent);
 }
 
 .bar-button {
