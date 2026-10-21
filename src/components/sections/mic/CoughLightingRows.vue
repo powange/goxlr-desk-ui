@@ -5,13 +5,13 @@
 </template>
 
 <script>
-import LightingCough from "@/components/sections/lighting/subTabs/LightingCough.vue";
+import lightingCough from "@/mixins/lightingCough";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 
 // The lighting of the Cough or Bleep button, from the Lighting section's cough settings.
 export default {
   name: "CoughLightingRows",
-  extends: LightingCough,
+  extends: lightingCough,
   components: {ButtonLighting},
 
   props: {

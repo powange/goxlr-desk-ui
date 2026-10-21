@@ -24,7 +24,7 @@ export default {
   flex-direction: row;
   gap: 15px;
 
-  padding: 40px;
+  padding: var(--page-gutter);
 
   overflow-x: scroll;
   overflow-y: hidden;

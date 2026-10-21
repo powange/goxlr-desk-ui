@@ -4,8 +4,163 @@
 
 export default {
     message: {
+        common: {
+            close: "Chiudi",
+            lighting: "Illuminazione",
+            clear: "Cancella",
+            collapseSection: "Comprimi Sezione",
+            expandSection: "Espandi Sezione",
+            activeProfile: "Profilo Attivo",
+            switchDevice: "Cambia Dispositivo",
+            removeSample: "Rimuovi Campione",
+            waterfallAnimationUp: "Animazione Cascata verso l'Alto",
+            waterfallAnimationDown: "Animazione Cascata verso il Basso",
+            unknown: "Sconosciuto",
+            tabList: "Elenco schede",
+        },
+        deviceSelector: {
+            title: "Seleziona Dispositivo",
+            connecting: "Tentativo di connessione a GoXLR Utility..",
+            disconnected: "Impossibile connettersi a GoXLR Utility, verifica che sia in esecuzione.\n\nQuesta pagina tenterà di riconnettersi automaticamente..",
+            noDevices: "Nessun Dispositivo GoXLR Trovato",
+        },
+        versionCheck: {
+            updateAvailable: "Aggiornamento Disponibile",
+            firmwareDirectionAvailable: "{direction} Firmware Disponibile",
+            firmwareDirections: {
+                update: "Aggiornamento",
+                downgrade: "Downgrade",
+                unknown: "SCONOSCIUTO",
+            },
+            incompatibleDriver: "I driver installati non sono compatibili con questo firmware, clicca qui per scaricare l'ultimo driver.",
+        },
+        theme: {
+            label: "Tema colori",
+            dark: "Scuro",
+            light: "Chiaro",
+            system: "Auto",
+        },
+        topBar: {
+            loadTitle: "Caricare {name}?",
+            loadQuestion: "Le impostazioni non salvate di {current} andranno perse.",
+            loadMicQuestion: "Le impostazioni non salvate del profilo mic {current} andranno perse.",
+            load: "Carica",
+            saveThenLoad: "Salva, poi carica",
+            lighting: "Illuminazione globale",
+            lightingTitle: "Illuminazione globale",
+            profile: "Profilo",
+            profileLabel: "Profilo attivo",
+            micProfile: "Mic",
+            micProfileLabel: "Profilo mic attivo",
+            save: "Salva",
+            showDevice: "Mostra il GoXLR",
+            hideDevice: "Nascondi il GoXLR",
+        },
+        sampleAssign: {
+            title: "Assegna a {bank} · {button}",
+            bank: "Banca",
+            empty: "Questo tasto non ha ancora campioni.",
+            current: "Questo tasto ha già {count} campione/i:",
+            add: "Aggiungi",
+            replace: "Sostituisci",
+            removing: "Rimozione dei campioni attuali…",
+            adding: "Aggiunta {index} di {total}: {name}…",
+            done: "{count} campione/i assegnato/i a {bank} · {button}",
+            timeoutRemove: "Il daemon ha impiegato troppo tempo a rimuovere i campioni attuali",
+            timeout: "{name}: il daemon ha impiegato troppo tempo ad aggiungere questo campione",
+        },
+        sampleManager: {
+            newFolder: "Nuova Cartella",
+            openFolder: "Apri la Cartella Campioni",
+            rename: "Rinomina",
+            renameFolder: "Rinomina Cartella",
+            renameFolderLabel: "Rinomina la cartella {name}",
+            renameSample: "Rinomina Campione",
+            moveTo: "Sposta in...",
+            moveTitle: "Sposta {name}",
+            moveDestination: "Cartella di destinazione",
+            rootFolder: "(Cartella Campioni)",
+            move: "Sposta",
+            namePlaceholder: "Nome",
+            extensionKept: "L'estensione {extension} viene mantenuta.",
+            invalidName: "Un nome non può contenere / o \\.",
+            ok: "OK",
+            cancel: "Annulla",
+            edit: "Modifica",
+            listen: "Ascolta",
+            playPreview: "Riproduci {name}",
+            stopPreview: "Interrompi {name}",
+            delete: "Elimina",
+            deleteFolderLabel: "Elimina la cartella {name}",
+            deleteSampleTitle: "Elimina Campione",
+            deleteSampleQuestion: "Spostare {name} nel cestino?",
+            deleteFolderTitle: "Elimina Cartella",
+            deleteFolderQuestion: "Spostare nel cestino la cartella {name} e i {count} campione/i che contiene?",
+            deleteEmptyFolderQuestion: "Spostare nel cestino la cartella vuota {name}?",
+            usedByProfiles: "Usato da questi profili:",
+            usedByProfilesHint: "I tasti del campionatore che lo usano non riprodurranno più nulla.",
+            editTitle: "Modifica {name}",
+            editHelp: "Trascina sull'onda per selezionare una parte, poi mantienila (ritaglia) o rimuovila. Le parti rimosse sono mostrate in rosso.",
+            originalLength: "Durata: {length}",
+            resultLength: "Dopo la modifica: {length}",
+            selectionRange: "Selezione: {start} - {end}",
+            playSelection: "Riproduci Selezione",
+            playResult: "Riproduci Risultato",
+            stop: "Stop",
+            keepSelection: "Mantieni Selezione",
+            removeSelection: "Rimuovi Selezione",
+            undo: "Annulla",
+            saveAs: "Salva",
+            replaceFile: "Sostituisci il file",
+            convertedToWav: "Verrà salvato come file WAV: {name}",
+            saveCopy: "Salva come nuovo file",
+            copyName: "Nome del nuovo file",
+            copyHint: "Salvato come file WAV nella stessa cartella.",
+            copySuffix: "(modificato)",
+            save: "Salva",
+            saving: "Salvataggio...",
+            nothingLeft: "Questo rimuoverebbe tutto l'audio.",
+            breadcrumb: "Cartella corrente",
+            rootName: "Campioni",
+            search: "Cerca",
+            selectedCount: "{count} selezionati",
+            selectAll: "Seleziona Tutto",
+            done: "Fatto",
+            selectSample: "Seleziona {name}",
+            usedByActiveProfile: "Usato dal profilo corrente",
+            sizeKb: "{size} KB",
+            sizeMb: "{size} MB",
+            noResults: "Nessun campione corrisponde a questa ricerca.",
+            emptyFolder: "Questa cartella è vuota.",
+            dropHint: "Rilascia qui dei file audio per importarli in questa cartella.",
+            duplicate: "Duplica",
+            import: "Importa Campioni",
+            importing: "Importazione...",
+            multiSelect: "Selezione Multipla",
+            trash: "Cestino",
+            trashCount: "Cestino ({count})",
+            moveManyTitle: "Sposta {count} campioni",
+            deleteSamplesQuestion: "Spostare questi {count} campioni nel cestino?",
+            trashHint: "Può essere ripristinato dal cestino per 30 giorni.",
+            moveToTrash: "Sposta nel Cestino",
+            trashEmpty: "Il cestino è vuoto.",
+            folderCount: "{count} campione/i",
+            restore: "Ripristina",
+            deleteForever: "Elimina",
+            trashRetention: "Gli elementi vengono eliminati definitivamente dopo 30 giorni.",
+            emptyTrash: "Svuota il Cestino",
+            emptyTrashConfirm: "Clicca di nuovo per eliminare tutto",
+            close: "Chiudi",
+            trimSilence: "Taglia Silenzio",
+            normalize: "Normalizza il volume (picco massimo a -1dB)",
+            onlySilence: "Questo campione è silenzioso.",
+            noSilence: "Non c'è silenzio da tagliare all'inizio o alla fine.",
+            errorTitle: "Impossibile completare questa azione",
+        },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
+            StreamMix1: "Mix Diretta 1",
+            StreamMix2: "Mix Diretta 2",
             All: "Tutti",
             Mic: "Mic",
             Chat: "Chat Vocale",
@@ -36,12 +191,14 @@ export default {
             percentage: "%",
             milliseconds: "ms",
             hertz: "Hz",
-            kilohertz: "KHz",
+            kilohertz: "kHz",
             ratio: ":{value}",
             beatsPerMinute: "BPM",
         },
 
         modalButtons: {
+            continue: "Continua",
+            close: "Chiudi",
             ok: "Ok",
             yes: "Sì",
             no: "No",
@@ -50,36 +207,45 @@ export default {
 
         // These Strings appear in the tabs throughout the pages
         navigation: {
+            library: "Libreria",
+            application: "Applicazione",
             // Tabs at the top of the Page
             profiles: "Profili",
-            presets: "Preset",
             samples: "Campioni",
 
             // Main Navigation Tabs
             microphone: "Mic",
             mixer: "Mixer",
-            configuration: "Configurazione",
             effects: "Effetti",
             sampler: "Campionatore",
-            lighting: "Illuminazione",
             routing: "Routing",
             system: "Sistema",
 
             // Navigation Sections on the Lighting Page
-            lightingGlobal: "Globale",
-            lightingMixer: "Mixer",
-            lightingEffects: "Effetti",
-            lightingSampler: "Campionatore",
-            lightingCough: "Tosse",
 
             // Accessibility Messages (these are announced to screen readers)
-            accessibilityProfileSection: "Profili e File",
             accessibilityDeviceSection: "Impostazioni Dispositivo",
-            accessibilityLightingSection: "Impostazioni Illuminazione",
         },
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
         microphone: {
+            chain: {
+                title: "Catena di elaborazione",
+                input: "Ingresso",
+                gate: "Gate",
+                gateToggle: "Noise gate attivo",
+                threshold: "Soglia",
+                equaliser: "Equalizzatore",
+                bands: "{count} bande",
+                flat: "Piatto",
+                eqPeak: "{gain} dB a {freq}",
+                compressor: "Compressore",
+                compressorDetail: "Soglia {threshold} dB",
+                curveHintFine: "trascina un punto in alto o in basso per il livello, di lato per la frequenza",
+                fineTune: "Regola frequenze",
+                bandLabel: "Banda a {freq}",
+                curveHint: "trascina un punto per regolare la sua banda",
+            },
             profiles: {
                 title: "Profili Mic"
             },
@@ -110,12 +276,14 @@ export default {
             },
 
             equaliser: {
+                compare: "Confronta con l'equalizzatore salvato",
+                before: "Prima",
+                after: "Dopo",
+                save: "Salva",
+                saveHint: "Salva l'equalizzatore nel profilo mic {profile}",
+                savedNotice: "Equalizzatore salvato nel profilo mic {profile}",
                 title: "Equalizzatore",
                 reset: "Reset",
-                enableFineTune: "Abilita controllo di precisione",
-                bass: "Bassi",
-                mid: "Medi",
-                treble: "Alti",
             },
 
             compressor: {
@@ -136,8 +304,16 @@ export default {
         },
 
         mixer: {
+            otherInputs: "Altri Ingressi",
+            strip: {
+                source: "Fonte",
+                mute: "Muto",
+                muteFunction: "Muta verso",
+                lighting: "Illuminazione {channel}",
+                lightingTitle: "Illuminazione · {channel}",
+            },
+            submixHint: "Un secondo mix (Mix B) per ogni canale, fader inclusi, per inviare livelli diversi ad alcune uscite.",
             // Box Headers
-            inputs: "Ingressi",
             outputs: "Uscite",
             mixAssignment: "Assegnamento Mix",
 
@@ -153,25 +329,21 @@ export default {
         configuration: {
             // This is common between Faders and Cough Buttons
             mute_behaviour: {
+                base: "Muta verso {channel}",
                 all: "Muta verso @:message.channels.All",
-                stream: "Muta verso @:message.channels.StreamMix",
-                chatMic: "Muta verso @:message.channels.ChatMic",
-                headphones: "Muta verso @:message.channels.Headphones",
-                lineOut: "Muta verso @:message.channels.LineOut",
             },
             muteBehaviourTitle: "Comportamento Muto",
             muteBehaviourLabel: "Comportamento Muto per {channel}",
 
             // Config for the Faders
             faders: {
-                title: "Fader",
-                channelTitle: "Canale",
-                sourceTitle: "Fonte",
                 sourceLabel: "Fonte per {channel}",
             },
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Illuminazione",
+                lightingTitle: "Illuminazione Tosse e Bip",
                 behaviour: {
                     hold: "Tieni Premuto",
                     toggle: "Premi",
@@ -183,7 +355,25 @@ export default {
         },
 
         effects: {
+            lighting: {
+                title: "Illuminazione effetti",
+                presetButton: "Tasto preset · {name}",
+                applyPresets: "Applica a tutti i preset",
+                encoders: "Manopole",
+                applyEncoders: "Applica a tutte le manopole",
+                buttons: "Tasti Effetto",
+                applyButtons: "Applica a tutti i tasti effetto",
+            },
+            face: {
+                label: "Effetti",
+                master: "Effetti",
+                enabled: "Attivo",
+                on: "attivo",
+                off: "disattivo",
+                power: "Attiva o disattiva {effect}",
+            },
             preset: {
+                name: "Nome",
                 title: "Preset",
                 group: "Gruppo",
 
@@ -194,10 +384,6 @@ export default {
 
                 loadPreset: "Carica Preset",
 
-                renamePresetTitle: "Rinomina Preset",
-                renamePresetPlaceholder: "Nome Nuovo Preset",
-                renamePresetOk: "@:message.modalButtons.ok",
-                renamePresetCancel: "@:message.modalButtons.cancel",
 
                 noPresets: "Al momento non sono presenti preset nella libreria, salva o copiane qualcuno per farli apparire qui.",
                 loadPresetOk: "@:message.modalButtons.ok",
@@ -353,7 +539,19 @@ export default {
         },
 
         sampler: {
-            bankTitle: "Banca",
+            lighting: {
+                label: "Illuminazione",
+                title: "Illuminazione Campionatore",
+                bank: "Tasti banca {bank}",
+                note: "Il dispositivo imposta questi colori per l'intera banca, i quattro tasti li condividono.",
+                applyBanks: "Applica a tutte le banche",
+            },
+            pads: {
+                title: "Tasti",
+                empty: "Vuoto",
+                count: "{count} campione/i",
+                dropHere: "Rilascia per assegnare",
+            },
             banks: {
                 bankTitle: "Banca",
                 bank: {
@@ -361,7 +559,6 @@ export default {
                     b: "B",
                     c: "C"
                 },
-                buttonTitle: "Tasto",
                 buttonLabel: "Tasto per banca {activeBank}",
                 buttons: {
                     topLeft: "Alto a Sinistra",
@@ -391,6 +588,7 @@ export default {
 
             samplesTitle: "Campioni",
             samples: {
+                genericError: "Si è verificato un errore sconosciuto.",
                 samplesTitle: "Campioni",
                 samplesLabel: "Campioni per tasto {activeButton} sulla banca {activeBank}",
 
@@ -441,12 +639,32 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Applica a tutti i fader",
+                applyMutes: "Applica a tutti i tasti Muto",
+                openIcons: "Apri la cartella delle icone",
+                display: "Schermo",
+                preview: "Anteprima",
+                previewFader: "fader",
+                previewMeter: "meter",
+                hintTwoColour: "Sotto il fader: colore inizio. Sopra: colore fine.",
+                hintGradient: "Sotto il fader: una sfumatura dal colore inizio al colore fine. Sopra: spento.",
+                hintMeter: "I LED seguono il livello sonoro del canale invece della posizione del fader.",
+                hintGradientMeter: "I LED seguono il livello sonoro del canale, sfumando dal colore inizio al colore fine.",
+                previewScreen: "schermo",
+                previewActive: "attivo",
+                previewMute: "MUTO",
+                previewRest: "a riposo",
+            },
             // These are some common strings that are used in multiple places
             common: {
-                colour: "Colore",
+                pickColour: "scegli un colore",
+                restLabel: "A riposo",
+                restColour: "Colore a riposo",
+                restDimmedHint: "Il tasto mostra il suo colore attivo, attenuato: nessun colore da scegliere.",
+                brightness: "Luminosità",
 
                 activeColour: "Attivo",
-                inactiveColour: "Inattivo",
 
                 inactiveOption: "Opzione Inattiva",
                 inactiveOptions: {
@@ -456,7 +674,6 @@ export default {
 
                 },
 
-                applyToAll: "Applica a Tutti",
             },
 
             global: {
@@ -469,7 +686,6 @@ export default {
                         accent: "Accenti",
                     },
 
-                    colour: "@:message.lighting.common.colour",
                 },
 
                 animations: {
@@ -494,10 +710,6 @@ export default {
             },
 
             mixer: {
-                faders: {
-                    title: "@:message.configuration.faders.title",
-                    channelTitle: "@:message.configuration.faders.channel",
-                },
 
                 fader: {
                     title: "Fader",
@@ -511,7 +723,6 @@ export default {
                     bottomColour: "Colore Inizio",
                     topColour: "Colore Fine",
 
-                    accessibilityTitle: "Impostazioni Fader per {channel}",
                 },
 
                 screen: {
@@ -520,7 +731,6 @@ export default {
                     icons: "Icone",
                     iconNone: "-- NESSUNA --",
 
-                    optionsTitle: "Opzioni",
                     options: {
                         showNumber: "Mostra Numbero",
                         invertDisplay: "Inverti Schermo",
@@ -533,15 +743,10 @@ export default {
                 mute: {
                     // Pretty much all other fields for this area come from 'Common'
                     title: "Muto",
-                    accessibilityTitle: "Impostazioni Muto per {channel}"
                 }
             },
 
             effects: {
-                preset: {
-                    title: "Tasti Preset",
-                    presetTitle: "Preset"
-                },
 
                 encoders: {
                     title: "Manopole",
@@ -562,7 +767,6 @@ export default {
                 buttons: {
                     title: "Tasti Effetto",
 
-                    effectTitle: "Effetto",
                     effect: {
                         megaphone: "Megafono",
                         robot: "Robot",
@@ -572,9 +776,7 @@ export default {
                 },
             },
             sampler: {
-                title: "Banca",
 
-                buttonsTitle: "Tasti",
                 buttons: {
                     a: "A",
                     b: "B",
@@ -583,13 +785,10 @@ export default {
 
                 active: "Attivo / Caricato",
                 empty: "Campione Vuoto",
-                inactive: "Banca Inattiva",
             },
 
             cough: {
-                title: "Tasti Tosse/Bip",
 
-                buttonsTitle: "Tasti",
                 buttons: {
                     bleep: "Bip",
                     cough: "Tosse",
@@ -617,6 +816,7 @@ export default {
 
             output: "Uscite",
             outputs: {
+                StreamMix2: "@:message.channels.StreamMix2",
                 Headphones: "@:message.channels.Headphones",
                 BroadcastMix: "@:message.channels.StreamMix",
                 ChatMic: "@:message.channels.ChatMic",
@@ -627,6 +827,59 @@ export default {
         },
 
         system: {
+            networkAccess: {
+                title: "Accesso di rete",
+                explain: "Su un altro dispositivo della tua rete (tablet, telefono, computer), apri una volta uno di questi link. L'accesso viene poi ricordato.",
+                restart: "Riavvia GoXLR Utility per raggiungerla dalla tua rete. I link appariranno poi qui.",
+                noAddress: "Nessun indirizzo di rete trovato per questo computer.",
+                copy: "Copia",
+                copied: "Copiato",
+                regenerate: "Nuovo link (i link precedenti smettono di funzionare)",
+            },
+            menu: {
+                firmware: "Aggiornamento firmware",
+            },
+            firmwareUpdate: {
+                noInfo: "I server di aggiornamento non hanno risposto, quindi l'ultima versione non è nota. Questo GoXLR usa la versione {currentVersion}.",
+                updateTo: "Aggiorna a {version}",
+                reinstall: "Reinstalla {version}",
+                customButton: "Firmware personalizzato…",
+                confirmTitle: "Installare il firmware?",
+                confirmText: "Il GoXLR si riavvia durante l'aggiornamento. Non scollegarlo e non chiudere l'utility finché non è terminato.",
+                confirmCustom: "Sceglierai poi un file firmware (.bin). Usa solo un file di cui ti fidi: un file sbagliato può rendere il GoXLR inutilizzabile. Non scollegarlo durante l'aggiornamento.",
+                betaWarning: "Stai per installare una versione beta del firmware.\nQuesta versione non riceverà alcun supporto ufficiale e potrebbe contenere bug o problemi che non possiamo risolvere.",
+                newVersionAvailable: "È disponibile una versione firmware più recente ({latestVersion}) per il tuo dispositivo.\nVuoi aggiornare il dispositivo ora?",
+                currentVersionIsNewer: "La tua versione firmware attuale ({currentVersion}) è più recente dell'ultima versione firmware disponibile ({latestVersion}) per il tuo dispositivo.\nVuoi tornare all'ultima versione firmware disponibile?",
+                currentIsUpToDate: "Il tuo firmware è già aggiornato.\nVuoi reinstallare la versione firmware attuale?",
+                customFirmware: "Stai per installare un firmware personalizzato.\nNon è consigliato a meno che tu non sappia cosa stai facendo.\nConfermi di voler continuare?",
+                warning: "Stai per installare una nuova versione firmware sul tuo dispositivo.\nGli sviluppatori di GoXLR Utility non sono responsabili per eventuali danni causati da questo processo. ",
+                warningInfo: "Maggiori Info",
+                updatePaused: "Stai per installare la versione firmware {version}. Confermi di voler continuare?",
+                updateInProgress: "Aggiornamento Firmware in Corso. Attendi e non scollegare il dispositivo!",
+                completed: "L'aggiornamento del firmware è stato completato con successo.",
+                failed: "Qualcosa è andato storto durante l'aggiornamento del firmware. Riprova.",
+                changelog: "Novità della Versione {version}:",
+                title: "Installazione Firmware...",
+                progress: {
+                    starting: "Avvio...",
+                    manifest: "Recupero Manifest...",
+                    download: "Download Firmware...",
+                    pause: "Aggiornamento in Pausa",
+                    clearNVR: "Preparazione Partizione di Aggiornamento...",
+                    uploadFirmware: "Caricamento Firmware...",
+                    validateUpload: "Verifica Firmware caricato...",
+                    hardwareWrite: "Scrittura Firmware...",
+                    hardwareValidate: "Verifica Firmware...",
+                    complete: "Aggiornamento completato",
+                    failed: "Impossibile completare l'Aggiornamento Firmware",
+                },
+            },
+            firmwareUpdateButton: {
+                update: "Aggiorna Firmware",
+                downgrade: "Downgrade Firmware",
+                reinstall: "Reinstalla Firmware",
+                custom: "Firmware Personalizzato",
+            },
             title: "Sistema",
 
             powerButton: "Azione Alimentazione",
@@ -655,6 +908,8 @@ export default {
 
             deviceButton: "Impostazioni Dispositivo",
             device: {
+                samplerFadeDuration: "Durata Sfumatura Campionatore",
+                samplerFadeDurationAccessibility: "La durata in millisecondi della sfumatura in uscita del campionatore quando la riproduzione viene interrotta",
                 holdDuration: "Durata pressione Tasto Muto per mutare verso Tutti",
                 holdDurationAccessibility: "La durata in millisecondi per cui bisogna tenere premuto il tasto Muto per mutare verso tutti i canali",
 
@@ -676,6 +931,16 @@ export default {
 
             settingsButton: "Impostazioni Utility",
             settings: {
+                shutdownConfirmTitle: "Sei Sicuro?",
+                shutdownConfirmMessage: "Confermi di voler chiudere GoXLR Utility?",
+                settingsRegionAccessibility: "impostazioni",
+                macosAggregateManagement: "Disabilita Gestione Dispositivi Aggregati su MacOS (richiede il riavvio)",
+                macosAggregateManagementAccessibility: "Disabilita la gestione dei dispositivi aggregati da parte dell'Utility su MacOS (richiede il riavvio)",
+                firmwareSource: "Canale Aggiornamenti Firmware",
+                firmwareSources: {
+                    live: "Stabile",
+                    beta: "Beta",
+                },
                 language: "Lingua",
                 useSystem: "Usa Lingua di Sistema (se disponibile)",
 
@@ -743,6 +1008,10 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            trashTitle: "Profili eliminati",
+            trashEmpty: "Nessun profilo eliminato. I profili eliminati vengono conservati qui per 30 giorni.",
+            trashProfile: "Profilo",
+            trashMic: "Profilo mic",
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Salva Profilo {profileName}",
             createProfile: "Crea Profilo",
@@ -789,7 +1058,6 @@ export default {
             accessibilitySavedProfile: "Il profilo {profileName} è stato salvato",
             accessibilitySavedProfileAs: "Il profilo {profileName} è stato salvato con nome {newProfileName}",
             accessibilityProfileDeleted: "Il profilo {profileName} è stato eliminato",
-            accessibilityActiveProfile: "Profilo Attivo",
             accessibilityDropMenuTitle: "Opzioni per {profileName}",
             accessibilityOpenProfileDirectory: "Apri Cartella Profili",
             accessibilityOpenMicProfileDirectory: "Apri Cartella Profili Microfono",

@@ -4,21 +4,21 @@
                 :label="$t('message.topBar.profileLabel')" @select="askLoad($event, false)">
       <template #prefix><span class="picker-label">{{ $t('message.topBar.profile') }}</span></template>
     </SelectMenu>
-    <button ref="save" class="bar-button primary" @click="$refs.saveModal.openModal($refs.saveOk, $refs.save)"
+    <AppButton ref="save" variant="primary" @click="$refs.saveModal.openModal($refs.saveOk, $refs.save)"
             :title="$t('message.profileManager.saveProfileName', { profileName: getActiveProfile() })">
       <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
       <span>{{ $t('message.topBar.save') }}</span>
-    </button>
+    </AppButton>
 
     <SelectMenu class="picker" button-class="picker-button" :options="getMicProfiles()" :selected="getActiveMicProfile()"
                 :label="$t('message.topBar.micProfileLabel')" @select="askLoad($event, true)">
       <template #prefix><span class="picker-label">{{ $t('message.topBar.micProfile') }}</span></template>
     </SelectMenu>
 
-    <button ref="lighting" class="bar-button" @click="openLighting">
+    <AppButton ref="lighting" @click="openLighting">
       <font-awesome-icon icon="fa-solid fa-lightbulb"/>
       <span>{{ $t('message.topBar.lighting') }}</span>
-    </button>
+    </AppButton>
 
     <span class="grow"></span>
 
@@ -65,6 +65,7 @@
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
 import {sendHttpCommand} from "@/util/sockets";
 import {isDeviceMini} from "@/util/util";
@@ -75,7 +76,7 @@ import SelectMenu from "@/components/design/SelectMenu.vue";
 
 export default {
   name: "TopBar",
-  components: {SelectMenu, GlobalLighting, ModalButton, AccessibleModal},
+  components: {AppButton, SelectMenu, GlobalLighting, ModalButton, AccessibleModal},
 
   data() {
     return {
@@ -196,31 +197,7 @@ export default {
   color: var(--c-muted);
 }
 
-.bar-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 12px;
-  border-radius: 6px;
-  border: 1px solid var(--c-line);
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-}
-
-.bar-button.primary {
-  background-color: var(--c-accent);
-  border-color: var(--c-accent);
-  color: var(--c-on-accent);
-}
-
-.bar-button:hover {
-  filter: brightness(1.1);
-}
-
-.bar-button:focus-visible, .map-button:focus-visible {
+.map-button:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 2px;
 }

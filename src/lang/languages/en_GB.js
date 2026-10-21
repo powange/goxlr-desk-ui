@@ -57,7 +57,7 @@ export default {
             percentage: "%",
             milliseconds: "ms",
             hertz: "Hz",
-            kilohertz: "KHz",
+            kilohertz: "kHz",
             ratio: ":{value}",
             beatsPerMinute: "BPM",
         },
@@ -73,6 +73,7 @@ export default {
 
         common: {
             close: "Close",
+            lighting: "Lighting",
             clear: "Clear",
             collapseSection: "Collapse Section",
             expandSection: "Expand Section",
@@ -89,32 +90,22 @@ export default {
         navigation: {
             // Tabs at the top of the Page
             profiles: "Profiles",
-            presets: "Presets",
             samples: "Samples",
 
             // Main Navigation Tabs
             microphone: "Mic",
             mixer: "Mixer",
-            configuration: "Configuration",
             effects: "Effects",
             sampler: "Sampler",
-            lighting: "Lighting",
             routing: "Routing",
             system: "System",
             library: "Library",
             application: "Application",
 
             // Navigation Sections on the Lighting Page
-            lightingGlobal: "Global",
-            lightingMixer: "Mixer",
-            lightingEffects: "Effects",
-            lightingSampler: "Sampler",
-            lightingCough: "Cough",
 
             // Accessibility Messages (these are announced to screen readers)
-            accessibilityProfileSection: "Profiles and Files",
             accessibilityDeviceSection: "Device Settings",
-            accessibilityLightingSection: "Lighting Settings",
         },
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
@@ -167,12 +158,14 @@ export default {
             },
 
             equaliser: {
+                compare: "Compare with the saved equaliser",
+                before: "Before",
+                after: "After",
+                save: "Save",
+                saveHint: "Saves the equaliser in the mic profile {profile}",
+                savedNotice: "Equaliser saved in the mic profile {profile}",
                 title: "Equaliser",
                 reset: "Reset",
-                enableFineTune: "Enable Fine Tune",
-                bass: "Bass",
-                mid: "Mid",
-                treble: "Treble",
             },
 
             compressor: {
@@ -194,7 +187,6 @@ export default {
 
         mixer: {
             // Box Headers
-            inputs: "Inputs",
             outputs: "Outputs",
             otherInputs: "Other Inputs",
             strip: {
@@ -222,22 +214,12 @@ export default {
                 base: "Mute to {channel}",
                 all: "Mute to All",
 
-                stream: "Mute to @:message.channels.StreamMix",
-                stream1: "Mute to @:message.channels.StreamMix1",
-                stream2: "Mute to @:message.channels.StreamMix2",
-                streams: "Mute to @:message.channels.StreamMix 1 + 2",
-                chatMic: "Mute to @:message.channels.ChatMic",
-                headphones: "Mute to @:message.channels.Headphones",
-                lineOut: "Mute to @:message.channels.LineOut",
             },
             muteBehaviourTitle: "Mute Behaviour",
             muteBehaviourLabel: "Mute Behaviour for {channel}",
 
             // Config for the Faders
             faders: {
-                title: "Faders",
-                channelTitle: "Channel",
-                sourceTitle: "Source",
                 sourceLabel: "Source for {channel}",
             },
 
@@ -257,7 +239,6 @@ export default {
 
         effects: {
             lighting: {
-                customise: "Customise colours",
                 title: "Effects lighting",
                 presetButton: "Preset button · {name}",
                 applyPresets: "Apply to all presets",
@@ -286,10 +267,6 @@ export default {
 
                 loadPreset: "Load Preset",
 
-                renamePresetTitle: "Rename Preset",
-                renamePresetPlaceholder: "New Preset Name",
-                renamePresetOk: "@:message.modalButtons.ok",
-                renamePresetCancel: "@:message.modalButtons.cancel",
 
                 noPresets: "There are currently no presets in the library, save or copy some for them to appear here.",
                 loadPresetOk: "@:message.modalButtons.ok",
@@ -447,13 +424,11 @@ export default {
         sampler: {
             lighting: {
                 label: "Lighting",
-                customise: "Customise colours",
                 title: "Sampler lighting",
                 bank: "Bank {bank} buttons",
                 note: "The device sets these colours for the whole bank, all four buttons share them.",
                 applyBanks: "Apply to all banks",
             },
-            bankTitle: "Bank",
             pads: {
                 title: "Buttons",
                 empty: "Empty",
@@ -467,7 +442,6 @@ export default {
                     b: "B",
                     c: "C"
                 },
-                buttonTitle: "Button",
                 buttonLabel: "Button for bank {activeBank}",
                 buttons: {
                     topLeft: "Top Left",
@@ -562,14 +536,13 @@ export default {
                 hintGradientMeter: "The LEDs follow the channel's sound level, blending from the bottom to the top colour.",
                 previewScreen: "screen",
                 previewActive: "active",
+                previewMute: "MUTE",
                 previewRest: "at rest",
             },
             // These are some common strings that are used in multiple places
             common: {
-                colour: "Colour",
 
                 activeColour: "Active",
-                inactiveColour: "Inactive",
 
                 inactiveOption: "Inactive Option",
                 inactiveOptions: {
@@ -579,7 +552,6 @@ export default {
 
                 },
 
-                applyToAll: "Apply to All",
                 pickColour: "pick a colour",
                 restLabel: "At rest",
                 restColour: "Rest colour",
@@ -597,7 +569,6 @@ export default {
                         accent: "Accent",
                     },
 
-                    colour: "@:message.lighting.common.colour",
                 },
 
                 animations: {
@@ -622,10 +593,6 @@ export default {
             },
 
             mixer: {
-                faders: {
-                    title: "@:message.configuration.faders.title",
-                    channelTitle: "@:message.configuration.faders.channel",
-                },
 
                 fader: {
                     title: "Fader",
@@ -639,7 +606,6 @@ export default {
                     bottomColour: "Bottom Colour",
                     topColour: "Top Colour",
 
-                    accessibilityTitle: "Fader settings for {channel}",
                 },
 
                 screen: {
@@ -648,7 +614,6 @@ export default {
                     icons: "Icons",
                     iconNone: "-- NONE --",
 
-                    optionsTitle: "Options",
                     options: {
                         showNumber: "Show Number",
                         invertDisplay: "Invert Display",
@@ -661,15 +626,10 @@ export default {
                 mute: {
                     // Pretty much all other fields for this area come from 'Common'
                     title: "Mute",
-                    accessibilityTitle: "Mute Settings for {channel}"
                 }
             },
 
             effects: {
-                preset: {
-                    title: "Preset Buttons",
-                    presetTitle: "Preset"
-                },
 
                 encoders: {
                     title: "Encoders",
@@ -690,7 +650,6 @@ export default {
                 buttons: {
                     title: "Effect Buttons",
 
-                    effectTitle: "Effect",
                     effect: {
                         megaphone: "Megaphone",
                         robot: "Robot",
@@ -700,9 +659,7 @@ export default {
                 },
             },
             sampler: {
-                title: "Bank",
 
-                buttonsTitle: "Buttons",
                 buttons: {
                     a: "A",
                     b: "B",
@@ -711,13 +668,10 @@ export default {
 
                 active: "Active / Loaded",
                 empty: "Sample Empty",
-                inactive: "Inactive Bank",
             },
 
             cough: {
-                title: "Cough/Bleep Buttons",
 
-                buttonsTitle: "Buttons",
                 buttons: {
                     bleep: "Bleep",
                     cough: "Cough",
@@ -1140,7 +1094,6 @@ export default {
             accessibilitySavedProfile: "Profile {profileName} Saved",
             accessibilitySavedProfileAs: "Profile {profileName} Saved as {newProfileName}",
             accessibilityProfileDeleted: "Profile {profileName} deleted",
-            accessibilityActiveProfile: "Active Profile",
             accessibilityDropMenuTitle: "{profileName} options",
             accessibilityOpenProfileDirectory: "Open Profile Directory",
             accessibilityOpenMicProfileDirectory: "Open Mic Profile Directory",

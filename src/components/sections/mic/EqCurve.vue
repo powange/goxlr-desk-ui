@@ -5,7 +5,7 @@
       <line v-for="gain in [-6, 0, 6]" :key="'g' + gain" x1="0" :x2="width" :y1="gainToY(gain)" :y2="gainToY(gain)"
             :class="gain === 0 ? 'axis' : 'grid'"/>
       <line v-for="tick in ticks" :key="'t' + tick" :x1="freqToX(tick)" :x2="freqToX(tick)" y1="0" :y2="height" class="grid"/>
-      <text v-for="gain in [6, 0, -6]" :key="'l' + gain" x="4" :y="gainToY(gain) - 4" class="gain-label">{{ gain > 0 ? '+' + gain : gain }} dB</text>
+      <text v-for="gain in [6, 0, -6]" :key="'l' + gain" x="4" :y="gainToY(gain) - 4" class="gain-label">{{ gainText(gain) }}</text>
       <path :d="areaPath()" class="area"/>
       <path :d="linePath()" class="line"/>
       <g v-for="(band, index) in bands()" :key="band">
@@ -13,7 +13,7 @@
                 class="point" :class="{ active: activeIndex === index, wide: fineTune }" tabindex="0" role="slider"
                 :aria-label="$t('message.microphone.chain.bandLabel', {freq: freqLabel(freqOf(band))})"
                 aria-valuemin="-9" aria-valuemax="9" :aria-valuenow="gainOf(band)"
-                :aria-valuetext="`${gainOf(band)} dB, ${freqLabel(freqOf(band))}`"
+                :aria-valuetext="`${gainText(gainOf(band))}, ${freqLabel(freqOf(band))}`"
                 @pointerdown="onPointerDown($event, index)" @keydown="onKeydown($event, index)"
                 @pointerenter="hoverIndex = index" @pointerleave="hoverIndex = undefined"
                 @focus="hoverIndex = index" @blur="hoverIndex = undefined"/>
@@ -29,25 +29,37 @@
 </template>
 
 <script>
+import {reactive} from "vue";
 import {store} from "@/store";
-import {websocket} from "@/util/sockets";
-import {isDeviceMini, roundToStep} from "@/util/util";
+import {sendHttpCommand, websocket} from "@/util/sockets";
+import {formatFrequency, formatGain, isDeviceMini, roundToStep} from "@/util/util";
 import {EqFreqs, EqMiniFreqs} from "@/util/mixerMapping";
-import Equalizer from "@/components/sections/mic/Equalizer.vue";
+import equaliser from "@/mixins/equaliser";
 
-// The frequency ranges, steps, reset and fine tune setting are the equaliser's own (1-based band
-// index), so the curve follows the same rules as the official sliders did.
-const shared = ["getMinEqValue", "getMaxEqValue", "getStep", "fineTuneEnabled", "resetEqValues", "sendFreqCommand"];
 
 const MIN_FREQ = 20;
 // While dragging, at most one command per band setting is sent in this time.
 const SEND_INTERVAL = 50;
 const MAX_FREQ = 20000;
 
+// The equaliser as last saved in each mic profile ("serial|profile" → {gain, frequency}), the
+// "before" side of the comparison. Kept while the page changes, the daemon keeps the edits too.
+const saved = reactive({});
+const copyOf = eq => ({gain: {...eq.gain}, frequency: {...eq.frequency}});
+
 // The equaliser as a curve on a frequency axis: each band is a point dragged up and down for its
 // gain (-9 to +9 dB), and sideways for its frequency when fine tuning is on. Arrow keys do the same.
 export default {
   name: "EqCurve",
+  // The frequency ranges, steps, reset and fine tune setting come from the equaliser logic
+  // (1-based band index), so the curve follows the same rules as the official sliders did.
+  mixins: [equaliser],
+  emits: ["compare-state"],
+
+  props: {
+    // Points also move sideways to change their frequency
+    fineTune: {type: Boolean, default: false},
+  },
 
   data() {
     return {
@@ -56,12 +68,26 @@ export default {
       dragIndex: undefined,
       hoverIndex: undefined,
       ticks: [50, 100, 200, 500, 1000, 2000, 5000, 10000],
+      // The edits, kept aside while the saved equaliser is shown for comparison
+      edits: undefined,
     }
   },
 
   computed: {
-    fineTune() {
-      return this.fineTuneEnabled();
+    savedKey() {
+      return `${store.getActiveSerial()}|${store.getActiveDevice().mic_profile_name}`;
+    },
+    // Whether the equaliser differs from the one saved in the mic profile
+    modified() {
+      if (this.edits !== undefined) return true;
+      const before = saved[this.savedKey];
+      if (before === undefined) return false;
+      const now = this.equaliser();
+      return this.bands().some(band => before.gain[band] !== now.gain[band]
+          || parseFloat(before.frequency[band]) !== parseFloat(now.frequency[band]));
+    },
+    compareState() {
+      return {modified: this.modified, showingSaved: this.edits !== undefined};
     },
     activeIndex() {
       return this.dragIndex !== undefined ? this.dragIndex : this.hoverIndex;
@@ -81,17 +107,86 @@ export default {
     this.sendTimer = undefined;
   },
 
+  watch: {
+    // The first time a mic profile is shown, what it holds is its saved equaliser.
+    savedKey: {
+      handler(key) {
+        if (saved[key] === undefined) saved[key] = copyOf(this.equaliser());
+        this.edits = undefined;
+      },
+      immediate: true,
+    },
+    compareState: {
+      handler(state) {
+        this.$emit("compare-state", state);
+      },
+      immediate: true,
+    },
+  },
+
   unmounted() {
     this.observer.disconnect();
     this.endDrag();
   },
 
   methods: {
-    ...Object.fromEntries(shared.map(name => [name, Equalizer.methods[name]])),
+
+    // The page's setting, not the device's display mode
+    fineTuneEnabled() {
+      return this.fineTune;
+    },
 
     // Called by the panel's Reset button
     reset() {
+      this.edits = undefined;
       this.resetEqValues();
+    },
+
+    // Saves the mic profile, the equaliser as it is becomes the saved one.
+    async save() {
+      if (this.edits !== undefined) this.showEdits();
+      await sendHttpCommand(store.getActiveSerial(), {SaveMicProfile: []});
+      saved[this.savedKey] = copyOf(this.equaliser());
+      store.setAccessibilityNotification("polite", this.$t('message.microphone.equaliser.savedNotice',
+          {profile: store.getActiveDevice().mic_profile_name}));
+    },
+
+    // Shows the saved equaliser (true) or the edits (false), to compare them.
+    showSaved(show) {
+      if (show && this.edits === undefined && this.modified) {
+        this.edits = copyOf(this.equaliser());
+        this.apply(saved[this.savedKey]);
+      } else if (!show && this.edits !== undefined) {
+        this.showEdits();
+      }
+    },
+
+    showEdits() {
+      const edits = this.edits;
+      this.edits = undefined;
+      this.apply(edits);
+    },
+
+    // Sends every band that differs from `values`.
+    apply(values) {
+      const serial = store.getActiveSerial();
+      const mini = isDeviceMini();
+      const now = this.equaliser();
+      for (const band of this.bands()) {
+        if (now.gain[band] !== values.gain[band]) {
+          now.gain[band] = values.gain[band];
+          websocket.send_command(serial, {[mini ? "SetEqMiniGain" : "SetEqGain"]: [band, values.gain[band]]});
+        }
+        if (parseFloat(now.frequency[band]) !== parseFloat(values.frequency[band])) {
+          now.frequency[band] = values.frequency[band];
+          this.sendFreqCommand(mini ? "SetEqMiniFreq" : "SetEqFreq", band, parseFloat(values.frequency[band]));
+        }
+      }
+    },
+
+    // Editing while the saved equaliser is shown starts new edits from it.
+    leaveComparison() {
+      this.edits = undefined;
     },
 
     bands() {
@@ -112,11 +207,11 @@ export default {
     },
 
     gainText(gain) {
-      return (gain > 0 ? "+" : "") + gain + " dB";
+      return formatGain(this.$t, this.$i18n.locale, gain);
     },
 
     freqLabel(hz) {
-      return hz >= 1000 ? `${Math.round(hz / 100) / 10} kHz` : `${Math.round(hz)} Hz`;
+      return formatFrequency(this.$t, this.$i18n.locale, hz);
     },
 
     freqToX(hz) {
@@ -171,6 +266,7 @@ export default {
     setGain(index, gain) {
       const band = this.bands()[index];
       if (this.gainOf(band) === gain) return;
+      this.leaveComparison();
 
       // Update locally straight away, the daemon's patch confirms it.
       this.equaliser().gain[band] = gain;
@@ -227,6 +323,7 @@ export default {
       const max = this.getMaxEqValue(index + 1);
       const value = roundToStep(Math.max(min, Math.min(max, hz)), this.getStep(index + 1));
       if (value === this.freqOf(band)) return;
+      this.leaveComparison();
       if (this.dragIndex !== undefined) this.equaliser().frequency[band] = value;
       this.queue(isDeviceMini() ? "SetEqMiniFreq" : "SetEqFreq", band, value);
     },

@@ -38,10 +38,10 @@
 
       <div class="pad-row">
         <span class="field-label">{{ $t('message.sampler.lighting.label') }}</span>
-        <button ref="lightingButton" type="button" class="lighting-button" @click="openLighting">
+        <AppButton ref="lightingButton" @click="openLighting">
           <font-awesome-icon icon="fa-solid fa-lightbulb"/>
-          <span>{{ $t('message.sampler.lighting.customise') }}</span>
-        </button>
+          <span>{{ $t('message.common.lighting') }}</span>
+        </AppButton>
       </div>
     </div>
   </GroupContainer>
@@ -162,6 +162,7 @@
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
 import SelectMenu from "@/components/design/SelectMenu.vue";
 import AudioVisualiser from "@/components/sections/sampler/AudioVisualiser.vue";
@@ -181,7 +182,7 @@ export default {
   emits: ["on-sample-bank-change", "sample-drop"],
 
   name: "SamplerTab",
-  components: {SelectMenu, 
+  components: {AppButton, SelectMenu, 
     Slider,
     SegmentedControl,
     SamplerLighting,
@@ -591,30 +592,6 @@ export default {
   letter-spacing: .08em;
   text-transform: uppercase;
   color: var(--c-muted);
-}
-
-.pad-panel .lighting-button {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  margin: 0;
-  padding: 6px 12px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.pad-panel .lighting-button:hover {
-  border-color: var(--c-line-strong);
-}
-
-.pad-panel .lighting-button:focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 2px;
 }
 
 .pad-select {

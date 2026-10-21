@@ -55,7 +55,7 @@ export default {
             percentage: "%",
             milliseconds: "ms",
             hertz: "Hz",
-            kilohertz: "KHz",
+            kilohertz: "kHz",
             ratio: ":{value}",
             beatsPerMinute: "BPM",
         },
@@ -71,32 +71,22 @@ export default {
         navigation: {
             // Tabs at the top of the Page
             profiles: "Profils",
-            presets: "Préréglages",
             samples: "Sons",
 
             // Main Navigation Tabs
             microphone: "Micro",
             mixer: "Mixer",
-            configuration: "Configuration",
             effects: "Effets",
             sampler: "Sampler",
-            lighting: "Éclairage",
             routing: "Routage",
             system: "Système",
             library: "Bibliothèque",
             application: "Application",
 
             // Navigation Sections on the Lighting Page
-            lightingGlobal: "Global",
-            lightingMixer: "Mixer",
-            lightingEffects: "Effets",
-            lightingSampler: "Sampler",
-            lightingCough: "Toux/Bip",
 
             // Accessibility Messages (these are announced to screen readers)
-            accessibilityProfileSection: "Profils et Fichiers",
             accessibilityDeviceSection: "Réglages de l'appareil",
-            accessibilityLightingSection: "Paramètres d'éclairage",
         },
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
@@ -149,12 +139,14 @@ export default {
             },
 
             equaliser: {
+                compare: "Comparer avec l'égaliseur enregistré",
+                before: "Avant",
+                after: "Après",
+                save: "Enregistrer",
+                saveHint: "Enregistre l'égaliseur dans le profil micro {profile}",
+                savedNotice: "Égaliseur enregistré dans le profil micro {profile}",
                 title: "Égaliseur",
                 reset: "Réinitialiser",
-                enableFineTune: "Changer la fréquence",
-                bass: "Basse",
-                mid: "Médium",
-                treble: "Aigu",
             },
 
             compressor: {
@@ -176,7 +168,6 @@ export default {
 
         mixer: {
             // Box Headers
-            inputs: "Entrées",
             outputs: "Sorties",
             otherInputs: "Autres entrées",
             strip: {
@@ -202,19 +193,12 @@ export default {
             // This is common between Faders and Cough Buttons
             mute_behaviour: {
                 all: "Muet vers @:message.channels.All",
-                stream: "Muet vers @:message.channels.StreamMix",
-                chatMic: "Muet vers @:message.channels.ChatMic",
-                headphones: "Muet vers @:message.channels.Headphones",
-                lineOut: "Muet vers @:message.channels.LineOut",
             },
             muteBehaviourTitle: "Comportement de mise en sourdine",
             muteBehaviourLabel: "Comportement de mise en sourdine pour {channel}",
 
             // Config for the Faders
             faders: {
-                title: "Faders",
-                channelTitle: "Canal",
-                sourceTitle: "Source",
                 sourceLabel: "Source pour {channel}",
             },
 
@@ -234,7 +218,6 @@ export default {
 
         effects: {
             lighting: {
-                customise: "Personnaliser la couleur",
                 title: "Éclairage des effets",
                 presetButton: "Bouton du préréglage · {name}",
                 applyPresets: "Appliquer à tous les préréglages",
@@ -263,10 +246,6 @@ export default {
 
                 loadPreset: "Chargement des Préréglages",
 
-                renamePresetTitle: "Renommer le préréglage",
-                renamePresetPlaceholder: "Nouveau nom de préréglage",
-                renamePresetOk: "@:message.modalButtons.ok",
-                renamePresetCancel: "@:message.modalButtons.cancel",
 
                 noPresets: "Il n'y a actuellement aucun préréglage dans la bibliothèque, enregistrez ou copiez-en pour qu'ils apparaissent ici.",
                 loadPresetOk: "@:message.modalButtons.ok",
@@ -424,13 +403,11 @@ export default {
         sampler: {
             lighting: {
                 label: "Éclairage",
-                customise: "Personnaliser la couleur",
                 title: "Éclairage du sampler",
                 bank: "Boutons de la banque {bank}",
                 note: "La GoXLR règle ces couleurs pour toute la banque : les quatre boutons les partagent.",
                 applyBanks: "Appliquer à toutes les banques",
             },
-            bankTitle: "Banque",
             pads: {
                 title: "Boutons",
                 empty: "Vide",
@@ -444,7 +421,6 @@ export default {
                     b: "B",
                     c: "C"
                 },
-                buttonTitle: "Bouton",
                 buttonLabel: "Bouton de Banque {activeBank}",
                 buttons: {
                     topLeft: "En haut à gauche",
@@ -538,14 +514,14 @@ export default {
                 hintGradientMeter: "Les LED suivent le niveau du son du canal, en dégradé de la couleur basse vers la haute.",
                 previewScreen: "écran",
                 previewActive: "actif",
+                previewMute: "MUET",
                 previewRest: "au repos",
             },
             // These are some common strings that are used in multiple places
             common: {
-                colour: "Couleur",
+            lighting: "Éclairage",
 
                 activeColour: "Actif",
-                inactiveColour: "Inactif",
 
                 inactiveOption: "Option d'inactivité",
                 inactiveOptions: {
@@ -555,7 +531,6 @@ export default {
 
                 },
 
-                applyToAll: "Appliquer à tout",
                 pickColour: "choisir une couleur",
                 restLabel: "Au repos",
                 restColour: "Couleur au repos",
@@ -573,7 +548,6 @@ export default {
                         accent: "Accent",
                     },
 
-                    colour: "@:message.lighting.common.colour",
                 },
 
                 animations: {
@@ -598,10 +572,6 @@ export default {
             },
 
             mixer: {
-                faders: {
-                    title: "@:message.configuration.faders.title",
-                    channelTitle: "@:message.configuration.faders.channel",
-                },
 
                 fader: {
                     title: "Fader",
@@ -615,7 +585,6 @@ export default {
                     bottomColour: "Couleur basse",
                     topColour: "Couleur haute",
 
-                    accessibilityTitle: "Paramètres du fader pour {channel}",
                 },
 
                 screen: {
@@ -624,7 +593,6 @@ export default {
                     icons: "Icônes",
                     iconNone: "-- Éteint --",
 
-                    optionsTitle: "Options",
                     options: {
                         showNumber: "Afficher le numéro",
                         invertDisplay: "Inverser l'affichage",
@@ -637,15 +605,10 @@ export default {
                 mute: {
                     // Pretty much all other fields for this area come from 'Common'
                     title: "Muet",
-                    accessibilityTitle: "Paramètres de sourdine pour {channel}"
                 }
             },
 
             effects: {
-                preset: {
-                    title: "Boutons de préréglage",
-                    presetTitle: "Préréglage"
-                },
 
                 encoders: {
                     title: "Encoders",
@@ -666,7 +629,6 @@ export default {
                 buttons: {
                     title: "Boutons d'effet",
 
-                    effectTitle: "Effet",
                     effect: {
                         megaphone: "Mégaphone",
                         robot: "Robot",
@@ -676,9 +638,7 @@ export default {
                 },
             },
             sampler: {
-                title: "Banque",
 
-                buttonsTitle: "Boutons",
                 buttons: {
                     a: "A",
                     b: "B",
@@ -687,13 +647,10 @@ export default {
 
                 active: "Actif / Chargé",
                 empty: "Son vide",
-                inactive: "Banque Inactive",
             },
 
             cough: {
-                title: "Boutons de Toux/Bip",
 
-                buttonsTitle: "Buttons",
                 buttons: {
                     bleep: "Bip",
                     cough: "Toux",
@@ -1042,7 +999,6 @@ export default {
             accessibilitySavedProfile: "Profile {profileName} Saved",
             accessibilitySavedProfileAs: "Profil {profileName} Enregistrer sous {newProfileName}",
             accessibilityProfileDeleted: "Profil {profileName} Supprimé",
-            accessibilityActiveProfile: "Profil actif",
             accessibilityDropMenuTitle: "{profileName} options",
             accessibilityOpenProfileDirectory: "Ouvrir le répertoire des profils",
             accessibilityOpenMicProfileDirectory: "Ouvrir le répertoire des profils de microphone",

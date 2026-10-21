@@ -23,8 +23,163 @@
 
 export default {
     message: {
+        common: {
+            close: "Закрыть",
+            lighting: "Подсветка",
+            clear: "Очистить",
+            collapseSection: "Свернуть раздел",
+            expandSection: "Развернуть раздел",
+            activeProfile: "Активный Профиль",
+            switchDevice: "Сменить устройство",
+            removeSample: "Удалить Сэмпл",
+            waterfallAnimationUp: "Анимация Водопад вверх",
+            waterfallAnimationDown: "Анимация Водопад вниз",
+            unknown: "Неизвестно",
+            tabList: "Список вкладок",
+        },
+        deviceSelector: {
+            title: "Выбор устройства",
+            connecting: "Попытка подключения к GoXLR Utility..",
+            disconnected: "Не удаётся подключиться к GoXLR Utility, проверьте, что она запущена.\n\nЭта страница автоматически попытается переподключиться..",
+            noDevices: "Устройства GoXLR не найдены",
+        },
+        versionCheck: {
+            updateAvailable: "Доступно обновление",
+            firmwareDirectionAvailable: "Доступно: {direction} прошивки",
+            firmwareDirections: {
+                update: "Обновление",
+                downgrade: "Откат",
+                unknown: "НЕИЗВЕСТНО",
+            },
+            incompatibleDriver: "Установленные драйверы несовместимы с этой прошивкой, нажмите здесь, чтобы скачать последний драйвер.",
+        },
+        theme: {
+            label: "Цветовая тема",
+            dark: "Тёмная",
+            light: "Светлая",
+            system: "Авто",
+        },
+        topBar: {
+            loadTitle: "Загрузить {name}?",
+            loadQuestion: "Несохранённые настройки {current} будут потеряны.",
+            loadMicQuestion: "Несохранённые настройки Профиля Микрофона {current} будут потеряны.",
+            load: "Загрузить",
+            saveThenLoad: "Сохранить и загрузить",
+            lighting: "Общая подсветка",
+            lightingTitle: "Общая подсветка",
+            profile: "Профиль",
+            profileLabel: "Активный Профиль",
+            micProfile: "Микрофон",
+            micProfileLabel: "Активный Профиль Микрофона",
+            save: "Сохранить",
+            showDevice: "Показать GoXLR",
+            hideDevice: "Скрыть GoXLR",
+        },
+        sampleAssign: {
+            title: "Назначить на {bank} · {button}",
+            bank: "Банк",
+            empty: "У этой кнопки пока нет Сэмплов.",
+            current: "У этой кнопки уже есть Сэмплы ({count}):",
+            add: "Добавить",
+            replace: "Заменить",
+            removing: "Удаление текущих Сэмплов…",
+            adding: "Добавление {index} из {total}: {name}…",
+            done: "Сэмплов назначено на {bank} · {button}: {count}",
+            timeoutRemove: "Демон слишком долго удалял текущие Сэмплы",
+            timeout: "{name}: демон слишком долго добавлял этот Сэмпл",
+        },
+        sampleManager: {
+            newFolder: "Новая папка",
+            openFolder: "Открыть папку Сэмплов",
+            rename: "Переименовать",
+            renameFolder: "Переименовать папку",
+            renameFolderLabel: "Переименовать папку {name}",
+            renameSample: "Переименовать Сэмпл",
+            moveTo: "Переместить в...",
+            moveTitle: "Переместить {name}",
+            moveDestination: "Папка назначения",
+            rootFolder: "(Папка Сэмплов)",
+            move: "Переместить",
+            namePlaceholder: "Название",
+            extensionKept: "Расширение {extension} сохраняется.",
+            invalidName: "Название не может содержать / или \\.",
+            ok: "Ок",
+            cancel: "Отмена",
+            edit: "Редактировать",
+            listen: "Прослушать",
+            playPreview: "Проиграть {name}",
+            stopPreview: "Остановить {name}",
+            delete: "Удалить",
+            deleteFolderLabel: "Удалить папку {name}",
+            deleteSampleTitle: "Удалить Сэмпл",
+            deleteSampleQuestion: "Переместить {name} в корзину?",
+            deleteFolderTitle: "Удалить папку",
+            deleteFolderQuestion: "Переместить папку {name} и содержащиеся в ней Сэмплы ({count}) в корзину?",
+            deleteEmptyFolderQuestion: "Переместить пустую папку {name} в корзину?",
+            usedByProfiles: "Используется в этих Профилях:",
+            usedByProfilesHint: "Кнопки Сэмплера, которые его используют, больше ничего не будут проигрывать.",
+            editTitle: "Редактирование {name}",
+            editHelp: "Проведите по волновой форме, чтобы выделить часть, затем оставьте её (обрезка) или удалите. Удалённые части показаны красным.",
+            originalLength: "Длительность: {length}",
+            resultLength: "После редактирования: {length}",
+            selectionRange: "Выделение: {start} - {end}",
+            playSelection: "Проиграть выделение",
+            playResult: "Проиграть результат",
+            stop: "Стоп",
+            keepSelection: "Оставить выделение",
+            removeSelection: "Удалить выделение",
+            undo: "Отменить",
+            saveAs: "Сохранить",
+            replaceFile: "Заменить файл",
+            convertedToWav: "Будет сохранён как файл WAV: {name}",
+            saveCopy: "Сохранить как новый файл",
+            copyName: "Имя нового файла",
+            copyHint: "Сохраняется как файл WAV в той же папке.",
+            copySuffix: "(изменён)",
+            save: "Сохранить",
+            saving: "Сохранение...",
+            nothingLeft: "Это удалит весь звук.",
+            breadcrumb: "Текущая папка",
+            rootName: "Сэмплы",
+            search: "Поиск",
+            selectedCount: "Выбрано: {count}",
+            selectAll: "Выбрать все",
+            done: "Готово",
+            selectSample: "Выбрать {name}",
+            usedByActiveProfile: "Используется в текущем Профиле",
+            sizeKb: "{size} КБ",
+            sizeMb: "{size} МБ",
+            noResults: "Нет Сэмплов, подходящих под этот поиск.",
+            emptyFolder: "Эта папка пуста.",
+            dropHint: "Перетащите сюда аудиофайлы, чтобы импортировать их в эту папку.",
+            duplicate: "Дублировать",
+            import: "Импортировать Сэмплы",
+            importing: "Импорт...",
+            multiSelect: "Выбрать несколько",
+            trash: "Корзина",
+            trashCount: "Корзина ({count})",
+            moveManyTitle: "Переместить Сэмплы ({count})",
+            deleteSamplesQuestion: "Переместить эти Сэмплы ({count}) в корзину?",
+            trashHint: "Его можно будет восстановить из корзины в течение 30 дней.",
+            moveToTrash: "В корзину",
+            trashEmpty: "Корзина пуста.",
+            folderCount: "Сэмплов: {count}",
+            restore: "Восстановить",
+            deleteForever: "Удалить",
+            trashRetention: "Элементы удаляются навсегда через 30 дней.",
+            emptyTrash: "Очистить корзину",
+            emptyTrashConfirm: "Нажмите ещё раз, чтобы удалить всё",
+            close: "Закрыть",
+            trimSilence: "Обрезать тишину",
+            normalize: "Нормализовать громкость (самый громкий пик на -1dB)",
+            onlySilence: "В этом Сэмпле только тишина.",
+            noSilence: "Нет тишины для обрезки в начале или в конце.",
+            errorTitle: "Не удалось выполнить это действие",
+        },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
+            StreamMix1: "Stream Mix 1",
+            StreamMix2: "Stream Mix 2",
             All: "Все",
             Mic: "Микрофон",
             Chat: "Voice Chat",
@@ -61,6 +216,8 @@ export default {
         },
 
         modalButtons: {
+            continue: "Продолжить",
+            close: "Закрыть",
             ok: "Ок",
             yes: "Да",
             no: "Нет",
@@ -69,36 +226,45 @@ export default {
 
         // These Strings appear in the tabs throughout the pages
         navigation: {
+            library: "Библиотека",
+            application: "Приложение",
             // Tabs at the top of the Page
             profiles: "Профили",
-            presets: "Пресеты",
             samples: "Сэмплы",
 
             // Main Navigation Tabs
             microphone: "Микрофон",
             mixer: "Микшер",
-            configuration: "Конфигурация",
             effects: "Эффекты",
             sampler: "Сэмплер",
-            lighting: "Подсветка",
             routing: "Маршрутизация",
             system: "Система",
 
             // Navigation Sections on the Lighting Page
-            lightingGlobal: "Глобальная",
-            lightingMixer: "Микшер",
-            lightingEffects: "Эффекты",
-            lightingSampler: "Сэмплер",
-            lightingCough: "Cough",
 
             // Accessibility Messages (these are announced to screen readers)
-            accessibilityProfileSection: "Профили и Файлы",
             accessibilityDeviceSection: "Настройки Устройства",
-            accessibilityLightingSection: "Настройки Подсветки",
         },
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
         microphone: {
+            chain: {
+                title: "Цепочка обработки",
+                input: "Вход",
+                gate: "Гейт",
+                gateToggle: "Шумовой гейт включён",
+                threshold: "Порог",
+                equaliser: "Эквалайзер",
+                bands: "Полос: {count}",
+                flat: "Ровный",
+                eqPeak: "{gain} dB на {freq}",
+                compressor: "Компрессор",
+                compressorDetail: "Порог {threshold} dB",
+                curveHintFine: "перетащите точку вверх или вниз для изменения уровня, в сторону для изменения частоты",
+                fineTune: "Настроить частоты",
+                bandLabel: "Полоса на {freq}",
+                curveHint: "перетащите точку, чтобы настроить её полосу",
+            },
             profiles: {
                 title: "Профили Микрофона"
             },
@@ -130,12 +296,14 @@ export default {
             },
 
             equaliser: {
+                compare: "Сравнить с сохранённым эквалайзером",
+                before: "До",
+                after: "После",
+                save: "Сохранить",
+                saveHint: "Сохраняет эквалайзер в Профиль Микрофона {profile}",
+                savedNotice: "Эквалайзер сохранён в Профиль Микрофона {profile}",
                 title: "Эквалайзер",
                 reset: "Сброс",
-                enableFineTune: "Тонкая Настройка",
-                bass: "Басс",
-                mid: "Середина",
-                treble: "Верхние",
             },
 
             compressor: {
@@ -156,8 +324,16 @@ export default {
         },
 
         mixer: {
+            otherInputs: "Другие Вводы",
+            strip: {
+                source: "Источник",
+                mute: "Заглушить",
+                muteFunction: "Заглушить для",
+                lighting: "Подсветка {channel}",
+                lightingTitle: "Подсветка · {channel}",
+            },
+            submixHint: "Второй микс (Микс B) для каждого канала, включая фейдеры, чтобы отправлять разные уровни на некоторые выводы.",
             // Box Headers
-            inputs: "Вводы",
             outputs: "Выводы",
             mixAssignment: "Назначение Микса",
 
@@ -173,25 +349,21 @@ export default {
         configuration: {
             // This is common between Faders and Cough Buttons
             mute_behaviour: {
+                base: "Заглушить для {channel}",
                 all: "Заглушить для Всего",
-                stream: "Заглушить для @:message.channels.StreamMix",
-                chatMic: "Заглушить для @:message.channels.ChatMic",
-                headphones: "Заглушить для @:message.channels.Headphones",
-                lineOut: "Заглушить для @:message.channels.LineOut",
             },
             muteBehaviourTitle: "Поведение Заглушения",
             muteBehaviourLabel: "Поведение Заглушения для {channel}",
 
             // Config for the Faders
             faders: {
-                title: "Фейдер",
-                channelTitle: "Канал",
-                sourceTitle: "Источник",
                 sourceLabel: "Источник для {channel}",
             },
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Подсветка",
+                lightingTitle: "Подсветка кнопок Cough и БИИП",
                 behaviour: {
                     hold: "Удержание",
                     toggle: "Переключение",
@@ -203,7 +375,25 @@ export default {
         },
 
         effects: {
+            lighting: {
+                title: "Подсветка эффектов",
+                presetButton: "Кнопка пресета · {name}",
+                applyPresets: "Применить ко всем пресетам",
+                encoders: "Энкодеры",
+                applyEncoders: "Применить ко всем энкодерам",
+                buttons: "Кнопки Эффектов",
+                applyButtons: "Применить ко всем кнопкам эффектов",
+            },
+            face: {
+                label: "Эффекты",
+                master: "Эффекты",
+                enabled: "Вкл",
+                on: "вкл",
+                off: "выкл",
+                power: "Включить или выключить {effect}",
+            },
             preset: {
+                name: "Название",
                 title: "Пресет",
                 group: "Группа",
 
@@ -214,10 +404,6 @@ export default {
 
                 loadPreset: "Загрузить пресет",
 
-                renamePresetTitle: "Переименовать Пресет",
-                renamePresetPlaceholder: "Название нового Пресета",
-                renamePresetOk: "@:message.modalButtons.ok",
-                renamePresetCancel: "@:message.modalButtons.cancel",
 
                 noPresets: "В Библиотеке пока нет Пресетов, сохраните или скопируйте, чтобы они появились здесь.",
                 loadPresetOk: "@:message.modalButtons.ok",
@@ -373,7 +559,19 @@ export default {
         },
 
         sampler: {
-            bankTitle: "Банк",
+            lighting: {
+                label: "Подсветка",
+                title: "Подсветка Сэмплера",
+                bank: "Кнопки Банка {bank}",
+                note: "Устройство задаёт эти цвета для всего банка, все четыре кнопки используют одни и те же цвета.",
+                applyBanks: "Применить ко всем банкам",
+            },
+            pads: {
+                title: "Кнопки",
+                empty: "Пусто",
+                count: "Сэмплов: {count}",
+                dropHere: "Отпустите, чтобы назначить",
+            },
             banks: {
                 bankTitle: "Банк",
                 bank: {
@@ -381,7 +579,6 @@ export default {
                     b: "B",
                     c: "C"
                 },
-                buttonTitle: "Кнопка",
                 buttonLabel: "Кнопка для Банка {activeBank}",
                 buttons: {
                     topLeft: "Верхняя Левая",
@@ -411,6 +608,7 @@ export default {
 
             samplesTitle: "Сэмплы",
             samples: {
+                genericError: "Произошла неизвестная ошибка.",
                 samplesTitle: "Сэмплы",
                 samplesLabel: "Сэмплы для кнопки {activeButton} в Банке {activeBank}",
 
@@ -461,12 +659,32 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Применить ко всем фейдерам",
+                applyMutes: "Применить ко всем кнопкам заглушения",
+                openIcons: "Открыть папку иконок",
+                display: "Отображение",
+                preview: "Предпросмотр",
+                previewFader: "фейдер",
+                previewMeter: "измеритель",
+                hintTwoColour: "Ниже фейдера: нижний цвет. Выше: верхний цвет.",
+                hintGradient: "Ниже фейдера: переход от нижнего цвета к верхнему. Выше: выключено.",
+                hintMeter: "Светодиоды показывают уровень звука канала, а не положение фейдера.",
+                hintGradientMeter: "Светодиоды показывают уровень звука канала с переходом от нижнего цвета к верхнему.",
+                previewScreen: "экран",
+                previewActive: "активно",
+                previewMute: "MUTE",
+                previewRest: "в покое",
+            },
             // These are some common strings that are used in multiple places
             common: {
-                colour: "Цвет",
+                pickColour: "выберите цвет",
+                restLabel: "В покое",
+                restColour: "Цвет в покое",
+                restDimmedHint: "Кнопка показывает свой активный цвет, но тусклее: выбирать цвет не нужно.",
+                brightness: "Яркость",
 
                 activeColour: "Активированный",
-                inactiveColour: "Неактивированный",
 
                 inactiveOption: "Опция для Неактивированных",
                 inactiveOptions: {
@@ -476,7 +694,6 @@ export default {
 
                 },
 
-                applyToAll: "Применить ко Всем",
             },
 
             global: {
@@ -489,7 +706,6 @@ export default {
                         accent: "Логотип",
                     },
 
-                    colour: "@:message.lighting.common.colour",
                 },
 
                 animations: {
@@ -514,10 +730,6 @@ export default {
             },
 
             mixer: {
-                faders: {
-                    title: "@:message.configuration.faders.title",
-                    channelTitle: "@:message.configuration.faders.channel",
-                },
 
                 fader: {
                     title: "Фейдер",
@@ -531,7 +743,6 @@ export default {
                     bottomColour: "Нижний Цвет",
                     topColour: "Верхний Цвет",
 
-                    accessibilityTitle: "Настройки Фейдера для {channel}",
                 },
 
                 screen: {
@@ -540,7 +751,6 @@ export default {
                     icons: "Иконки",
                     iconNone: "-- НЕТ --",
 
-                    optionsTitle: "Опции",
                     options: {
                         showNumber: "Показывать номер",
                         invertDisplay: "Инвертировать дисплей",
@@ -553,15 +763,10 @@ export default {
                 mute: {
                     // Pretty much all other fields for this area come from 'Common'
                     title: "Заглушение",
-                    accessibilityTitle: "Настройки Заглушения для {channel}"
                 }
             },
 
             effects: {
-                preset: {
-                    title: "Кнопки Пресета",
-                    presetTitle: "Пресет"
-                },
 
                 encoders: {
                     title: "Энкодеры",
@@ -582,7 +787,6 @@ export default {
                 buttons: {
                     title: "Кнопки Эффектов",
 
-                    effectTitle: "Эффект",
                     effect: {
                         megaphone: "Megaphone",
                         robot: "Robot",
@@ -592,9 +796,7 @@ export default {
                 },
             },
             sampler: {
-                title: "Банк",
 
-                buttonsTitle: "Кнопки",
                 buttons: {
                     a: "A",
                     b: "B",
@@ -603,13 +805,10 @@ export default {
 
                 active: "Активен / Загружен",
                 empty: "Нет Сэмпла",
-                inactive: "Неактивный Банк",
             },
 
             cough: {
-                title: "Кнопки Cough/БИИП",
 
-                buttonsTitle: "Кнопки",
                 buttons: {
                     bleep: "БИИП",
                     cough: "Cough",
@@ -637,6 +836,7 @@ export default {
 
             output: "Выводы",
             outputs: {
+                StreamMix2: "@:message.channels.StreamMix2",
                 Headphones: "@:message.channels.Headphones",
                 BroadcastMix: "@:message.channels.StreamMix",
                 ChatMic: "@:message.channels.ChatMic",
@@ -647,6 +847,59 @@ export default {
         },
 
         system: {
+            networkAccess: {
+                title: "Доступ по сети",
+                explain: "На другом устройстве в вашей сети (планшет, телефон, компьютер) откройте одну из этих ссылок один раз. После этого доступ будет запомнен.",
+                restart: "Перезапустите GoXLR Utility, чтобы открыть к ней доступ из вашей сети. После этого здесь появятся ссылки.",
+                noAddress: "Не найден сетевой адрес этого компьютера.",
+                copy: "Копировать",
+                copied: "Скопировано",
+                regenerate: "Новая ссылка (старые ссылки перестанут работать)",
+            },
+            menu: {
+                firmware: "Обновление прошивки",
+            },
+            firmwareUpdate: {
+                noInfo: "Серверы обновлений не ответили, поэтому последняя версия неизвестна. На этом GoXLR установлена версия {currentVersion}.",
+                updateTo: "Обновить до {version}",
+                reinstall: "Переустановить {version}",
+                customButton: "Своя прошивка…",
+                confirmTitle: "Прошить устройство?",
+                confirmText: "GoXLR перезагрузится во время обновления. Не отключайте его и не закрывайте утилиту, пока обновление не завершится.",
+                confirmCustom: "Далее вы выберете файл прошивки (.bin). Используйте только файл, которому доверяете: неправильный файл может сделать GoXLR неработоспособным. Не отключайте его во время обновления.",
+                betaWarning: "Вы собираетесь установить бета-версию прошивки.\nЭта версия не получает официальной поддержки и может содержать ошибки или проблемы, которые мы не сможем исправить.",
+                newVersionAvailable: "Для вашего устройства доступна более новая версия прошивки ({latestVersion}).\nОбновить устройство сейчас?",
+                currentVersionIsNewer: "Ваша текущая версия прошивки ({currentVersion}) новее последней доступной версии прошивки ({latestVersion}) для вашего устройства.\nОткатиться до последней доступной версии прошивки?",
+                currentIsUpToDate: "Ваша прошивка уже обновлена.\nПереустановить текущую версию прошивки?",
+                customFirmware: "Вы собираетесь установить свою прошивку.\nЭто не рекомендуется, если вы не знаете, что делаете.\nВы уверены, что хотите продолжить?",
+                warning: "Вы собираетесь записать новую версию прошивки на ваше устройство.\nРазработчики GoXLR Utility не несут ответственности за любые повреждения, которые могут быть вызваны этим процессом. ",
+                warningInfo: "Подробнее",
+                updatePaused: "Вы собираетесь установить прошивку версии {version}. Вы уверены, что хотите продолжить?",
+                updateInProgress: "Идёт обновление прошивки. Пожалуйста, подождите и не отключайте устройство!",
+                completed: "Обновление прошивки успешно завершено.",
+                failed: "Во время обновления прошивки что-то пошло не так. Пожалуйста, попробуйте ещё раз.",
+                changelog: "Список изменений версии {version}:",
+                title: "Установка прошивки...",
+                progress: {
+                    starting: "Запуск...",
+                    manifest: "Получение манифеста...",
+                    download: "Загрузка прошивки...",
+                    pause: "Обновление приостановлено",
+                    clearNVR: "Подготовка раздела обновления...",
+                    uploadFirmware: "Отправка прошивки...",
+                    validateUpload: "Проверка отправленной прошивки...",
+                    hardwareWrite: "Запись прошивки...",
+                    hardwareValidate: "Проверка прошивки...",
+                    complete: "Обновление завершено",
+                    failed: "Не удалось завершить обновление прошивки",
+                },
+            },
+            firmwareUpdateButton: {
+                update: "Обновить прошивку",
+                downgrade: "Откатить прошивку",
+                reinstall: "Переустановить прошивку",
+                custom: "Своя прошивка",
+            },
             title: "Система",
 
             powerButton: "Действия Питания",
@@ -675,6 +928,8 @@ export default {
 
             deviceButton: "Настройки Устройства",
             device: {
+                samplerFadeDuration: "Длительность затухания Сэмплера",
+                samplerFadeDurationAccessibility: "Длительность в миллисекундах, в течение которой сэмплер будет затухать при остановке воспроизведения",
                 holdDuration: "Длительность удержания кнопки Заглушить, чтобы Заглушить Всё",
                 holdDurationAccessibility: "Длительность в миллисекундах, в течение которой необходимо удерживать кнопку отключения звука, чтобы отключить все каналы",
 
@@ -696,6 +951,16 @@ export default {
 
             settingsButton: "Настройки Утилиты",
             settings: {
+                shutdownConfirmTitle: "Вы уверены?",
+                shutdownConfirmMessage: "Вы уверены, что хотите отключить GoXLR Utility?",
+                settingsRegionAccessibility: "настройки",
+                macosAggregateManagement: "Отключить управление агрегатными устройствами MacOS (нужен рестарт)",
+                macosAggregateManagementAccessibility: "Отключает управление агрегатными устройствами Утилитой на MacOS (нужен рестарт)",
+                firmwareSource: "Канал обновления прошивки",
+                firmwareSources: {
+                    live: "Стабильный",
+                    beta: "Бета",
+                },
                 language: "Язык",
                 useSystem: "Использовать Системный Язык (если доступен)",
 
@@ -763,6 +1028,10 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            trashTitle: "Удалённые Профили",
+            trashEmpty: "Нет удалённых Профилей. Удалённые Профили хранятся здесь 30 дней.",
+            trashProfile: "Профиль",
+            trashMic: "Профиль Микрофона",
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Сохранить Профиль {profileName}",
             createProfile: "Создать Профиль",
@@ -809,7 +1078,6 @@ export default {
             accessibilitySavedProfile: "Профиль {profileName} сохранён",
             accessibilitySavedProfileAs: "Профиль {profileName} сохранён как {newProfileName}",
             accessibilityProfileDeleted: "Профиль {profileName} удалён",
-            accessibilityActiveProfile: "Активный Профиль",
             accessibilityDropMenuTitle: "Опции {profileName}",
             accessibilityOpenProfileDirectory: "Открыть папку Профилей",
             accessibilityOpenMicProfileDirectory: "Открыть папку Профилей Микрофона",

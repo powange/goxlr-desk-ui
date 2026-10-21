@@ -1,9 +1,5 @@
-<script>
-import GroupContainer from "@/components/containers/GroupContainer.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
-import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
-
+// Shared logic (data, methods) of the former LightingEffectsPresets page, used by the components
+// that replaced it. It has no template of its own.
 import {
   EffectLightingPresets,
   EffectPresets, getLightingInactiveOptions,
@@ -14,15 +10,7 @@ import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 
 export default {
-  emits: ["nav-updated"],
 
-  name: "LightingEffectsPresets",
-  components: {
-    ButtonLighting,
-    GroupContainer,
-    RadioSelection,
-    ColourPicker
-  },
 
   data() {
     return {
@@ -63,7 +51,6 @@ export default {
 
     onButtonSelectionChange(id) {
       this.activePreset = EffectLightingPresets[EffectPresets.indexOf(id)];
-      this.$emit("nav-updated");
     },
 
     onInactiveSelectionChange(id) {
@@ -94,39 +81,3 @@ export default {
     }
   }
 }
-</script>
-
-<template>
-  <GroupContainer :title="$t('message.lighting.effects.preset.title')">
-    <template #right>
-      <button class="applyToAll" @click="applyToAll()">{{ $t('message.lighting.common.applyToAll') }}</button>
-    </template>
-    <RadioSelection
-        :title="$t('message.lighting.effects.preset.presetTitle')"
-        max-width="200px"
-        group="lighting_effects_presets"
-        :options="presetLabels()"
-        :selected="getActivePreset()"
-        @selection-changed="onButtonSelectionChange"
-    />
-    <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
-                    @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
-                    @off-style-changed="onInactiveSelectionChange"/>
-  </GroupContainer>
-</template>
-
-<style scoped>
-button {
-  border: 0;
-  margin: 0;
-  padding: 5px 24px;
-  color: var(--c-text);
-  font-family: var(--f-body);
-  font-size: 12px;
-  background-color: var(--c-raised-2);
-}
-
-button:hover {
-  background-color: var(--c-hover-strong);
-}
-</style>

@@ -1,67 +1,11 @@
-<template>
-  <ExpandoGroupContainer :title="$t('message.microphone.equaliser.title')" @expando-clicked="toggleAdvanced()" :expanded="isAdvanced()">
-    <template #right>
-      <div v-show="isAdvanced()" style="margin-bottom: 8px;">
-        <button class="reset" @click="resetEqValues()">{{ $t('message.microphone.equaliser.reset') }}</button>
-
-        <label for="eq_fine">{{ $t('message.microphone.equaliser.enableFineTune') }}</label><input type="checkbox"
-               id="eq_fine" ref="fine_tune" :checked="fineTuneEnabled()" @change="setFineTuneEnabled">
-      </div>
-    </template>
-    <Slider v-show="!isAdvanced()" :id=0 :title="$t('message.microphone.equaliser.bass')" :slider-min-value=-9
-            :slider-max-value=9 text-suffix="" :slider-value=getBassValue() :store-path="getAggregateStorePaths(0)"
-            :background-colour="getBackgroundColour(1)"
-            :input-background-colour="getInputBackgroundColour(1)"
-            :range-background-colour="getRangeBackgroundColour(1)"
-            @value-changed="aggregateChanged"/>
-    <Slider v-show="!isAdvanced()" :id=1 :title="$t('message.microphone.equaliser.mid')" :slider-min-value=-9
-            :slider-max-value=9 text-suffix="" :slider-value=getMidValue() :store-path="getAggregateStorePaths(1)"
-            :background-colour="getBackgroundColour(5)"
-            :input-background-colour="getInputBackgroundColour(5)"
-            :range-background-colour="getRangeBackgroundColour(5)"
-            @value-changed="aggregateChanged"/>
-    <Slider v-show="!isAdvanced()" :id=2 :title="$t('message.microphone.equaliser.treble')" :slider-min-value=-9
-            :slider-max-value=9 text-suffix="" :store-path="getAggregateStorePaths(2)" :slider-value=getTrebleValue()
-            :background-colour="getBackgroundColour(9)"
-            :input-background-colour="getInputBackgroundColour(9)"
-            :range-background-colour="getRangeBackgroundColour(9)"
-            @value-changed="aggregateChanged"
-    />
-
-
-    <Slider v-show="isAdvanced()" v-for="index in this.getElementCount()" :id=index :key=index :slider-min-value=-9
-            :slider-max-value=9 :text-min-value=-9 :text-max-value=9 text-suffix="" :slider-value="getGainValue(index)"
-            :title=getTitle(index) :store-path="getStorePath(index)" :background-colour="getBackgroundColour(index)"
-            :input-background-colour="getInputBackgroundColour(index)"
-            :range-background-colour="getRangeBackgroundColour(index)"
-            @value-changed="valueChange"
-            :range-height=getSliderHeight() :range-transform=getSliderTransform()
-    >
-      <template v-if="fineTuneEnabled()" #header>
-        <FineTuneHeader :title="getTitle(index)" :minValue="getMinEqValue(index)" :maxValue="getMaxEqValue(index)"
-                        :current-value="getCurrentEqValue(index)"
-                        :range-background-colour="getRangeBackgroundColour(index)"
-                        @value-changed="freqValueChanged" :store-path="getStoreFreqPath(index)" :id="index"
-                        :step="getStep(index)" :title-suffix="getFrequencySuffix(index)" :background-colour="getBackgroundColour(index)"
-        />
-      </template>
-    </Slider>
-
-  </ExpandoGroupContainer>
-</template>
-
-<script>
-import Slider from "@/components/slider/Slider.vue";
+// Shared logic (data, methods) of the former Equalizer page, used by the components
+// that replaced it. It has no template of its own.
 import {store} from "@/store";
 import {EqFreqs, EqMiniFreqs} from "@/util/mixerMapping";
 import {websocket} from "@/util/sockets";
 import {isDeviceMini, roundToStep} from "@/util/util";
-import ExpandoGroupContainer from "@/components/containers/ExpandoGroupContainer.vue";
-import FineTuneHeader from "@/components/sections/mic/FineTuneHeader.vue";
 
 export default {
-  name: "MicEqualiser",
-  components: {FineTuneHeader, ExpandoGroupContainer, Slider},
 
   data() {
     return {
@@ -493,25 +437,3 @@ export default {
 
   }
 }
-</script>
-
-<style scoped>
-label {
-  color: var(--c-text);
-  font-size: 10px;
-  font-family: sans-serif;
-}
-
-.reset {
-  border: 0;
-  margin: 0 30px 0 0;
-  padding: 5px 24px;
-  color: var(--c-text);
-  font-family: var(--f-body);
-  background-color: var(--c-raised-2);
-}
-
-.reset:hover {
-  background-color: var(--c-hover-strong);
-}
-</style>

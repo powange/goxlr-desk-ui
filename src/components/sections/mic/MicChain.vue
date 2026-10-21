@@ -2,7 +2,7 @@
   <div class="chain" role="group" :aria-label="$t('message.microphone.chain.title')">
     <div class="node">
       <span class="node-key">{{ $t('message.microphone.chain.input') }}</span>
-      <span class="node-value">{{ getGain() }} dB</span>
+      <span class="node-value">{{ getGain() }} {{ $t('message.suffixes.decibels') }}</span>
       <span class="node-detail">{{ getMicType() }}</span>
     </div>
     <span class="arrow" aria-hidden="true">→</span>
@@ -11,7 +11,7 @@
         {{ $t('message.microphone.chain.gate') }}
         <Toggle :model-value="isGateOn()" @update:model-value="setGate" :label="$t('message.microphone.chain.gateToggle')"/>
       </span>
-      <span class="node-value">{{ getGateThreshold() }} dB</span>
+      <span class="node-value">{{ getGateThreshold() }} {{ $t('message.suffixes.decibels') }}</span>
       <span class="node-detail">{{ $t('message.microphone.chain.threshold') }}</span>
     </div>
     <span class="arrow" aria-hidden="true">→</span>
@@ -32,7 +32,7 @@
 <script>
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
-import {isDeviceMini} from "@/util/util";
+import {formatFrequency, isDeviceMini} from "@/util/util";
 import Toggle from "@/components/design/Toggle.vue";
 
 // CompressorRatio is sent as its index
@@ -89,7 +89,7 @@ export default {
       }
       if (best === undefined || best.gain === 0) return this.$t('message.microphone.chain.flat');
       const hz = this.equaliser().frequency[best.band];
-      const freq = hz >= 1000 ? `${Math.round(hz / 100) / 10} kHz` : `${Math.round(hz)} Hz`;
+      const freq = formatFrequency(this.$t, this.$i18n.locale, hz);
       const gain = (best.gain > 0 ? "+" : "") + best.gain;
       return this.$t('message.microphone.chain.eqPeak', {gain, freq});
     },

@@ -1,24 +1,7 @@
-<template>
-  <GroupContainer :title="$t('message.configuration.faders.title')">
-    <RadioSelection :title="$t('message.configuration.faders.channelTitle')" group="faders_channel"
-                    :options="getFaderOptions()" :selected="activeChannel" @selection-changed="channelChanged" />
-
-    <RadioSelection :title="$t('message.configuration.faders.sourceTitle')" group="faders_source"
-                    :options="getSourceOptions()" :selected="getActiveSource()" @selection-changed="sourceChanged"
-                    :label="$t('message.configuration.faders.sourceLabel', { channel: getActiveChannelName() })" />
-
-    <RadioSelection :title="$t('message.configuration.muteBehaviourTitle')" group="faders_mute"
-                    :options="getMuteBehaviour()" :selected="getActiveMuteBehaviour()"
-                    @selection-changed="muteFunctionChanged"
-                    :label="$t('message.configuration.muteBehaviourLabel', { channel: getActiveChannelName() })" />
-  </GroupContainer>
-</template>
-
-<script>
+// Shared logic (data, methods) of the former Faders page, used by the components
+// that replaced it. It has no template of its own.
 import { store } from "@/store";
 import { websocket } from "@/util/sockets";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import GroupContainer from "@/components/containers/GroupContainer.vue";
 import { driverMix2, driverPreVOD, driverVOD, firmwareSupportsMix2, isDeviceMini, isStreamNoMusic, isWindowsDriver, versionNewerOrEqualTo } from "@/util/util";
 
 export default {
@@ -26,9 +9,6 @@ export default {
    * Everything here focuses around the 'Channel' input,
    */
 
-  emits: ["on-fader-channel-change"],
-  components: { GroupContainer, RadioSelection },
-  name: "MicFaders",
 
   data() {
     return {
@@ -87,7 +67,6 @@ export default {
 
     channelChanged: function (id) {
       this.activeChannel = id;
-      this.$emit("on-fader-channel-change", id);
     },
 
     sourceChanged: function (channelName) {
@@ -197,6 +176,3 @@ export default {
     },
   },
 }
-</script>
-
-<style scoped></style>

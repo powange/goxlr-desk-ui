@@ -33,6 +33,9 @@
   --c-mix-b-dim: #6b3a12;
   --c-shadow: rgba(0, 0, 0, 0.45);
 
+  /* The space around every page's content, so it doesn't move when changing section */
+  --page-gutter: 24px;
+
   --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
   --f-title: LeagueMonoCondensed, "Arial Narrow", sans-serif;
   --f-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;

@@ -93,7 +93,7 @@
 
         <div class="modalButtonBox">
           <button @click="continueFirmwareUpdate">{{$t('message.modalButtons.continue')}}</button>
-          <button @click="completeFirmwareUpdate" class="cancel">{{$t('message.modalButtons.cancel')}}</button>
+          <AppButton variant="danger" @click="completeFirmwareUpdate">{{$t('message.modalButtons.cancel')}}</AppButton>
         </div>
       </div>
 
@@ -107,7 +107,7 @@
         />
 
         <div class="modalButtonBox">
-          <button @click="completeFirmwareUpdate" class="close">{{$t('message.modalButtons.close')}}</button>
+          <AppButton @click="completeFirmwareUpdate">{{$t('message.modalButtons.close')}}</AppButton>
         </div>
       </div>
 
@@ -121,7 +121,7 @@
         />
 
         <div class="modalButtonBox">
-          <button @click="completeFirmwareUpdate" class="close">{{$t('message.modalButtons.close')}}</button>
+          <AppButton @click="completeFirmwareUpdate">{{$t('message.modalButtons.close')}}</AppButton>
         </div>
       </div>
 
@@ -147,6 +147,7 @@
 import A11yNotifications from "./A11yNotifications.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
+import AppButton from "@/components/design/AppButton.vue";
 import Tab from "@/components/tabs/Tab.vue";
 import Routing from "@/components/sections/Routing.vue";
 import Mic from "@/components/sections/Mic.vue";
@@ -167,7 +168,6 @@ import {isDeviceMini} from "@/util/util";
 import SamplerTab from "@/components/sections/SamplerTab.vue";
 import SampleAssignModal from "@/components/sections/sampler/SampleAssignModal.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
-import CenteredContainer from "@/components/containers/CenteredContainer.vue";
 import GoXLRVisualiser from "@/components/visualisation/GoXLRVisualiser.vue";
 import VersionCheck from "@/components/VersionCheck.vue";
 import {HighlightArea} from "@/components/visualisation/VisualiserHelper";
@@ -185,19 +185,19 @@ function loadVisualiserOpen() {
 }
 
 // The device zone shown on the top bar map for each section.
-const SECTION_ZONES = {mixer: "faders", configuration: "faders", mic: "mic", effects: "effects", sampler: "sampler"};
+const SECTION_ZONES = {mixer: "faders", mic: "mic", effects: "effects", sampler: "sampler"};
 
 export default {
   name: "GoXLR",
   expose: ['openFirmwareUpdateProgressModal'],
   components: {
+    AppButton,
     ProgressBar,
     AccessibleModal,
     Language,
     VersionCheck,
     GoXLRVisualiser,
     A11yNotifications,
-    CenteredContainer,
     ContentContainer,
     SamplerTab,
     SampleAssignModal,
@@ -219,9 +219,6 @@ export default {
   },
 
   computed: {
-    HighlightArea() {
-      return HighlightArea
-    },
     firmwareUpdateStatus() {
       const updateState = store.status.firmware;
 
@@ -315,12 +312,7 @@ export default {
     onTabChange(tab) {
       let id = tab.id;
       this.activeZone = SECTION_ZONES[id] || "none";
-      if (id === "configuration") {
-        this.visualiserHighlightAreas = [
-          HighlightArea.COUGH,
-          HighlightArea.CHANNEL_A
-        ];
-      } else if (id === "effects") {
+      if (id === "effects") {
         // This one comes initially from the store...
         this.visualiserHighlightAreas = [
           HighlightArea[`EFFECTS_PRESET${this.$refs.effects.getActivePreset().slice(-1)}`]
@@ -339,9 +331,6 @@ export default {
       this.$refs.sampleAssign.open(drop.button, drop.paths, drop.bank);
     },
 
-    onFaderChannelChange(activeChannel) {
-      this.visualiserHighlightAreas[this.visualiserHighlightAreas.length - 1] = HighlightArea[`CHANNEL_${activeChannel}`];
-    },
 
     onEffectPresetChange(activePreset) {
       this.visualiserHighlightAreas = [HighlightArea[`EFFECTS_PRESET${activePreset.slice(-1)}`]];
@@ -638,7 +627,7 @@ export default {
   flex-wrap: wrap;
   align-items: stretch;
   gap: 16px;
-  padding: 24px;
+  padding: var(--page-gutter);
 }
 
 #main .sampler-library {
@@ -664,11 +653,11 @@ export default {
 }
 
 #main .system-wrap {
-  padding: 24px;
+  padding: var(--page-gutter);
 }
 
 #main .library {
-  padding: 24px;
+  padding: var(--page-gutter);
   display: grid;
   gap: 16px;
   max-width: 640px;
@@ -682,34 +671,5 @@ export default {
   justify-content: right;
   gap: 5px;
 
-  button {
-    padding: 5px;
-    color: var(--c-text-soft);
-    border: 1px solid var(--c-line-strong);
-    background-color: transparent;
-    padding: 4px 8px;
-    cursor: pointer;
-
-    &:hover {
-      color: var(--c-text);
-      border-color: var(--c-text);
-    }
-
-    &.cancel {
-      border-color: var(--c-danger);
-
-      &:hover {
-        border-color: var(--c-danger);
-      }
-    }
-
-    &.close {
-      border-color: var(--c-accent-muted);
-
-      &:hover {
-        border-color: var(--c-accent);
-      }
-    }
-  }
 }
 </style>

@@ -3,7 +3,7 @@
     <section class="sect">
       <div class="sect-head">
         <h3>{{ $t('message.sampler.lighting.bank', { bank }) }}</h3>
-        <button type="button" class="link" @click="applyToAll()">{{ $t('message.sampler.lighting.applyBanks') }}</button>
+        <AppButton variant="link" @click="applyToAll()">{{ $t('message.sampler.lighting.applyBanks') }}</AppButton>
       </div>
       <p class="note">{{ $t('message.sampler.lighting.note') }}</p>
       <ButtonLighting flat :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
@@ -21,7 +21,8 @@
 </template>
 
 <script>
-import LightingSampler from "@/components/sections/lighting/subTabs/LightingSampler.vue";
+import AppButton from "@/components/design/AppButton.vue";
+import lightingSampler from "@/mixins/lightingSampler";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 
@@ -29,8 +30,8 @@ import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.v
 // Lighting section's sampler settings.
 export default {
   name: "SamplerLighting",
-  extends: LightingSampler,
-  components: {ButtonLighting, ColourPicker},
+  extends: lightingSampler,
+  components: {AppButton, ButtonLighting, ColourPicker},
 
   props: {
     bank: {type: String, required: true},   // A, B, C
@@ -81,23 +82,8 @@ export default {
   color: var(--c-muted);
 }
 
-.link {
-  border: none;
-  background: transparent;
-  color: var(--c-accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
-.link:hover {
-  text-decoration: underline;
-}
 
-.link:focus-visible {
-  outline: 2px solid var(--c-accent);
-  outline-offset: 1px;
-}
 
 :deep(.row) {
   display: grid;

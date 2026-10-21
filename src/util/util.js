@@ -107,6 +107,26 @@ export function versionNewerOrEqualTo(version, comparison) {
     return true;
 }
 
+// Numbers in the interface language (its codes use '_', Intl wants '-').
+export function formatNumber(value, locale, digits = 1) {
+    try {
+        return new Intl.NumberFormat(locale.replace("_", "-"), {maximumFractionDigits: digits}).format(value);
+    } catch (e) {
+        return String(value);
+    }
+}
+
+// "120 Hz" or "4,5 kHz", with the translated units ($t and the locale come from the component).
+export function formatFrequency(t, locale, hz) {
+    if (hz >= 1000) return `${formatNumber(Math.round(hz / 100) / 10, locale)} ${t('message.suffixes.kilohertz')}`;
+    return `${formatNumber(Math.round(hz), locale)} ${t('message.suffixes.hertz')}`;
+}
+
+// "+3 dB", "-6 dB", "0 dB"
+export function formatGain(t, locale, gain) {
+    return `${gain > 0 ? "+" : ""}${formatNumber(gain, locale)} ${t('message.suffixes.decibels')}`;
+}
+
 // Resolves a theme colour token (see assets/theme.css) to its value, for places that can't use
 // CSS variables, such as canvas drawing and wavesurfer. Values are cached (meters draw every
 // frame) until the theme changes.

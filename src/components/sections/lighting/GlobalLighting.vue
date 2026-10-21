@@ -42,7 +42,7 @@
 </template>
 
 <script>
-import LightingGlobal from "@/components/sections/lighting/subTabs/LightingGlobal.vue";
+import lightingGlobal from "@/mixins/lightingGlobal";
 import SelectMenu from "@/components/design/SelectMenu.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 import SegmentedControl from "@/components/design/SegmentedControl.vue";
@@ -53,7 +53,7 @@ import {websocket} from "@/util/sockets";
 // settings and their commands are the Lighting section's (LightingGlobal).
 export default {
   name: "GlobalLighting",
-  extends: LightingGlobal,
+  extends: lightingGlobal,
   components: {SelectMenu, ColourPicker, SegmentedControl},
 
   methods: {
@@ -68,8 +68,8 @@ export default {
 
     getWaterfallOptions() {
       return [
-        {id: "Up", label: "↑"},
-        {id: "Down", label: "↓"},
+        {id: "Up", label: "↑", ariaLabel: this.$t('message.common.waterfallAnimationUp')},
+        {id: "Down", label: "↓", ariaLabel: this.$t('message.common.waterfallAnimationDown')},
         {id: "Off", label: this.$t('message.lighting.global.animations.waterfallOff')},
       ];
     },

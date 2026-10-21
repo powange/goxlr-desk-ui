@@ -4,7 +4,7 @@
       <section class="sect">
         <div class="sect-head">
           <h3>{{ $t('message.lighting.mixer.fader.title') }}</h3>
-          <button type="button" class="link" @click="applyFaderToAll()">{{ $t('message.lighting.channel.applyFaders') }}</button>
+          <AppButton variant="link" @click="applyFaderToAll()">{{ $t('message.lighting.channel.applyFaders') }}</AppButton>
         </div>
         <div class="row">
           <span class="row-label">{{ $t('message.lighting.mixer.fader.style') }}</span>
@@ -74,7 +74,7 @@
       <section class="sect">
         <div class="sect-head">
           <h3>{{ $t('message.lighting.mixer.mute.title') }}</h3>
-          <button type="button" class="link" @click="applyMuteToAll()">{{ $t('message.lighting.channel.applyMutes') }}</button>
+          <AppButton variant="link" @click="applyMuteToAll()">{{ $t('message.lighting.channel.applyMutes') }}</AppButton>
         </div>
         <ButtonLighting flat :active-colour="getMuteActiveColour()" :inactive-colour="getMuteInactiveColour()"
                         :off-style="selectedMuteInactiveOption()"
@@ -101,11 +101,11 @@
       </div>
       <div class="preview-row">
         <div class="preview-item">
-          <div class="mute" :style="{ backgroundColor: getMuteActiveColour() }">MUTE</div>
+          <div class="mute" :style="{ backgroundColor: getMuteActiveColour() }">{{ $t('message.lighting.channel.previewMute') }}</div>
           <span>{{ $t('message.lighting.channel.previewActive') }}</span>
         </div>
         <div class="preview-item">
-          <div class="mute" :style="getRestStyle()">MUTE</div>
+          <div class="mute" :style="getRestStyle()">{{ $t('message.lighting.channel.previewMute') }}</div>
           <span>{{ $t('message.lighting.channel.previewRest') }}</span>
         </div>
       </div>
@@ -114,7 +114,8 @@
 </template>
 
 <script>
-import LightingMixer from "@/components/sections/lighting/subTabs/LightingMixer.vue";
+import AppButton from "@/components/design/AppButton.vue";
+import lightingMixer from "@/mixins/lightingMixer";
 import SelectMenu from "@/components/design/SelectMenu.vue";
 import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
 import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
@@ -135,8 +136,8 @@ function mix(a, b, t) {
 // The settings and their commands are the Lighting section's (LightingMixer), fixed on one fader.
 export default {
   name: "ChannelLighting",
-  extends: LightingMixer,
-  components: {SelectMenu, ColourPicker, ButtonLighting, Toggle},
+  extends: lightingMixer,
+  components: {AppButton, SelectMenu, ColourPicker, ButtonLighting, Toggle},
 
   methods: {
     // Only sends the screen text when it changed (leaving the field unchanged must not write
@@ -228,18 +229,7 @@ export default {
   color: var(--c-muted);
 }
 
-.link {
-  border: none;
-  background: transparent;
-  color: var(--c-accent);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-}
 
-.link:hover {
-  text-decoration: underline;
-}
 
 .row {
   display: grid;
@@ -317,7 +307,7 @@ select, .text-input {
   font-size: 12px;
 }
 
-.chip:focus-visible, .link:focus-visible, select:focus-visible, .text-input:focus, .small-button:focus-visible {
+.chip:focus-visible, select:focus-visible, .text-input:focus, .small-button:focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 1px;
 }

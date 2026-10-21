@@ -1,21 +1,10 @@
-<script>
-import GroupContainer from "@/components/containers/GroupContainer.vue";
-import RadioSelection from "@/components/lists/RadioSelection.vue";
-import ColourPicker from "@/components/sections/lighting/elements/ColourPicker.vue";
-import ButtonLighting from "@/components/sections/lighting/elements/ButtonLighting.vue";
-
+// Shared logic (data, methods) of the former LightingEffectsEffects page, used by the components
+// that replaced it. It has no template of its own.
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
 import {getLightingInactiveOptions, LightingInactiveOptions} from "@/util/mixerMapping";
 
 export default {
-  name: "LightingEffectsEffects",
-  components: {
-    ButtonLighting,
-    GroupContainer,
-    RadioSelection,
-    ColourPicker
-  },
 
   data() {
     return {
@@ -91,38 +80,3 @@ export default {
     }
   }
 }
-</script>
-
-<template>
-  <GroupContainer :title="$t('message.lighting.effects.buttons.title')">
-    <template #right>
-      <button class="applyToAll" @click="applyToAll()">{{ $t('message.lighting.common.applyToAll') }}</button>
-    </template>
-    <RadioSelection
-        :title="$t('message.lighting.effects.buttons.title')"
-        group="lighting_effects_effects"
-        :options="getEffectOptions()"
-        :selected="selectedEffect"
-        @selection-changed="onButtonSelectionChange"
-    />
-    <ButtonLighting :active-colour="activeColor()" :inactive-colour="inactiveColor()" :off-style="selectedInactiveOption()"
-                    @active-changed="onActiveColourChange" @inactive-changed="onInactiveColourChange"
-                    @off-style-changed="onInactiveSelectionChange"/>
-  </GroupContainer>
-</template>
-
-<style scoped>
-button {
-  border: 0;
-  margin: 0;
-  padding: 5px 24px;
-  color: var(--c-text);
-  font-family: var(--f-body);
-  font-size: 12px;
-  background-color: var(--c-raised-2);
-}
-
-button:hover {
-  background-color: var(--c-hover-strong);
-}
-</style>

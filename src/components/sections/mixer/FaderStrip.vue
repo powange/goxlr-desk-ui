@@ -33,7 +33,7 @@
 </template>
 
 <script>
-import Faders from "@/components/sections/Faders.vue";
+import faders from "@/mixins/faders";
 import SelectMenu from "@/components/design/SelectMenu.vue";
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
@@ -42,7 +42,7 @@ import {websocket} from "@/util/sockets";
 // mute function rules come from the Faders component, applied to this fader.
 export default {
   name: "FaderStrip",
-  extends: Faders,
+  extends: faders,
   components: {SelectMenu},
   emits: ["lighting"],
 

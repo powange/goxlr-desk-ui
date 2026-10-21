@@ -23,8 +23,163 @@
 
 export default {
     message: {
+        common: {
+            close: "Sluiten",
+            lighting: "Verlichting",
+            clear: "Wissen",
+            collapseSection: "Sectie inklappen",
+            expandSection: "Sectie uitklappen",
+            activeProfile: "Actief profiel",
+            switchDevice: "Wissel van apparaat",
+            removeSample: "Sample verwijderen",
+            waterfallAnimationUp: "Watervalanimatie omhoog",
+            waterfallAnimationDown: "Watervalanimatie omlaag",
+            unknown: "Onbekend",
+            tabList: "Tabbladenlijst",
+        },
+        deviceSelector: {
+            title: "Selecteer apparaat",
+            connecting: "Verbinding maken met de GoXLR Utility..",
+            disconnected: "Kan geen verbinding maken met de GoXLR Utility, controleer of deze draait.\n\nDeze pagina probeert automatisch opnieuw te verbinden..",
+            noDevices: "Geen GoXLR apparaten gevonden",
+        },
+        versionCheck: {
+            updateAvailable: "Update beschikbaar",
+            firmwareDirectionAvailable: "Firmware {direction} beschikbaar",
+            firmwareDirections: {
+                update: "Update",
+                downgrade: "Downgrade",
+                unknown: "ONBEKEND",
+            },
+            incompatibleDriver: "De geïnstalleerde stuurprogramma's zijn niet compatibel met deze firmware, klik hier om het nieuwste stuurprogramma te downloaden.",
+        },
+        theme: {
+            label: "Kleurthema",
+            dark: "Donker",
+            light: "Licht",
+            system: "Auto",
+        },
+        topBar: {
+            loadTitle: "{name} laden?",
+            loadQuestion: "Niet opgeslagen instellingen van {current} gaan verloren.",
+            loadMicQuestion: "Niet opgeslagen instellingen van het Mic profiel {current} gaan verloren.",
+            load: "Laad",
+            saveThenLoad: "Opslaan, dan laden",
+            lighting: "Globale verlichting",
+            lightingTitle: "Globale verlichting",
+            profile: "Profiel",
+            profileLabel: "Actief profiel",
+            micProfile: "Mic",
+            micProfileLabel: "Actief Mic profiel",
+            save: "Opslaan",
+            showDevice: "Toon de GoXLR",
+            hideDevice: "Verberg de GoXLR",
+        },
+        sampleAssign: {
+            title: "Toewijzen aan {bank} · {button}",
+            bank: "Bank",
+            empty: "Deze knop heeft nog geen samples.",
+            current: "Deze knop heeft al {count} sample(s):",
+            add: "Toevoegen",
+            replace: "Vervangen",
+            removing: "Huidige samples verwijderen…",
+            adding: "{index} van {total} toevoegen: {name}…",
+            done: "{count} sample(s) toegewezen aan {bank} · {button}",
+            timeoutRemove: "De daemon deed er te lang over om de huidige samples te verwijderen",
+            timeout: "{name}: de daemon deed er te lang over om deze sample toe te voegen",
+        },
+        sampleManager: {
+            newFolder: "Nieuwe map",
+            openFolder: "Open de Samples map",
+            rename: "Naam wijzigen",
+            renameFolder: "Mapnaam wijzigen",
+            renameFolderLabel: "Naam van de map {name} wijzigen",
+            renameSample: "Samplenaam wijzigen",
+            moveTo: "Verplaatsen naar...",
+            moveTitle: "{name} verplaatsen",
+            moveDestination: "Doelmap",
+            rootFolder: "(Samples map)",
+            move: "Verplaatsen",
+            namePlaceholder: "Naam",
+            extensionKept: "De extensie {extension} blijft behouden.",
+            invalidName: "Een naam mag geen / of \\ bevatten.",
+            ok: "Ok",
+            cancel: "Annuleren",
+            edit: "Bewerken",
+            listen: "Beluisteren",
+            playPreview: "{name} afspelen",
+            stopPreview: "{name} stoppen",
+            delete: "Verwijderen",
+            deleteFolderLabel: "Verwijder de map {name}",
+            deleteSampleTitle: "Sample verwijderen",
+            deleteSampleQuestion: "{name} naar de prullenbak verplaatsen?",
+            deleteFolderTitle: "Map verwijderen",
+            deleteFolderQuestion: "De map {name} en de {count} sample(s) die erin zitten naar de prullenbak verplaatsen?",
+            deleteEmptyFolderQuestion: "De lege map {name} naar de prullenbak verplaatsen?",
+            usedByProfiles: "Gebruikt door deze profielen:",
+            usedByProfilesHint: "De sampler knoppen die hem gebruiken spelen dan niets meer af.",
+            editTitle: "{name} bewerken",
+            editHelp: "Sleep over de waveform om een deel te selecteren, en behoud het (bijsnijden) of verwijder het. Verwijderde delen worden rood weergegeven.",
+            originalLength: "Lengte: {length}",
+            resultLength: "Na bewerken: {length}",
+            selectionRange: "Selectie: {start} - {end}",
+            playSelection: "Selectie afspelen",
+            playResult: "Resultaat afspelen",
+            stop: "Stop",
+            keepSelection: "Selectie behouden",
+            removeSelection: "Selectie verwijderen",
+            undo: "Ongedaan maken",
+            saveAs: "Opslaan",
+            replaceFile: "Het bestand vervangen",
+            convertedToWav: "Het wordt opgeslagen als WAV bestand: {name}",
+            saveCopy: "Opslaan als nieuw bestand",
+            copyName: "Nieuwe bestandsnaam",
+            copyHint: "Opgeslagen als WAV bestand in dezelfde map.",
+            copySuffix: "(bewerkt)",
+            save: "Opslaan",
+            saving: "Opslaan...",
+            nothingLeft: "Dan zou alle audio verwijderd worden.",
+            breadcrumb: "Huidige map",
+            rootName: "Samples",
+            search: "Zoeken",
+            selectedCount: "{count} geselecteerd",
+            selectAll: "Alles selecteren",
+            done: "Klaar",
+            selectSample: "{name} selecteren",
+            usedByActiveProfile: "Gebruikt door het huidige profiel",
+            sizeKb: "{size} KB",
+            sizeMb: "{size} MB",
+            noResults: "Geen sample komt overeen met deze zoekopdracht.",
+            emptyFolder: "Deze map is leeg.",
+            dropHint: "Sleep audiobestanden hierheen om ze in deze map te importeren.",
+            duplicate: "Dupliceren",
+            import: "Samples importeren",
+            importing: "Importeren...",
+            multiSelect: "Meerdere selecteren",
+            trash: "Prullenbak",
+            trashCount: "Prullenbak ({count})",
+            moveManyTitle: "{count} samples verplaatsen",
+            deleteSamplesQuestion: "Deze {count} samples naar de prullenbak verplaatsen?",
+            trashHint: "Het kan 30 dagen lang uit de prullenbak teruggezet worden.",
+            moveToTrash: "Naar prullenbak",
+            trashEmpty: "De prullenbak is leeg.",
+            folderCount: "{count} sample(s)",
+            restore: "Terugzetten",
+            deleteForever: "Verwijderen",
+            trashRetention: "Items worden na 30 dagen definitief verwijderd.",
+            emptyTrash: "Prullenbak legen",
+            emptyTrashConfirm: "Klik nogmaals om alles te verwijderen",
+            close: "Sluiten",
+            trimSilence: "Stilte wegknippen",
+            normalize: "Volume normaliseren (hoogste piek op -1dB)",
+            onlySilence: "Deze sample is stil.",
+            noSilence: "Er is geen stilte om weg te knippen aan het begin of het einde.",
+            errorTitle: "Deze actie kon niet worden voltooid",
+        },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
+            StreamMix1: "Stream Mix 1",
+            StreamMix2: "Stream Mix 2",
             All: "Alle",
             Mic: "Microfoon",
             Chat: "Gesprekken",
@@ -55,12 +210,14 @@ export default {
             percentage: "%",
             milliseconds: "ms",
             hertz: "Hz",
-            kilohertz: "KHz",
+            kilohertz: "kHz",
             ratio: ":{value}",
             beatsPerMinute: "BPM",
         },
 
         modalButtons: {
+            continue: "Doorgaan",
+            close: "Sluiten",
             ok: "Ok",
             yes: "Ja",
             no: "Nee",
@@ -69,36 +226,45 @@ export default {
 
         // These Strings appear in the tabs throughout the pages
         navigation: {
+            library: "Bibliotheek",
+            application: "Applicatie",
             // Tabs at the top of the Page
             profiles: "Profielen",
-            presets: "Presets",
             samples: "Samples",
 
             // Main Navigation Tabs
             microphone: "Mic",
             mixer: "Mixer",
-            configuration: "Configuratie",
             effects: "Effecten",
             sampler: "Sampler",
-            lighting: "Verlichting",
             routing: "Routing",
             system: "Systeem",
 
             // Navigation Sections on the Lighting Page
-            lightingGlobal: "Globaal",
-            lightingMixer: "Mixer",
-            lightingEffects: "Effecten",
-            lightingSampler: "Sampler",
-            lightingCough: "Hoesten",
 
             // Accessibility Messages (these are announced to screen readers)
-            accessibilityProfileSection: "Profielen en bestanden",
             accessibilityDeviceSection: "Apparaatinstellingen",
-            accessibilityLightingSection: "Verlichting instellingen",
         },
 
         // Strings that appear in the Mic tab, note that the Profile Strings are handled in 'profileManager'
         microphone: {
+            chain: {
+                title: "Verwerkingsketen",
+                input: "Ingang",
+                gate: "Gate",
+                gateToggle: "Noise gate aan",
+                threshold: "Drempelwaarde",
+                equaliser: "Equaliser",
+                bands: "{count} banden",
+                flat: "Vlak",
+                eqPeak: "{gain} dB op {freq}",
+                compressor: "Compressor",
+                compressorDetail: "Drempelwaarde {threshold} dB",
+                curveHintFine: "sleep een punt omhoog of omlaag voor het niveau, opzij voor de frequentie",
+                fineTune: "Frequenties aanpassen",
+                bandLabel: "Band op {freq}",
+                curveHint: "sleep een punt om de band in te stellen",
+            },
             profiles: {
                 title: "Mic Profielen"
             },
@@ -130,12 +296,14 @@ export default {
             },
 
             equaliser: {
+                compare: "Vergelijk met de opgeslagen equaliser",
+                before: "Voor",
+                after: "Na",
+                save: "Opslaan",
+                saveHint: "Slaat de equaliser op in het Mic profiel {profile}",
+                savedNotice: "Equaliser opgeslagen in het Mic profiel {profile}",
                 title: "Equaliser",
                 reset: "Reset",
-                enableFineTune: "Inschakelen fijne afstelling",
-                bass: "Bass",
-                mid: "Mid",
-                treble: "Treble",
             },
 
             compressor: {
@@ -156,8 +324,16 @@ export default {
         },
 
         mixer: {
+            otherInputs: "Andere ingangen",
+            strip: {
+                source: "Bron",
+                mute: "Dempen",
+                muteFunction: "Demp naar",
+                lighting: "Verlichting {channel}",
+                lightingTitle: "Verlichting · {channel}",
+            },
+            submixHint: "Een tweede mix (Mix B) voor elk kanaal, inclusief faders, om andere niveaus naar sommige uitgangen te sturen.",
             // Box Headers
-            inputs: "Ingangen",
             outputs: "Uitgangen",
             mixAssignment: "Mix Toewijzing",
 
@@ -173,25 +349,21 @@ export default {
         configuration: {
             // This is common between Faders and Cough Buttons
             mute_behaviour: {
+                base: "Demp naar {channel}",
                 all: "Demp naar @:message.channels.All",
-                stream: "Demp naar @:message.channels.StreamMix",
-                chatMic: "Demp naar @:message.channels.ChatMic",
-                headphones: "Demp naar @:message.channels.Headphones",
-                lineOut: "Demp naar @:message.channels.LineOut",
             },
             muteBehaviourTitle: "Demping gedrag",
             muteBehaviourLabel: "Demping gedrag voor {channel}",
 
             // Config for the Faders
             faders: {
-                title: "Faders",
-                channelTitle: "Kanaal",
-                sourceTitle: "Bron",
                 sourceLabel: "Bron voor {channel}",
             },
 
             // Configuration for the Cough Button
             cough: {
+                lighting: "Verlichting",
+                lightingTitle: "Verlichting Hoest en Bleep",
                 behaviour: {
                     hold: "Vasthouden",
                     toggle: "Schakelen",
@@ -203,7 +375,25 @@ export default {
         },
 
         effects: {
+            lighting: {
+                title: "Verlichting effecten",
+                presetButton: "Preset knop · {name}",
+                applyPresets: "Toepassen op alle presets",
+                encoders: "Encoders",
+                applyEncoders: "Toepassen op alle encoders",
+                buttons: "Effect knoppen",
+                applyButtons: "Toepassen op alle effect knoppen",
+            },
+            face: {
+                label: "Effecten",
+                master: "Effecten",
+                enabled: "Aan",
+                on: "aan",
+                off: "uit",
+                power: "Zet {effect} aan of uit",
+            },
             preset: {
+                name: "Naam",
                 title: "Preset",
                 group: "Groep",
 
@@ -214,10 +404,6 @@ export default {
 
                 loadPreset: "Laad Preset",
 
-                renamePresetTitle: "Wijzig naam van Preset",
-                renamePresetPlaceholder: "Nieuwe Preset naam",
-                renamePresetOk: "@:message.modalButtons.ok",
-                renamePresetCancel: "@:message.modalButtons.cancel",
 
                 noPresets: "Op het moment zitten er geen presets in je bibliotheek, maak er een aan of kopieer er een. Ze zullen dan hier verschijnen",
                 loadPresetOk: "@:message.modalButtons.ok",
@@ -373,7 +559,19 @@ export default {
         },
 
         sampler: {
-            bankTitle: "Bank",
+            lighting: {
+                label: "Verlichting",
+                title: "Verlichting sampler",
+                bank: "Knoppen bank {bank}",
+                note: "Het apparaat stelt deze kleuren in voor de hele bank, alle vier de knoppen delen ze.",
+                applyBanks: "Toepassen op alle banken",
+            },
+            pads: {
+                title: "Knoppen",
+                empty: "Leeg",
+                count: "{count} sample(s)",
+                dropHere: "Loslaten om toe te wijzen",
+            },
             banks: {
                 bankTitle: "Bank",
                 bank: {
@@ -381,7 +579,6 @@ export default {
                     b: "B",
                     c: "C"
                 },
-                buttonTitle: "Knop",
                 buttonLabel: "Knop voor bank {activeBank}",
                 buttons: {
                     topLeft: "Linksboven",
@@ -411,6 +608,7 @@ export default {
 
             samplesTitle: "Samples",
             samples: {
+                genericError: "Er is een onbekende fout opgetreden.",
                 samplesTitle: "Samples",
                 samplesLabel: "Sample voor knop {activeButton} in bank {activeBank}",
 
@@ -461,12 +659,32 @@ export default {
         },
 
         lighting: {
+            channel: {
+                applyFaders: "Toepassen op alle faders",
+                applyMutes: "Toepassen op alle dempknoppen",
+                openIcons: "Open de iconen map",
+                display: "Weergave",
+                preview: "Voorbeeld",
+                previewFader: "fader",
+                previewMeter: "meter",
+                hintTwoColour: "Onder de fader: onderste kleur. Erboven: bovenste kleur.",
+                hintGradient: "Onder de fader: een overloop van de onderste naar de bovenste kleur. Erboven: uit.",
+                hintMeter: "De LEDs volgen het geluidsniveau van het kanaal in plaats van de faderpositie.",
+                hintGradientMeter: "De LEDs volgen het geluidsniveau van het kanaal, met een overloop van de onderste naar de bovenste kleur.",
+                previewScreen: "scherm",
+                previewActive: "actief",
+                previewMute: "MUTE",
+                previewRest: "in rust",
+            },
             // These are some common strings that are used in multiple places
             common: {
-                colour: "Kleur",
+                pickColour: "kies een kleur",
+                restLabel: "In rust",
+                restColour: "Rustkleur",
+                restDimmedHint: "De knop toont zijn actieve kleur, gedimd: er is geen kleur te kiezen.",
+                brightness: "Helderheid",
 
                 activeColour: "Actief",
-                inactiveColour: "Inactief",
 
                 inactiveOption: "Inactieve Optie",
                 inactiveOptions: {
@@ -476,7 +694,6 @@ export default {
 
                 },
 
-                applyToAll: "Pas toe op allen",
             },
 
             global: {
@@ -489,7 +706,6 @@ export default {
                         accent: "Accent",
                     },
 
-                    colour: "@:message.lighting.common.colour",
                 },
 
                 animations: {
@@ -514,10 +730,6 @@ export default {
             },
 
             mixer: {
-                faders: {
-                    title: "@:message.configuration.faders.title",
-                    channelTitle: "@:message.configuration.faders.channel",
-                },
 
                 fader: {
                     title: "Fader",
@@ -531,7 +743,6 @@ export default {
                     bottomColour: "Onderste kleur",
                     topColour: "Bovenste kleur",
 
-                    accessibilityTitle: "Fader instellingen voor {channel}",
                 },
 
                 screen: {
@@ -540,7 +751,6 @@ export default {
                     icons: "Iconen",
                     iconNone: "-- GEEN --",
 
-                    optionsTitle: "Opties",
                     options: {
                         showNumber: "Toon nummer",
                         invertDisplay: "Scherm omkeren",
@@ -553,15 +763,10 @@ export default {
                 mute: {
                     // Pretty much all other fields for this area come from 'Common'
                     title: "Dempen",
-                    accessibilityTitle: "Dempinstellingen voor {channel}"
                 }
             },
 
             effects: {
-                preset: {
-                    title: "Preset Knoppen",
-                    presetTitle: "Preset"
-                },
 
                 encoders: {
                     title: "Encoders",
@@ -582,7 +787,6 @@ export default {
                 buttons: {
                     title: "Effect knoppen",
 
-                    effectTitle: "Effecten",
                     effect: {
                         megaphone: "Megafoon",
                         robot: "Robot",
@@ -592,9 +796,7 @@ export default {
                 },
             },
             sampler: {
-                title: "Bank",
 
-                buttonsTitle: "Buttons",
                 buttons: {
                     a: "A",
                     b: "B",
@@ -603,13 +805,10 @@ export default {
 
                 active: "Actief / Ingeladen",
                 empty: "Leeg",
-                inactive: "Inactieve Bank",
             },
 
             cough: {
-                title: "Hoest / Bleep knoppen",
 
-                buttonsTitle: "Knoppen",
                 buttons: {
                     bleep: "Bleep",
                     cough: "Hoest",
@@ -637,6 +836,7 @@ export default {
 
             output: "Uitgangen",
             outputs: {
+                StreamMix2: "@:message.channels.StreamMix2",
                 Headphones: "@:message.channels.Headphones",
                 BroadcastMix: "@:message.channels.StreamMix",
                 ChatMic: "@:message.channels.ChatMic",
@@ -647,6 +847,59 @@ export default {
         },
 
         system: {
+            networkAccess: {
+                title: "Netwerktoegang",
+                explain: "Open op een ander apparaat in je netwerk (tablet, telefoon, computer) eenmalig een van deze links. Daarna wordt de toegang onthouden.",
+                restart: "Herstart de GoXLR Utility om hem vanaf je netwerk te bereiken. De links verschijnen dan hier.",
+                noAddress: "Er is geen netwerkadres gevonden voor deze computer.",
+                copy: "Kopiëren",
+                copied: "Gekopieerd",
+                regenerate: "Nieuwe link (de vorige links werken niet meer)",
+            },
+            menu: {
+                firmware: "Firmware-update",
+            },
+            firmwareUpdate: {
+                noInfo: "De updateservers gaven geen antwoord, dus de nieuwste versie is onbekend. Deze GoXLR draait {currentVersion}.",
+                updateTo: "Updaten naar {version}",
+                reinstall: "{version} opnieuw installeren",
+                customButton: "Aangepaste firmware…",
+                confirmTitle: "Firmware flashen?",
+                confirmText: "De GoXLR herstart tijdens de update. Koppel hem niet los en sluit de Utility niet tot het klaar is.",
+                confirmCustom: "Je kiest hierna een firmwarebestand (.bin). Gebruik alleen een bestand dat je vertrouwt: een verkeerd bestand kan de GoXLR onbruikbaar maken. Koppel hem niet los tijdens de update.",
+                betaWarning: "Je staat op het punt een bèta firmwareversie te installeren.\nDeze versie krijgt geen officiële ondersteuning en kan bugs of problemen bevatten die we niet kunnen oplossen.",
+                newVersionAvailable: "Er is een nieuwere firmwareversie ({latestVersion}) beschikbaar voor je apparaat.\nWil je het apparaat nu updaten?",
+                currentVersionIsNewer: "Je huidige firmwareversie ({currentVersion}) is nieuwer dan de nieuwste beschikbare firmwareversie ({latestVersion}) voor je apparaat.\nWil je downgraden naar de nieuwste firmwareversie?",
+                currentIsUpToDate: "Je firmware is al up-to-date.\nWil je de huidige firmwareversie opnieuw installeren?",
+                customFirmware: "Je staat op het punt een aangepaste firmware te installeren.\nDit wordt afgeraden, tenzij je weet wat je doet.\nWeet je zeker dat je wilt doorgaan?",
+                warning: "Je staat op het punt een nieuwe firmwareversie naar je apparaat te flashen.\nDe ontwikkelaars van de GoXLR Utility zijn niet verantwoordelijk voor eventuele schade die door dit proces kan ontstaan. ",
+                warningInfo: "Meer info",
+                updatePaused: "Je staat op het punt firmwareversie {version} te installeren. Weet je zeker dat je wilt doorgaan?",
+                updateInProgress: "Firmware-update bezig. Even geduld en koppel je apparaat niet los!",
+                completed: "De firmware-update is succesvol voltooid.",
+                failed: "Er is iets misgegaan tijdens de firmware-update. Probeer het opnieuw.",
+                changelog: "Wijzigingen in versie {version}:",
+                title: "Firmware installeren...",
+                progress: {
+                    starting: "Starten...",
+                    manifest: "Manifest ophalen...",
+                    download: "Firmware downloaden...",
+                    pause: "Update gepauzeerd",
+                    clearNVR: "Updatepartitie voorbereiden...",
+                    uploadFirmware: "Firmware uploaden...",
+                    validateUpload: "Geüploade firmware valideren...",
+                    hardwareWrite: "Firmware schrijven...",
+                    hardwareValidate: "Firmware valideren...",
+                    complete: "Update voltooid",
+                    failed: "Firmware-update kon niet worden voltooid",
+                },
+            },
+            firmwareUpdateButton: {
+                update: "Firmware updaten",
+                downgrade: "Firmware downgraden",
+                reinstall: "Firmware herinstalleren",
+                custom: "Aangepaste firmware",
+            },
             title: "System",
 
             powerButton: "Stroom acties",
@@ -675,6 +928,8 @@ export default {
 
             deviceButton: "Apparaatinstelligen",
             device: {
+                samplerFadeDuration: "Sampler uitloopduur",
+                samplerFadeDurationAccessibility: "De duur in milliseconden waarin de sampler uitloopt wanneer het afspelen wordt gestopt",
                 holdDuration: "Dempknop ingedrukt houden om alles te dempen",
                 holdDurationAccessibility: "De duur hoelang de dempknop ingedrukt moet blijven om alles te dempen.",
 
@@ -696,6 +951,16 @@ export default {
 
             settingsButton: "Utility Instellingen",
             settings: {
+                shutdownConfirmTitle: "Weet je het zeker?",
+                shutdownConfirmMessage: "Weet je zeker dat je de GoXLR Utility wilt uitschakelen?",
+                settingsRegionAccessibility: "instellingen",
+                macosAggregateManagement: "Schakel MacOS Aggregate beheer uit (vereist een herstart)",
+                macosAggregateManagementAccessibility: "Aggregate beheer door de Utility op MacOS uitgeschakeld (vereist een herstart)",
+                firmwareSource: "Firmware updatekanaal",
+                firmwareSources: {
+                    live: "Live",
+                    beta: "Bèta",
+                },
                 language: "Taal",
                 useSystem: "Gebruik systeemtaal (indien beschikbaar)",
 
@@ -763,6 +1028,10 @@ export default {
 
         // Strings used in Profile and Microphone Profile Management.
         profileManager: {
+            trashTitle: "Verwijderde profielen",
+            trashEmpty: "Geen verwijderde profielen. Verwijderde profielen worden hier 30 dagen bewaard.",
+            trashProfile: "Profiel",
+            trashMic: "Mic profiel",
             // Accessibility Titles for the buttons at the bottom of the Profile List
             saveProfileName: "Profiel {profileName} opslaan",
             createProfile: "Maak profiel aan",
@@ -809,7 +1078,6 @@ export default {
             accessibilitySavedProfile: "Profiel {profileName} opgeslagen",
             accessibilitySavedProfileAs: "Profiel {profileName} opgeslagen als {newProfileName}",
             accessibilityProfileDeleted: "Profiel {profileName} verwijderd",
-            accessibilityActiveProfile: "Huidig profiel",
             accessibilityDropMenuTitle: "{profileName} opties",
             accessibilityOpenProfileDirectory: "Open profielen map",
             accessibilityOpenMicProfileDirectory: "Open microfoonprofielen map",

@@ -1,10 +1,14 @@
 <template>
-  <button ref="button" class="modal-button" :class="{ enabled: enabled }" :disabled="!enabled"><slot /></button>
+  <AppButton ref="button" class="modal-button" :disabled="!enabled"><slot /></AppButton>
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
+
+// A dialog's footer button: the interface's button with the room footers need.
 export default {
   name: "ModalButton",
+  components: {AppButton},
 
   props: {
     enabled: { type: Boolean, default: true }
@@ -20,21 +24,8 @@ export default {
 
 <style scoped>
 .modal-button {
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  padding: 8px 30px;
-  border: none;
   margin: 8px;
   /* At least 120px, wider for longer labels rather than wrapping them */
   min-width: 120px;
-  white-space: nowrap;
-}
-
-.modal-button:disabled {
-  background-color: var(--c-disabled);
-}
-
-.modal-button:not(:disabled):hover, .modal-button:not(:disabled):focus {
-  background-color: var(--c-hover-strong);
 }
 </style>

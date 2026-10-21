@@ -2,15 +2,24 @@
   <div class="mic-page">
     <MicChain/>
     <Panel :title="$t('message.microphone.equaliser.title')"
-           :subtitle="isFineTune() ? $t('message.microphone.chain.curveHintFine') : $t('message.microphone.chain.curveHint')">
+           :subtitle="fineTune ? $t('message.microphone.chain.curveHintFine') : $t('message.microphone.chain.curveHint')">
       <template #actions>
         <label class="fine-tune">
           <span>{{ $t('message.microphone.chain.fineTune') }}</span>
-          <Toggle :model-value="isFineTune()" @update:model-value="setFineTune" :label="$t('message.microphone.chain.fineTune')"/>
+          <Toggle v-model="fineTune" :label="$t('message.microphone.chain.fineTune')"/>
         </label>
-        <button type="button" class="reset" @click="$refs.curve.reset()">{{ $t('message.microphone.equaliser.reset') }}</button>
+        <SegmentedControl v-if="eqState.modified" :label="$t('message.microphone.equaliser.compare')"
+                          :options="[{id: 'saved', label: $t('message.microphone.equaliser.before')}, {id: 'edits', label: $t('message.microphone.equaliser.after')}]"
+                          :selected="eqState.showingSaved ? 'saved' : 'edits'"
+                          @selection-changed="$refs.curve.showSaved($event === 'saved')"/>
+        <AppButton @click="$refs.curve.reset()">{{ $t('message.microphone.equaliser.reset') }}</AppButton>
+        <AppButton variant="primary" :disabled="!eqState.modified" @click="$refs.curve.save()"
+                   :title="$t('message.microphone.equaliser.saveHint', {profile: micProfile()})">
+          <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
+          <span>{{ $t('message.microphone.equaliser.save') }}</span>
+        </AppButton>
       </template>
-      <EqCurve ref="curve"/>
+      <EqCurve ref="curve" :fine-tune="fineTune" @compare-state="eqState = $event"/>
     </Panel>
   </div>
   <div style="display: flex">
@@ -27,6 +36,7 @@
 </template>
 
 <script>
+import AppButton from "@/components/design/AppButton.vue";
 import Gate from "./mic/Gate.vue";
 import Compressor from "./mic/Compressor.vue";
 import MicExtra from "./mic/MicExtra.vue";
@@ -35,16 +45,15 @@ import MicChain from "@/components/sections/mic/MicChain.vue";
 import EqCurve from "@/components/sections/mic/EqCurve.vue";
 import Panel from "@/components/design/Panel.vue";
 import Toggle from "@/components/design/Toggle.vue";
+import SegmentedControl from "@/components/design/SegmentedControl.vue";
 import {store} from "@/store";
-import {websocket} from "@/util/sockets";
 import MicSetupButton from "@/components/sections/system/modals/MicSetupButton.vue";
 import ContentBox from "@/components/ContentBox.vue";
 import ContentContainer from "@/components/containers/ContentContainer.vue";
 
 export default {
   name: "MicSections",
-  components: {
-    Toggle,
+  components: {AppButton, Toggle, SegmentedControl,
     Cough,
     MicChain,
     EqCurve,
@@ -52,13 +61,17 @@ export default {
     ContentContainer,
     ContentBox, MicSetupButton, MicExtra, Compressor, Gate},
 
-  methods: {
-    isFineTune() {
-      return store.getActiveDevice().settings.display.equaliser_fine === "Advanced";
-    },
+  data() {
+    return {
+      // Off each time the page opens, the points then only move up and down
+      fineTune: false,
+      eqState: {modified: false, showingSaved: false},
+    };
+  },
 
-    setFineTune(enabled) {
-      websocket.send_command(store.getActiveSerial(), {SetElementDisplayMode: ["EqFineTune", enabled ? "Advanced" : "Simple"]});
+  methods: {
+    micProfile() {
+      return store.getActiveDevice().mic_profile_name;
     },
 
     mic_open: function() {
@@ -77,24 +90,10 @@ export default {
   color: var(--c-muted);
 }
 
-.reset {
-  padding: 5px 10px;
-  border: 1px solid var(--c-line);
-  border-radius: 6px;
-  background-color: var(--c-raised);
-  color: var(--c-text);
-  font-size: 12px;
-  cursor: pointer;
-}
-
-.reset:hover {
-  border-color: var(--c-line-strong);
-}
-
 .mic-page {
   display: grid;
   gap: 16px;
-  padding: 24px 40px 0;
+  padding: var(--page-gutter) var(--page-gutter) 0;
 }
 
 </style>
