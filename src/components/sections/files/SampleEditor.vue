@@ -115,7 +115,18 @@ export default {
     }
   },
 
+  mounted() {
+    window.addEventListener("themechange", this.applyThemeColours);
+  },
+
   methods: {
+    applyThemeColours() {
+      if (this.wavesurfer === undefined) return;
+      this.wavesurfer.setWaveColor(themeColour("text-soft"));
+      this.wavesurfer.setProgressColor(themeColour("accent-light"));
+      this.wavesurfer.setCursorColor(themeColour("text"));
+    },
+
     // Opens the editor for a sample, path is relative to the samples folder.
     open(path, name, returnFocus) {
       this.path = path;
@@ -382,6 +393,7 @@ export default {
   },
 
   beforeUnmount() {
+    window.removeEventListener("themechange", this.applyThemeColours);
     this.onClosed();
   },
 }

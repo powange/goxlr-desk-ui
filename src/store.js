@@ -11,6 +11,10 @@ export const store = reactive({
 
     pausedPaths: [],
 
+    // True while the sample assign dialog adds samples, so the Sampler page doesn't open its own
+    // progress and error dialogs for them.
+    sampleAssignBusy: false,
+
     on_connected: [],
     on_disconnected: [],
 

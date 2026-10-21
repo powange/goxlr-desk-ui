@@ -43,6 +43,7 @@ import {websocket} from "@/util/sockets";
 export default {
   name: "FaderStrip",
   extends: Faders,
+  components: {SelectMenu},
   emits: ["lighting"],
 
   props: {

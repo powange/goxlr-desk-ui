@@ -59,6 +59,16 @@ export default {
     }
   },
 
+  watch: {
+    busy(value) {
+      store.sampleAssignBusy = value;
+    },
+  },
+
+  unmounted() {
+    store.sampleAssignBusy = false;
+  },
+
   methods: {
     open(button, paths, bank = undefined) {
       this.bank = bank || store.getActiveDevice().sampler.active_bank;

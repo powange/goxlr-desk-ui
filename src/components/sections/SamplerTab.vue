@@ -199,7 +199,10 @@ export default {
     return {
       last_error: undefined,
 
-      activeBank: "A",
+      // The bank shown follows the one active on the device
+      activeBank: store.getActiveDevice().sampler.active_bank,
+      // The sample being added from the Add dialog, for the announcement once it's done
+      addedName: undefined,
       activeButton: "TopLeft",
       activeSample: "-1",
       // The pad samples are being dragged over
@@ -366,6 +369,7 @@ export default {
 
     addSample() {
       let name = this.$refs.sample_selector.getSelectedSampleName();
+      this.addedName = name;
 
       // If we're adding a sample, we need to drop the return focus...
       this.$refs.add_sample_modal.returnFocus = undefined;
@@ -491,11 +495,25 @@ export default {
 
     sampleProgress() {
       return store.getActiveDevice().sampler.processing_state.progress;
-    }
+    },
+
+    deviceBank() {
+      return store.getActiveDevice().sampler.active_bank;
+    },
   },
 
   watch: {
+    deviceBank(bank) {
+      if (bank !== this.activeBank) {
+        this.activeBank = bank;
+        this.activeSample = "-1";
+      }
+    },
+
     sampleProgress(newValue, oldValue) {
+      // The assign dialog shows its own progress
+      if (store.sampleAssignBusy) return;
+
       // If we're going from null to not null, open the dialog..
       if ((oldValue === null) && (newValue !== null)) {
         // We need to open the Progress Dialog..
@@ -521,8 +539,8 @@ export default {
 
         store.setAccessibilityNotification(
             "polite",
-            this.$t('message.sampler.accessibilityAdded', {
-              name: name,
+            this.$t('message.sampler.samples.accessibilityAdded', {
+              name: this.addedName || "",
               activeButton: this.activeButton,
               activeBank: this.activeBank
             })
@@ -532,6 +550,8 @@ export default {
 
     hasError: {
       handler(newValue) {
+        // The assign dialog shows and clears its own errors
+        if (store.sampleAssignBusy) return;
         if (this.$refs.add_sample_error === undefined && newValue === true) {
           // We've picked up a cached error of some description, clear it.
           websocket.send_command(store.getActiveSerial(), {

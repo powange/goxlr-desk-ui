@@ -117,7 +117,6 @@ export default {
                 fineTune: "Ajuster les fréquences",
                 bandLabel: "Bande à {freq}",
                 curveHint: "tirer un point pour régler sa bande",
-                types: {Dynamic: "Dynamique (XLR)", Condenser: "Condensateur (XLR, +48 V)", Jack: "Jack"},
             },
             profiles: {
                 title: "Profils de Micro"
@@ -521,7 +520,7 @@ export default {
 
                 accessibilityOpenSamplesDirectory: "Ouvrir le répertoire de son",
                 accessibilityAnalysing: "Veuillez patienter, analyse de sons en cours. Ce processus peut prendre quelques minutes.",
-                accessibilityAdded: "Son {name} ajouté à {activeButton} la banque {activeBank}."
+                accessibilityAdded: "Son {name} ajouté au bouton {activeButton} de la banque {activeBank}."
             }
         },
 

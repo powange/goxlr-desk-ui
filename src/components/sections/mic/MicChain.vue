@@ -48,8 +48,13 @@ export default {
       return store.getActiveDevice().mic_status;
     },
 
+    // The same names as Mic Setup, with the Mini's 24V phantom power
     getMicType() {
-      return this.$t(`message.microphone.chain.types.${this.mic().mic_type}`);
+      switch (this.mic().mic_type) {
+        case "Condenser": return this.$t('message.microphone.setup.phantom', {voltage: isDeviceMini() ? "24" : "48"});
+        case "Jack": return this.$t('message.microphone.setup.jack');
+        default: return this.$t('message.microphone.setup.xlr');
+      }
     },
 
     getGain() {

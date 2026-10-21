@@ -135,7 +135,6 @@ export default {
                 fineTune: "Adjust frequencies",
                 bandLabel: "Band at {freq}",
                 curveHint: "drag a point to set its band",
-                types: {Dynamic: "Dynamic (XLR)", Condenser: "Condenser (XLR, +48V)", Jack: "Jack"},
             },
             profiles: {
                 title: "Mic Profiles"

@@ -108,7 +108,16 @@ export function versionNewerOrEqualTo(version, comparison) {
 }
 
 // Resolves a theme colour token (see assets/theme.css) to its value, for places that can't use
-// CSS variables, such as canvas drawing and wavesurfer.
+// CSS variables, such as canvas drawing and wavesurfer. Values are cached (meters draw every
+// frame) until the theme changes.
+const themeColours = new Map();
 export function themeColour(name) {
-    return getComputedStyle(document.documentElement).getPropertyValue(`--c-${name}`).trim();
+    if (!themeColours.has(name)) {
+        themeColours.set(name, getComputedStyle(document.documentElement).getPropertyValue(`--c-${name}`).trim());
+    }
+    return themeColours.get(name);
+}
+
+export function clearThemeColours() {
+    themeColours.clear();
 }
