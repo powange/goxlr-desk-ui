@@ -31,14 +31,6 @@
         <Tab id="mic" icon="fa-solid fa-microphone-lines" :name="$t('message.navigation.microphone')">
           <Mic/>
         </Tab>
-        <Tab id="configuration" icon="fa-solid fa-screwdriver-wrench" :name="$t('message.navigation.configuration')">
-          <ContentContainer>
-            <CenteredContainer>
-              <Faders ref="faders" @on-fader-channel-change="onFaderChannelChange"/>
-              <Cough/>
-            </CenteredContainer>
-          </ContentContainer>
-        </Tab>
         <Tab id="effects" v-if="!isDeviceMini()" icon="fa-solid fa-wand-magic-sparkles" :name="$t('message.navigation.effects')">
           <EffectsTab ref="effects" @on-effect-preset-change="onEffectPresetChange"/>
         </Tab>
@@ -155,7 +147,6 @@
 
 <script>
 import A11yNotifications from "./A11yNotifications.vue";
-import Faders from "./sections/Faders.vue";
 import Mixer from "./sections/Mixer.vue";
 import Tabs from "@/components/tabs/Tabs.vue";
 import Tab from "@/components/tabs/Tab.vue";
@@ -163,7 +154,6 @@ import Routing from "@/components/sections/Routing.vue";
 import Mic from "@/components/sections/Mic.vue";
 import DeviceSelector from "@/components/sections/DeviceSelector.vue";
 import {store} from "@/store";
-import Cough from "@/components/sections/Cough.vue";
 import {runWebsocket, websocket} from "@/util/sockets";
 import SystemComponent from "@/components/sections/System.vue";
 import TopBar from "@/components/TopBar.vue";
@@ -219,13 +209,11 @@ export default {
     SampleHandler,
     PresetHandler,
     SystemComponent,
-    Cough,
     DeviceSelector,
     Routing,
     Tab,
     Tabs,
     Mixer,
-    Faders,
     Mic,
   },
 
@@ -444,13 +432,9 @@ export default {
       }
     },
 
+    // Faders now live in the Mixer, and the cough button in the Mic section.
     loadConfigurationTab(channel = undefined) {
-      this.$refs['device-tabs'].selectTabById("configuration");
-      if (channel !== undefined) {
-        this.$nextTick(() => {
-          this.$refs.faders.channelChanged(channel);
-        });
-      }
+      this.$refs['device-tabs'].selectTabById(channel === undefined ? "mic" : "mixer");
     },
 
     loadSampleBank(bank) {

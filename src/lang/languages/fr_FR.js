@@ -161,6 +161,13 @@ export default {
             // Box Headers
             inputs: "Entrées",
             outputs: "Sorties",
+            otherInputs: "Autres entrées",
+            strip: {
+                source: "Source",
+                mute: "Couper",
+                muted: "Coupé",
+                muteFunction: "Coupe vers",
+            },
             mixAssignment: "Assignation de mixage",
 
             // Submix Checkbox

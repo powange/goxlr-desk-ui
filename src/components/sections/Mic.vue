@@ -11,6 +11,7 @@
       <Equaliser/>
       <Compressor/>
       <MicExtra />
+      <Cough />
     </ContentContainer>
   </div>
 </template>
@@ -20,6 +21,7 @@ import Gate from "./mic/Gate.vue";
 import Equaliser from "./mic/Equalizer.vue";
 import Compressor from "./mic/Compressor.vue";
 import MicExtra from "./mic/MicExtra.vue";
+import Cough from "@/components/sections/Cough.vue";
 import MicProfileHandler from "@/components/profiles/handlers/MicProfileHandler.vue";
 import MicSetupButton from "@/components/sections/system/modals/MicSetupButton.vue";
 import ContentBox from "@/components/ContentBox.vue";
@@ -28,6 +30,7 @@ import ContentContainer from "@/components/containers/ContentContainer.vue";
 export default {
   name: "MicSections",
   components: {
+    Cough,
     ContentContainer,
     ContentBox, MicSetupButton, MicProfileHandler, MicExtra, Compressor, Equaliser, Gate},
 

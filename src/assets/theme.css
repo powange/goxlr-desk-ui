@@ -23,6 +23,7 @@
   --c-accent-muted: #3f7a7d;
   --c-on-accent: #062a2b;     /* text and icons on the accent */
   --c-danger: #ff5d5d;
+  --c-on-danger: #2a0505;
   --c-danger-bg: #3a1214;
   --c-warn: #f5b041;
   --c-ok: #42d392;
@@ -57,6 +58,7 @@
   --c-accent-muted: #7fb3b6;
   --c-on-accent: #ffffff;
   --c-danger: #d23b3b;
+  --c-on-danger: #ffffff;
   --c-danger-bg: #fbe3e3;
   --c-warn: #a86a0a;
   --c-ok: #1d8f5a;
