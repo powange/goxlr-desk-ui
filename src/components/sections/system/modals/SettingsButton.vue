@@ -66,7 +66,9 @@
             <a class="backup-link" :href="backupUrl()" download>{{ $t('message.system.backup.download') }}</a>
             <input ref="restoreInput" type="file" accept=".zip" hidden @change="onRestoreChosen"/>
             <button ref="restoreButton" type="button" @click="$refs.restoreInput.click()">{{ $t('message.system.backup.restore') }}</button>
+            <button type="button" @click="openBackups()">{{ $t('message.system.backup.openFolder') }}</button>
           </div>
+          <div class="backup-hint">{{ $t('message.system.backup.history') }}</div>
         </div>
 
         <div class="recoverDefaults" role="group" :aria-label="$t('message.system.settings.recoverDefaults')">
@@ -447,6 +449,9 @@ export default {
       websocket.send_daemon_command({"SetTTSEnabled": value});
     },
 
+    openBackups() {
+      websocket.open_path("Backups");
+    },
     backupUrl() {
       return `${getBaseHTTPAddress()}files/backup${this.backupSamples ? "?samples=1" : ""}`;
     },
@@ -532,6 +537,12 @@ export default {
   gap: 10px;
   padding: 6px 0;
   font-size: 13px;
+}
+
+.backup-hint {
+  font-size: 0.85em;
+  opacity: 0.8;
+  margin-top: 6px;
 }
 
 .backup-samples {

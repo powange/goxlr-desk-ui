@@ -29,12 +29,48 @@
       <pre><code>{{ example.curl }}</code></pre>
     </div>
     <p class="note">{{ $t('message.integrations.more') }}</p>
+
+    <!-- Any control as an API command: record, move it, copy -->
+    <h3>{{ $t('message.integrations.recordTitle') }}</h3>
+    <p class="note">{{ $t('message.integrations.recordIntro') }}</p>
+    <div class="record">
+      <label class="record-toggle">
+        <input type="checkbox" v-model="recorder.enabled"/>
+        <span>{{ $t('message.integrations.record') }}</span>
+      </label>
+      <AppButton v-if="recorder.commands.length" variant="link" @click="clearCommands()">
+        {{ $t('message.integrations.clear') }}
+      </AppButton>
+    </div>
+    <p v-if="recorder.enabled && !recorder.commands.length" class="note" aria-live="polite">
+      {{ $t('message.integrations.recordEmpty') }}
+    </p>
+    <div v-for="(entry, index) in recorder.commands" :key="index + entry.json" class="example">
+      <div class="example-head">
+        <span>{{ entry.name }}</span>
+        <AppButton variant="link" @click="copy(curl(entry.json))">
+          {{ copied === curl(entry.json) ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyCurl') }}
+        </AppButton>
+        <AppButton variant="link" @click="copy(entry.json)">
+          {{ copied === entry.json ? $t('message.system.networkAccess.copied') : $t('message.integrations.copyJson') }}
+        </AppButton>
+      </div>
+      <pre><code>{{ entry.json }}</code></pre>
+    </div>
+
+    <h3>{{ $t('message.integrations.schemaTitle') }}</h3>
+    <p class="note">{{ $t('message.integrations.schemaIntro') }}</p>
+    <dl class="endpoints">
+      <dt>{{ $t('message.integrations.schemaUrl') }}</dt>
+      <dd><a :href="baseUrl() + 'api/schema'" target="_blank" rel="noopener"><code>GET {{ baseUrl() }}api/schema</code></a></dd>
+    </dl>
   </section>
 </template>
 
 <script>
 import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
+import {apiRecorder, clearApiCommands} from "@/util/apiRecorder";
 
 export default {
   name: "IntegrationsPage",
@@ -42,7 +78,7 @@ export default {
   props: {inline: {type: Boolean, default: true}},
 
   data() {
-    return {copied: undefined};
+    return {copied: undefined, recorder: apiRecorder};
   },
 
   methods: {
@@ -69,9 +105,17 @@ export default {
       }
       return list.map(({label, command}) => {
         const json = JSON.stringify({Command: [serial, command]});
-        const body = json.replace(/'/g, "'\\''");
-        return {label, json, curl: `curl -X POST -H "Content-Type: application/json" -d '${body}' ${this.baseUrl()}api/command`};
+        return {label, json, curl: this.curl(json)};
       });
+    },
+
+    curl(json) {
+      const body = json.replace(/'/g, "'\\''");
+      return `curl -X POST -H "Content-Type: application/json" -d '${body}' ${this.baseUrl()}api/command`;
+    },
+
+    clearCommands() {
+      clearApiCommands();
     },
 
     copy(text) {
@@ -156,6 +200,25 @@ code {
 
 .example-head > span {
   flex: 1;
+}
+
+.record {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  font-size: 13px;
+}
+
+.record-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+a {
+  color: inherit;
 }
 
 pre {
