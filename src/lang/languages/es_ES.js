@@ -83,7 +83,7 @@ export default {
             helpLinux: "En Linux, las reglas udev (50-goxlr.rules) deben estar instaladas en /etc/udev/rules.d; después recárgalas (udevadm control --reload) y desconecta y vuelve a conectar el GoXLR.",
             helpWindows: "En Windows, debe estar instalado el controlador GoXLR de TC-Helicon; reinicia el ordenador después de instalarlo.",
             helpMacos: "En macOS, conecta el GoXLR directamente y no a través de un hub, y permite la utilidad si el sistema lo solicita.",
-            reconnecting: "Se perdió la conexión con GoXLR Utility, reconectando…",
+            reconnecting: "Se perdió la conexión con GoXLR Desk, reconectando…",
             title: "Seleccionar Dispositivo",
             connecting: "Intentando conectar con la Utilidad GoXLR...",
             disconnected: "No se puede conectar con la Utilidad GoXLR, comprueba que está en ejecución.\n\nEsta página intentará reconectarse automáticamente...",

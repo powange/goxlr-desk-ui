@@ -106,10 +106,10 @@ export default {
             helpLinux: "W systemie Linux reguły udev (50-goxlr.rules) muszą być zainstalowane w /etc/udev/rules.d. Następnie przeładuj je (udevadm control --reload), odłącz GoXLR i podłącz go ponownie.",
             helpWindows: "W systemie Windows musi być zainstalowany sterownik GoXLR od TC-Helicon. Po instalacji uruchom ponownie komputer.",
             helpMacos: "W systemie macOS podłącz GoXLR bezpośrednio, a nie przez hub, i zezwól na działanie narzędzia, jeśli system o to poprosi.",
-            reconnecting: "Utracono połączenie z GoXLR Utility, ponowne łączenie…",
+            reconnecting: "Utracono połączenie z GoXLR Desk, ponowne łączenie…",
             title: "Wybierz Urządzenie",
-            connecting: "Próba połączenia z GoXLR Utility..",
-            disconnected: "Nie można połączyć się z GoXLR Utility, sprawdź, czy jest uruchomione.\n\nTa strona automatycznie spróbuje połączyć się ponownie..",
+            connecting: "Próba połączenia z GoXLR Desk..",
+            disconnected: "Nie można połączyć się z GoXLR Desk, sprawdź, czy jest uruchomione.\n\nTa strona automatycznie spróbuje połączyć się ponownie..",
             noDevices: "Nie Znaleziono Urządzeń GoXLR",
         },
         versionCheck: {
@@ -980,7 +980,7 @@ export default {
                 qrAlt: "Kod QR do otwarcia {url}",
                 title: "Dostęp sieciowy",
                 explain: "Na innym urządzeniu w twojej sieci (tablet, telefon, komputer) otwórz jeden z tych linków jeden raz. Dostęp zostanie potem zapamiętany.",
-                restart: "Uruchom ponownie GoXLR Utility, aby mieć do niego dostęp z sieci. Linki pojawią się wtedy tutaj.",
+                restart: "Uruchom ponownie GoXLR Desk, aby mieć do niego dostęp z sieci. Linki pojawią się wtedy tutaj.",
                 noAddress: "Nie znaleziono adresu sieciowego dla tego komputera.",
                 copy: "Kopiuj",
                 copied: "Skopiowano",
@@ -1003,7 +1003,7 @@ export default {
                 currentVersionIsNewer: "Twoja obecna wersja firmware ({currentVersion}) jest nowsza niż najnowsza dostępna wersja firmware ({latestVersion}) dla twojego urządzenia.\nCzy chcesz przejść na najnowszą dostępną wersję firmware?",
                 currentIsUpToDate: "Twój firmware jest już aktualny.\nCzy chcesz ponownie zainstalować obecną wersję firmware?",
                 customFirmware: "Zamierzasz zainstalować własny firmware.\nNie jest to zalecane, chyba że wiesz, co robisz.\nCzy na pewno chcesz kontynuować?",
-                warning: "Zamierzasz wgrać nową wersję firmware do swojego urządzenia.\nTwórcy GoXLR Utility nie ponoszą odpowiedzialności za jakiekolwiek szkody, które mogą zostać spowodowane przez ten proces. ",
+                warning: "Zamierzasz wgrać nową wersję firmware do swojego urządzenia.\nTwórcy GoXLR Desk nie ponoszą odpowiedzialności za jakiekolwiek szkody, które mogą zostać spowodowane przez ten proces. ",
                 warningInfo: "Więcej Informacji",
                 updatePaused: "Zamierzasz zainstalować firmware w wersji {version}. Czy na pewno chcesz kontynuować?",
                 updateInProgress: "Trwa Aktualizacja Firmware. Proszę czekać i nie odłączać urządzenia!",
@@ -1036,7 +1036,7 @@ export default {
             powerButton: "Akcje Zasilania",
             power: {
                 shutdownTitle: "Akcje Zamekania",
-                shutdownDescription: "Te akcje zostaną wykonane kiedy GoXLR Utility zostanie bezpiecznie zamknięte",
+                shutdownDescription: "Te akcje zostaną wykonane kiedy GoXLR Desk zostanie bezpiecznie zamknięte",
 
                 sleepTitle: "Akcje Usypiania",
                 sleepDescription: "Te akcje zostaną wykonane kiedy twój system przechodzi w tryb uśpienia",
@@ -1080,14 +1080,14 @@ export default {
                 lockFadersAccessibility: "Nie przesuwa suwaków na dół kiedy opcja Wyciszenia Wszędzie jest aktywna",
             },
 
-            settingsButton: "Ustawienia GoXLR Utility",
+            settingsButton: "Ustawienia GoXLR Desk",
             settings: {
                 recoverConfirmTitle: "Przywrócić pliki domyślne?",
                 recoverConfirmMessage: "Brakujące domyślne {type} zostaną dodane ponownie. Istniejące pliki nie zostaną zmienione.",
                 recoverConfirmOk: "Przywróć",
                 recoverDone: "Przywrócono domyślne {type}",
                 shutdownConfirmTitle: "Czy na pewno?",
-                shutdownConfirmMessage: "Czy na pewno chcesz zamknąć GoXLR Utility?",
+                shutdownConfirmMessage: "Czy na pewno chcesz zamknąć GoXLR Desk?",
                 settingsRegionAccessibility: "ustawienia",
                 macosAggregateManagement: "Wyłącz zarządzanie urządzeniami zagregowanymi w MacOS (wymaga restartu)",
                 macosAggregateManagementAccessibility: "Wyłącza zarządzanie urządzeniami zagregowanymi przez Utility w MacOS (wymaga restartu)",
@@ -1123,13 +1123,13 @@ export default {
                 allowNetworkAccessAccessibility: "Pozwól, żeby interfejs był dostępny dla innych urządzeń w sieci",
 
                 autoStart: "Uruchom po Zalogowaniu",
-                autoStartAccessibility: "Uruchom GoXLR Utility po zalogowaniu użytkownika",
+                autoStartAccessibility: "Uruchom GoXLR Desk po zalogowaniu użytkownika",
 
                 showOnLaunch: "Pokaż Interfejs po Uruchomieniu",
                 showOnLaunchAccessibility: "Automatycznie otwiera interfejs po starcie aplikacji",
 
                 showTray: "Pokaż ikonę w Zasobniku (wymaga restartu)",
-                showTrayAccessibility: "Pokaż ikonę GoXLR Utility w zasobniku systemowym",
+                showTrayAccessibility: "Pokaż ikonę GoXLR Desk w zasobniku systemowym",
 
                 ttsOnButton: "Czytaj Naciśnięte Przyciski",
                 ttsOnButtonAccessibility: "Czytaj stan naciśniętych przycisków na głos, używając czytnika ekranu lub systemowego głosu",
@@ -1142,13 +1142,13 @@ export default {
                     presets: "Presety"
                 },
 
-                shutdownUtility: "Zamknij GoXLR Utility"
+                shutdownUtility: "Zamknij GoXLR Desk"
             },
 
             aboutButton: "O GoXLR",
             about: {
                 serial: "Numer Seryjny",
-                utilityVersion: "Wersja GoXLR Utility",
+                utilityVersion: "Wersja GoXLR Desk",
                 driverVersion: "Driver Version",
                 hardwareVersion: "Wersja Sprzętu",
 

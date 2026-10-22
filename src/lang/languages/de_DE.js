@@ -89,10 +89,10 @@ export default {
             helpLinux: "Unter Linux müssen die udev-Regeln (50-goxlr.rules) in /etc/udev/rules.d installiert sein. Lade sie danach neu (udevadm control --reload) und stecke das GoXLR aus und wieder ein.",
             helpWindows: "Unter Windows muss der GoXLR-Treiber von TC-Helicon installiert sein; starte den Computer nach der Installation neu.",
             helpMacos: "Unter macOS schließe das GoXLR direkt an statt über einen Hub, und erlaube das Utility, wenn das System danach fragt.",
-            reconnecting: "Verbindung zum GoXLR Utility verloren, verbinde neu…",
+            reconnecting: "Verbindung zum GoXLR Desk verloren, verbinde neu…",
             title: "Gerät auswählen",
-            connecting: "Verbindung zum GoXLR Utility wird hergestellt..",
-            disconnected: "Verbindung zum GoXLR Utility nicht möglich, bitte prüfe, ob es läuft.\n\nDiese Seite versucht automatisch, die Verbindung wiederherzustellen..",
+            connecting: "Verbindung zum GoXLR Desk wird hergestellt..",
+            disconnected: "Verbindung zum GoXLR Desk nicht möglich, bitte prüfe, ob es läuft.\n\nDiese Seite versucht automatisch, die Verbindung wiederherzustellen..",
             noDevices: "Keine GoXLR-Geräte gefunden",
         },
         versionCheck: {
@@ -963,7 +963,7 @@ export default {
                 qrAlt: "QR-Code zum Öffnen von {url}",
                 title: "Netzwerkzugriff",
                 explain: "Öffne auf einem anderen Gerät in deinem Netzwerk (Tablet, Handy, Computer) einmal einen dieser Links. Der Zugriff wird danach gespeichert.",
-                restart: "Starte das GoXLR Utility neu, um es aus deinem Netzwerk zu erreichen. Die Links werden dann hier angezeigt.",
+                restart: "Starte das GoXLR Desk neu, um es aus deinem Netzwerk zu erreichen. Die Links werden dann hier angezeigt.",
                 noAddress: "Für diesen Computer wurde keine Netzwerkadresse gefunden.",
                 copy: "Kopieren",
                 copied: "Kopiert",
@@ -977,7 +977,7 @@ export default {
             powerButton: "Energie-Aktionen",
             power: {
                 shutdownTitle: "Abschaltaktionen",
-                shutdownDescription: "Diese Aktionen werden ausgeführt, wenn das GoXLR Utility sicher heruntergefahren ist.",
+                shutdownDescription: "Diese Aktionen werden ausgeführt, wenn das GoXLR Desk sicher heruntergefahren ist.",
 
                 sleepTitle: "Schlaf Aktionen",
                 sleepDescription: "Diese Aktionen werden ausgeführt, wenn das System in den Schlafmodus wechselt.",
@@ -1029,7 +1029,7 @@ export default {
                 recoverConfirmOk: "Wiederherstellen",
                 recoverDone: "Standard-{type} wiederhergestellt",
                 shutdownConfirmTitle: "Bist du sicher?",
-                shutdownConfirmMessage: "Bist du sicher, dass du das GoXLR Utility beenden möchtest?",
+                shutdownConfirmMessage: "Bist du sicher, dass du das GoXLR Desk beenden möchtest?",
                 settingsRegionAccessibility: "Einstellungen",
                 macosAggregateManagement: "MacOS-Aggregatgeräteverwaltung deaktivieren (Neustart erforderlich)",
                 macosAggregateManagementAccessibility: "Aggregatgeräteverwaltung des Utility unter MacOS deaktiviert (Neustart erforderlich)",
@@ -1066,13 +1066,13 @@ export default {
                 allowNetworkAccessAccessibility: "Zugriff auf die UI von anderen Geräten im Netzwerk aus zulassen",
 
                 autoStart: "AutoStart bei Anmeldung",
-                autoStartAccessibility: "Starte das GoXLR Utility, wenn sich der Benutzer anmeldet",
+                autoStartAccessibility: "Starte das GoXLR Desk, wenn sich der Benutzer anmeldet",
 
                 showOnLaunch: "UI beim Start anzeigen",
                 showOnLaunchAccessibility: "Startet die UI automatisch beim Start",
 
                 showTray: "Taskleistensymbol anzeigen (Neustart erforderlich)",
-                showTrayAccessibility: "Anzeigen des GoXLR Utility Icons in der Taskleiste",
+                showTrayAccessibility: "Anzeigen des GoXLR Desk Icons in der Taskleiste",
 
                 ttsOnButton: "TTS auf Tastendruck",
                 ttsOnButtonAccessibility: "Den Status der gedrückten Taste entweder über ein Bildschirmlesegerät oder das System-TTS vorlesen",
@@ -1085,7 +1085,7 @@ export default {
                     presets: "Vorlagen"
                 },
 
-                shutdownUtility: "GoXLR Utility beenden"
+                shutdownUtility: "GoXLR Desk beenden"
             },
 
             aboutButton: "Über GoXLR",
@@ -1121,7 +1121,7 @@ export default {
                 currentIsUpToDate: "Deine Firmware ist bereits auf dem neuesten Stand.\nMöchtest du die aktuelle Firmware neu installieren?",
                 customFirmware: "Du bist dabei, eine benutzerdefinierte Firmware zu installieren.\nDies ist nicht empfohlen, wenn du nicht weißt, was du tust.\nBist du sicher, dass du fortfahren möchtest?",
 
-                warning: "Du bist dabei, eine neue Firmware auf dein Gerät zu flashen.\nDie Entwickler der GoXLR Utility sind nicht verantwortlich für Schäden, die durch diesen Vorgang verursacht werden können.",
+                warning: "Du bist dabei, eine neue Firmware auf dein Gerät zu flashen.\nDie Entwickler der GoXLR Desk sind nicht verantwortlich für Schäden, die durch diesen Vorgang verursacht werden können.",
                 warningInfo: "Mehr Infos",
 
                 updatePaused: "Du bist kurz davor, die Firmware {version} zu installieren. Bist du sicher, dass du fortfahren möchtest?",

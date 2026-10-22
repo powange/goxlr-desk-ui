@@ -39,7 +39,7 @@
           <font-awesome-icon icon="fa-solid fa-triangle-exclamation" aria-hidden="true"/>
           <span>
             {{ $t('message.system.firmwareUpdate.warning') }}
-            <a href="https://github.com/GoXLR-on-Linux/goxlr-utility/wiki/Firmware-Updating" target="_blank" rel="noopener">{{ $t('message.system.firmwareUpdate.warningInfo') }}</a>
+            <a href="https://github.com/powange/goxlr-desk#firmware-updates" target="_blank" rel="noopener">{{ $t('message.system.firmwareUpdate.warningInfo') }}</a>
             <template v-if="isBetaUpdateSite()"><br>{{ $t('message.system.firmwareUpdate.betaWarning') }}</template>
           </span>
         </p>
@@ -62,7 +62,7 @@
       <p class="firmwareWarning">
         {{ $t('message.system.firmwareUpdate.warning') }}
         <a
-            href="https://github.com/GoXLR-on-Linux/goxlr-utility/wiki/Firmware-Updating"
+            href="https://github.com/powange/goxlr-desk#firmware-updates"
             target="_blank"
         >{{ $t('message.system.firmwareUpdate.warningInfo') }}</a>
       </p>

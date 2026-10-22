@@ -22,6 +22,8 @@
               <div><dt>{{ $t('message.system.pages.about.utility') }}</dt><dd>{{ getUtilityVersion() }}</dd></div>
               <div><dt>{{ $t('message.system.pages.about.driver') }}</dt><dd>{{ getDriverVersion() }}</dd></div>
             </dl>
+            <p class="about-origin">{{ $t('message.system.pages.about.origin') }}
+              <a href="https://github.com/powange/goxlr-desk" target="_blank" rel="noopener">github.com/powange/goxlr-desk</a></p>
           </SettingsCard>
         </div>
         <SettingsCard>
@@ -68,7 +70,7 @@ export default {
     // The versions as text, for a bug report or a request for help
     copyVersions() {
       const text = [
-        `GoXLR Utility ${this.getUtilityVersion()}`,
+        `GoXLR Desk ${this.getUtilityVersion()}`,
         `Driver: ${this.getDriverVersion()}`,
         `Serial: ${this.getSerial()}`,
         `Firmware: ${this.getFirmwareVersion()}, DICE: ${this.getDice()}, FPGA: ${this.getFPGACount()}`,
@@ -138,6 +140,13 @@ export default {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 20px;
   align-items: start;
+}
+
+.about-origin {
+  margin: 12px 0 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--c-muted);
 }
 
 .about-list {

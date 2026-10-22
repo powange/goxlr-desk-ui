@@ -106,10 +106,10 @@ export default {
             helpLinux: "Op Linux moeten de udev-regels (50-goxlr.rules) in /etc/udev/rules.d geïnstalleerd zijn. Herlaad ze daarna (udevadm control --reload) en koppel de GoXLR los en weer aan.",
             helpWindows: "Op Windows moet de GoXLR-driver van TC-Helicon geïnstalleerd zijn. Herstart de computer na de installatie.",
             helpMacos: "Sluit de GoXLR op macOS direct aan in plaats van via een hub, en sta de Utility toe als het systeem daarom vraagt.",
-            reconnecting: "Verbinding met GoXLR Utility verbroken, opnieuw verbinden…",
+            reconnecting: "Verbinding met GoXLR Desk verbroken, opnieuw verbinden…",
             title: "Selecteer apparaat",
-            connecting: "Verbinding maken met de GoXLR Utility..",
-            disconnected: "Kan geen verbinding maken met de GoXLR Utility, controleer of deze draait.\n\nDeze pagina probeert automatisch opnieuw te verbinden..",
+            connecting: "Verbinding maken met de GoXLR Desk..",
+            disconnected: "Kan geen verbinding maken met de GoXLR Desk, controleer of deze draait.\n\nDeze pagina probeert automatisch opnieuw te verbinden..",
             noDevices: "Geen GoXLR apparaten gevonden",
         },
         versionCheck: {
@@ -980,7 +980,7 @@ export default {
                 qrAlt: "QR-code om {url} te openen",
                 title: "Netwerktoegang",
                 explain: "Open op een ander apparaat in je netwerk (tablet, telefoon, computer) eenmalig een van deze links. Daarna wordt de toegang onthouden.",
-                restart: "Herstart de GoXLR Utility om hem vanaf je netwerk te bereiken. De links verschijnen dan hier.",
+                restart: "Herstart de GoXLR Desk om hem vanaf je netwerk te bereiken. De links verschijnen dan hier.",
                 noAddress: "Er is geen netwerkadres gevonden voor deze computer.",
                 copy: "Kopiëren",
                 copied: "Gekopieerd",
@@ -1003,7 +1003,7 @@ export default {
                 currentVersionIsNewer: "Je huidige firmwareversie ({currentVersion}) is nieuwer dan de nieuwste beschikbare firmwareversie ({latestVersion}) voor je apparaat.\nWil je downgraden naar de nieuwste firmwareversie?",
                 currentIsUpToDate: "Je firmware is al up-to-date.\nWil je de huidige firmwareversie opnieuw installeren?",
                 customFirmware: "Je staat op het punt een aangepaste firmware te installeren.\nDit wordt afgeraden, tenzij je weet wat je doet.\nWeet je zeker dat je wilt doorgaan?",
-                warning: "Je staat op het punt een nieuwe firmwareversie naar je apparaat te flashen.\nDe ontwikkelaars van de GoXLR Utility zijn niet verantwoordelijk voor eventuele schade die door dit proces kan ontstaan. ",
+                warning: "Je staat op het punt een nieuwe firmwareversie naar je apparaat te flashen.\nDe ontwikkelaars van de GoXLR Desk zijn niet verantwoordelijk voor eventuele schade die door dit proces kan ontstaan. ",
                 warningInfo: "Meer info",
                 updatePaused: "Je staat op het punt firmwareversie {version} te installeren. Weet je zeker dat je wilt doorgaan?",
                 updateInProgress: "Firmware-update bezig. Even geduld en koppel je apparaat niet los!",
@@ -1087,7 +1087,7 @@ export default {
                 recoverConfirmOk: "Herstellen",
                 recoverDone: "Standaard-{type} hersteld",
                 shutdownConfirmTitle: "Weet je het zeker?",
-                shutdownConfirmMessage: "Weet je zeker dat je de GoXLR Utility wilt uitschakelen?",
+                shutdownConfirmMessage: "Weet je zeker dat je de GoXLR Desk wilt uitschakelen?",
                 settingsRegionAccessibility: "instellingen",
                 macosAggregateManagement: "Schakel MacOS Aggregate beheer uit (vereist een herstart)",
                 macosAggregateManagementAccessibility: "Aggregate beheer door de Utility op MacOS uitgeschakeld (vereist een herstart)",
@@ -1123,7 +1123,7 @@ export default {
                 allowNetworkAccessAccessibility: "Geef toestemming dat dit programma door andere apparaten in het netwerk geopend kan worden",
 
                 autoStart: "Start automatisch bij inloggen",
-                autoStartAccessibility: "Start de GoXLR Utility wanneer de gebruiker inlogt",
+                autoStartAccessibility: "Start de GoXLR Desk wanneer de gebruiker inlogt",
 
                 showOnLaunch: "Toon UI bij opstarten",
                 showOnLaunchAccessibility: "Laat de UI automatisch zien bij opstarten",
@@ -1142,7 +1142,7 @@ export default {
                     presets: "Presets"
                 },
 
-                shutdownUtility: "Schakel GoXLR Utility uit"
+                shutdownUtility: "Schakel GoXLR Desk uit"
             },
 
             aboutButton: "Over GoXLR",

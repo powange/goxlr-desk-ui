@@ -9,8 +9,11 @@
       <Tabs ref="device-tabs" vertical shortcuts @on-change="onTabChange" :label="$t('message.navigation.accessibilityDeviceSection')">
         <template #nav-top>
           <div class="brand">
-            <span class="brand-mark" aria-hidden="true"></span>
-            <span>GoXLR Utility</span>
+            <svg class="brand-logo" width="28" height="28" viewBox="0 0 64 64" aria-hidden="true"><rect x="2" y="2" width="60" height="60" rx="14" fill="#0d1416"/><g stroke="#34474b" stroke-width="3.5" stroke-linecap="round"><line x1="17" y1="14" x2="17" y2="50"/><line x1="27" y1="14" x2="27" y2="50"/><line x1="37" y1="14" x2="37" y2="50"/><line x1="47" y1="14" x2="47" y2="50"/></g><g fill="#4cc3c6"><rect x="12" y="31" width="10" height="7" rx="2"/><rect x="22" y="19" width="10" height="7" rx="2"/><rect x="32" y="37" width="10" height="7" rx="2"/><rect x="42" y="25" width="10" height="7" rx="2"/></g></svg>
+            <span class="brand-text">
+              <span class="brand-name"><span class="brand-device">GoXLR </span><b>Desk</b></span>
+              <span class="brand-note">{{ $t('message.brand.unofficial') }}</span>
+            </span>
           </div>
         </template>
         <template #nav-bottom>
@@ -26,7 +29,7 @@
           <div class="device-status">
             <span class="device-name"><span class="dot" aria-hidden="true"></span>{{ getDeviceName() }}</span>
             <span class="device-detail">{{ getSerial() }}</span>
-            <!-- The utility's version, under the device (below the page it made a scroll bar) -->
+            <!-- The app's version, under the device (below the page it made a scroll bar) -->
             <VersionCheck @firmware-click="onFirmwareClicked" />
           </div>
         </template>
@@ -640,11 +643,31 @@ export default {
   color: var(--c-text);
 }
 
-#main .brand-mark {
-  width: 22px;
-  height: 14px;
-  border: 2px solid var(--c-accent);
-  border-radius: 3px;
+#main .brand-logo {
+  flex: none;
+}
+
+#main .brand-text {
+  display: grid;
+  gap: 1px;
+}
+
+#main .brand-name {
+  font-size: 17px;
+  line-height: 1;
+}
+
+#main .brand-device {
+  color: var(--c-muted);
+  font-weight: 500;
+}
+
+#main .brand-note {
+  font-family: var(--f-mono);
+  font-size: 9.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--c-muted);
 }
 
 #main .theme-switch {
