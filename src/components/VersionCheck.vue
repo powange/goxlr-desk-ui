@@ -201,40 +201,33 @@ export default {
 </script>
 
 <style scoped>
- .version {
-   font-family: sans-serif;
-   text-align: center;
-   color: var(--c-muted);
-   margin-bottom: 8px;
-   padding: 3px;
- }
+/* In the side menu, under the connected device */
+.version {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--c-muted);
+}
 
- .version a {
-   color: var(--c-muted);
- }
+.version a,
+.version span.click {
+  color: var(--c-accent);
+  cursor: pointer;
+  text-decoration: underline;
+}
 
- .version span.click {
-   color: var(--c-muted);
-   cursor: pointer;
-   text-decoration: underline;
- }
+.warning-wrap {
+  margin-top: 8px;
+}
 
- .warning-wrap {
-   text-align: center;
- }
-
- .warning {
-   margin: auto;
-   background-color: var(--c-danger-bg);
-   border: 1px solid var(--c-danger);
-   color: var(--c-muted);
-   font-weight: bold;
-   padding: 6px;
-   text-align: center;
- }
-
- .warning a {
-   color: var(--c-text);
-   text-decoration: underline;
- }
+.warning {
+  display: block;
+  padding: 6px 8px;
+  border: 1px solid var(--c-danger);
+  border-radius: 6px;
+  background-color: var(--c-danger-bg);
+  color: var(--c-text);
+  font-size: 11px;
+  font-weight: 600;
+  text-decoration: none;
+}
 </style>

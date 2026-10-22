@@ -1,5 +1,8 @@
 <script>
+import Toggle from "@/components/design/Toggle.vue";
+
 export default {
+  components: {Toggle},
   emits: ['check-change', 'select-change'],
 
   name: "PowerBooleanListSetting",
@@ -16,6 +19,17 @@ export default {
       checked: false,
       selected: undefined,
     }
+  },
+
+  computed: {
+    // A saved choice no longer in the list (a profile renamed or deleted elsewhere) is shown as
+    // missing, rather than the list silently showing (and saving) its first entry.
+    shownOptions() {
+      if (this.selected === undefined || this.options.some(option => option.key === this.selected)) {
+        return this.options;
+      }
+      return [{key: this.selected, value: this.$t('message.system.power.missing', {name: this.selected})}, ...this.options];
+    },
   },
 
   methods: {
@@ -54,70 +68,54 @@ export default {
 </script>
 
 <template>
-  <div class="setting">
-    <div class="input" @click="onCheckChange" role="checkbox" :aria-valuenow="checked" :aria-label="label"
-         :aria-description="description" :aria-checked="checked" @keydown.space="onCheckChange"
-         tabindex="0">
-      <font-awesome-icon v-if="checked" icon="fa-solid fa-square-check"/>
-      <font-awesome-icon v-else icon="fa-solid fa-square"/>
-    </div>
-    <div class="label" @click="onCheckChange">{{ label }}</div>
-
-    <div class="input">
-      <select ref="selection" @change="onSelectChange">
-        <option v-for="option of options" :key="option.key" :value="option.key" :selected="option.key === selected">
+  <div class="power-row" :class="{ off: !checked }">
+    <Toggle :model-value="checked" @update:model-value="onCheckChange" :label="label" :aria-description="description"/>
+    <span class="power-label" aria-hidden="true" @click="onCheckChange">{{ label }}</span>
+    <select ref="selection" class="power-select" :disabled="!checked" :aria-label="label" @change="onSelectChange">
+      <option v-for="option of shownOptions" :key="option.key" :value="option.key" :selected="option.key === selected">
           {{ option.value }}
         </option>
-      </select>
-    </div>
+    </select>
   </div>
 </template>
 
 <style scoped>
-.setting {
-  cursor: pointer;
+.power-row {
   display: flex;
-  gap: 5px;
-  height: 18px;
-  padding: 5px;
-  color: var(--c-text-soft);
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+  padding: 12px 20px;
 }
 
-.setting:focus-within {
+.power-label {
+  flex: 1 1 200px;
   color: var(--c-text);
-}
-
-.setting:hover {
   cursor: pointer;
+}
+
+.power-row.off .power-label {
+  color: var(--c-muted);
+}
+
+.power-select {
+  width: 220px;
+  padding: 6px 10px;
+  border: 1px solid var(--c-field-border);
+  border-radius: 6px;
+  background-color: var(--c-bg);
   color: var(--c-text);
-}
-
-.label {
-  margin: auto;
-  width: 100%;
-}
-
-.input {
-  max-width: fit-content;
-  font-size: 16px;
-  margin: auto;
-}
-
-.input select {
-  text-align: right;
-  border: 0;
-  background-color: transparent;
   font-family: var(--f-body);
-  color: var(--c-text-soft);
-}
-
-.input select:hover {
-  color: var(--c-text);
+  font-size: 13px;
   cursor: pointer;
 }
 
-.input select option {
+.power-select:disabled {
+  opacity: .45;
+  cursor: default;
+}
+
+.power-select option {
   background-color: var(--c-panel);
-  text-align: left;
 }
 </style>

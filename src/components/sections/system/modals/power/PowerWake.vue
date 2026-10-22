@@ -1,12 +1,13 @@
 <script>
 import {store} from "@/store";
 import {websocket} from "@/util/sockets";
+import SettingsCard from "@/components/sections/system/settings/SettingsCard.vue";
 import PowerBooleanSetting from "@/components/sections/system/modals/power/settings/PowerBooleanSetting.vue";
 import PowerBooleanListSetting from "@/components/sections/system/modals/power/settings/PowerBooleanListSetting.vue";
 
 export default {
   name: "PowerWake",
-  components: {PowerBooleanListSetting, PowerBooleanSetting},
+  components: {SettingsCard, PowerBooleanListSetting, PowerBooleanSetting},
 
   data: function () {
     return {
@@ -161,12 +162,8 @@ export default {
 </script>
 
 <template>
-  <b>{{ $t('message.system.power.wakeTitle') }}</b>
-  <hr/>
-  <div v-if="isValid()" style="margin-bottom: 20px;">
-    <div style="padding-bottom: 15px">{{ $t('message.system.power.wakeDescription') }}</div>
-
-    <div class="settingList">
+  <SettingsCard :title="$t('message.system.power.wakeTitle')" :description="$t('message.system.power.wakeDescription')">
+    <template v-if="isValid()">
       <PowerBooleanSetting ref="reloadSettings" @check-change="changed" :enabled="isActive('ReloadSettings')"
                            :description="$t('message.system.power.power_options.reload')"
                            :label="$t('message.system.power.power_options.reload')"/>
@@ -188,20 +185,21 @@ export default {
                                :enabled="isActive('LoadProfileColours')"
                                :description="$t('message.system.power.power_options.loadColourProfile')"
                                :label="$t('message.system.power.power_options.loadColourProfile')"/>
+    </template>
+    <div v-else class="power-error">
+      <span>{{ $t('message.system.power.settingsError') }}</span>
+      <button type="button" class="settings-action" @click="resetWakeActions">{{ $t('message.system.power.settingsReset') }}</button>
     </div>
-  </div>
-  <div v-else>
-    {{ $t('message.system.power.settingsError') }}:<br/><br/>
-    <button @click="resetWakeActions">{{ $t('message.system.power.settingsReset') }}</button>
-  </div>
+  </SettingsCard>
 </template>
 
 <style scoped>
-.settingList > :nth-child(odd) {
-  background-color: var(--c-raised);
-}
-
-.settingList > :nth-child(even) {
-  background-color: var(--c-bg);
+.power-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  color: var(--c-warn);
 }
 </style>

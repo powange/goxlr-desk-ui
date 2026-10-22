@@ -35,6 +35,12 @@ export default {
             saved: "Scene {name} saved",
             ran: "Scene {name} applied",
             deleted: "Scene {name} deleted",
+            updateTitle: "Replace {name}?",
+            updateQuestion: "The scene {name} will hold the current volumes, mutes, routing and effects instead of its own.",
+            updateYes: "Replace",
+            deleteTitle: "Delete {name}?",
+            deleteQuestion: "The scene {name} will be deleted. This can't be undone.",
+            deleteYes: "Delete",
         },
         integrations: {
             title: "Integrations",
@@ -46,12 +52,21 @@ export default {
             examples: "Examples for this device",
             copyCurl: "Copy curl",
             copyJson: "Copy JSON",
-            more: "From another computer, network access must be on and the link must carry the access token (see Utility settings).",
+            more: "From another computer, network access must be on and the link must carry the access token (see Network access above).",
+            networkTitle: "Network access",
             exampleMicMute: "Mute the microphone",
             exampleVolume: "Set the Music volume to half",
             exampleProfile: "Load the profile {name}",
             exampleScene: "Apply the scene {name}",
             copyFailed: "Unable to copy to the clipboard",
+            recordTitle: "Any control as an API command",
+            recordIntro: "Turn recording on, then use the control you want (a fader, a button, an effect): the command it sent appears here, ready to copy. Recording stops when the interface is closed.",
+            record: "Record the commands sent by this interface",
+            recordEmpty: "Nothing yet: change something in the interface.",
+            clear: "Clear",
+            schemaTitle: "Schema",
+            schemaIntro: "Every command and its arguments, as a JSON Schema (for editors and code generators).",
+            schemaUrl: "JSON Schema of the requests",
         },
         setupWizard: {
             menu: "Setup assistant",
@@ -812,14 +827,106 @@ export default {
         },
 
         system: {
+            // The System pages: intros, card titles, and the help under each setting
+            pages: {
+                settings: {
+                    intro: "How the utility starts, shows itself and updates. These settings apply to every device.",
+                    startup: "Startup and display",
+                    accessibility: "Accessibility",
+                    updates: "Updates and diagnostics",
+                    reset: "Reset",
+                    autoStartHelp: "The utility starts when you log in.",
+                    showOnLaunchHelp: "Otherwise the utility starts quietly in the system tray.",
+                    showTray: "System tray icon",
+                    showTrayHelp: "Quick access to profiles, mic mute and the interface.",
+                    uiHandlerHelp: "The desktop app, or the default browser.",
+                    ttsHelp: "A voice reads the action when a GoXLR button is pressed.",
+                    firmwareSourceHelp: "Stable for everyone, Beta to try what's new.",
+                    logLevel: "Log level",
+                    logLevelHelp: "More detail helps to diagnose a problem.",
+                    openLogs: "Open the logs",
+                    downloadHelp: "Settings, profiles, mic profiles, presets and icons, in a .zip.",
+                    downloadButton: "Download",
+                    restoreHelp: "Replaced files are kept aside first; this computer's folders and network access are kept.",
+                    restoreButton: "Choose a .zip…",
+                    history: "Profile history",
+                    historyHelp: "Each saved profile keeps its last 20 versions in the backups folder.",
+                    recoverHelp: "Puts back the ones shipped with the utility that are missing. Your files aren't changed.",
+                    shutdownHelp: "The GoXLR keeps its current state until the next start."
+                },
+                device: {
+                    intro: "How this GoXLR reacts to its buttons and sampler. Saved for this device ({serial}).",
+                    mute: "Mute",
+                    mic: "Microphone",
+                    sampler: "Sampler",
+                    hold: "Hold to mute everything",
+                    holdHelp: "Holding a mute button this long mutes the channel everywhere.",
+                    voiceDeafen: "Muting voice chat also mutes the mic to chat",
+                    voiceDeafenHelp: "So you aren't heard while you aren't listening.",
+                    lockFaders: "Lock the faders while everything is muted",
+                    lockFadersHelp: "The motorised faders stay put while everything is muted.",
+                    monitorWithFx: "Mic monitoring with effects",
+                    monitorWithFxHelp: "Hear your voice in the headphones with the effects applied.",
+                    preRecord: "Pre-record",
+                    preRecordHelp: "A recording starts this many seconds before the press. 0 to turn it off.",
+                    fade: "Fade duration",
+                    fadeHelp: "For the playback modes that fade.",
+                    resetOnClear: "Reset the playback mode when a button is cleared",
+                    resetOnClearHelp: "Otherwise the button keeps its mode and play order.",
+                    vodLabel: "{channel} behaviour",
+                    vodDescription: "Sets what the {channel} channel carries",
+                    vodRoutable: "Routable",
+                    vodStreamNoMusic: "Stream Mix (No Music)",
+                },
+                power: {
+                    intro: "What the utility does by itself when it stops, when the computer goes to sleep and when it wakes up. The list on the right is only active when the action is on."
+                },
+                firmware: {
+                    intro: "The GoXLR's own software. The channel (Stable or Beta) is chosen in the utility settings.",
+                    state: {
+                        current: "Your firmware is up to date",
+                        outdated: "An update is available",
+                        newer: "Your firmware is newer than the latest release",
+                        unknown: "No update information yet"
+                    },
+                    full: "GoXLR",
+                    mini: "GoXLR Mini",
+                    installed: "Installed",
+                    latest: "Latest version",
+                    channel: "Channel",
+                    hintUpdate: "Don't unplug the GoXLR during the update.",
+                    hintDowngrade: "This GoXLR has a newer version than the latest published one: installing it goes back to an older version.",
+                    hintReinstall: "Nothing to install. You can reinstall the same version if the device misbehaves."
+                },
+                integrations: {
+                    allowNetwork: "Allow other devices",
+                    managedHere: "Managed on the computer the utility runs on: open this page there to turn it on or off, or change the link.",
+                    allowNetworkHelp: "A tablet, a phone or another PC on your network.",
+                    api: "The API"
+                },
+                about: {
+                    intro: "The versions to give when asking for help.",
+                    device: "Device",
+                    software: "Software",
+                    utility: "Utility",
+                    driver: "Driver",
+                    shareHint: "This information in one click, for a bug report or a request for help.",
+                    copy: "Copy the versions"
+                },
+                licences: {
+                    intro: "The utility and what it uses, with their licence. Click to read the full text."
+                }
+            },
             backup: {
                 title: "Backup",
                 withSamples: "Include the samples",
                 download: "Download a backup",
                 restore: "Restore a backup",
                 confirmTitle: "Restore this backup?",
-                confirmMessage: "Profiles, mic profiles, presets, icons and samples from {name} will be added. Files that would be replaced are first copied to the backups folder.",
+                confirmMessage: "Settings, profiles, mic profiles, presets, icons and samples from {name} will be restored. Files that would be replaced are first copied to the backups folder; this computer's folders and network access are kept.",
                 restored: "Backup restored: {added} added, {replaced} replaced, {unchanged} unchanged",
+                openFolder: "Open the backups folder",
+                history: "Each saved profile keeps its last 20 versions in the backups folder (history).",
             },
             networkAccess: {
                 restartNow: "Restart the utility now",
@@ -833,6 +940,7 @@ export default {
                 copy: "Copy",
                 copied: "Copied",
                 regenerate: "New link (the previous links stop working)",
+                regenerateConfirm: "Click again: the current links will stop working",
             },
             title: "System",
             menu: {
@@ -841,6 +949,7 @@ export default {
 
             powerButton: "Power Action",
             power: {
+                missing: "{name} (not found)",
                 shutdownTitle: "Shutdown Actions",
                 shutdownDescription: "These actions will be executed when the GoXLR Utility is safely shut down.",
 
@@ -889,6 +998,7 @@ export default {
 
             settingsButton: "Utility Settings",
             settings: {
+                restartPill: "restart",
                 recoverConfirmTitle: "Restore default files?",
                 recoverConfirmMessage: "The default {type} that are missing will be added back. Existing files are not changed.",
                 recoverConfirmOk: "Restore",
@@ -978,6 +1088,8 @@ export default {
                 seeLogs: "The utility's logs have the details (System, Utility settings, Open logs).",
                 noInfo: "The update servers didn't answer, so the latest version isn't known. This GoXLR runs {currentVersion}.",
                 updateTo: "Update to {version}",
+                downgradeTo: "Go back to {version}",
+                confirmDowngrade: "{current} is installed: {version} is an older version.",
                 reinstall: "Reinstall {version}",
                 customButton: "Custom firmware…",
                 confirmTitle: "Flash the firmware?",
@@ -1066,6 +1178,9 @@ export default {
             loadMicQuestion: "Settings of the mic profile {current} that weren't saved will be lost.",
             load: "Load",
             saveThenLoad: "Save, then load",
+            createTitle: "Create {name}?",
+            create: "Create",
+            saveThenCreate: "Save, then create",
             lighting: "Global lighting",
             lightingTitle: "Global lighting",
             profile: "Profile",
@@ -1167,6 +1282,7 @@ export default {
             folderCount: "{count} sample(s)",
             restore: "Restore",
             deleteForever: "Delete",
+            deleteForeverConfirm: "Click again to delete",
             trashRetention: "Items are deleted for good after 30 days.",
             emptyTrash: "Empty the Trash",
             emptyTrashConfirm: "Click again to delete everything",

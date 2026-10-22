@@ -65,13 +65,13 @@
 
   <!-- Loading another profile replaces the current one, including what wasn't saved -->
   <AccessibleModal ref="loadModal" id="topBarLoad" :show_close="false">
-    <template v-slot:title>{{ $t('message.topBar.loadTitle', { name: pendingLoad.name }) }}</template>
+    <template v-slot:title>{{ $t(pendingLoad.kind === 'create' ? 'message.topBar.createTitle' : 'message.topBar.loadTitle', { name: pendingLoad.name }) }}</template>
     <template v-slot:default>
       {{ $t(pendingLoad.mic ? 'message.topBar.loadMicQuestion' : 'message.topBar.loadQuestion', { current: pendingLoad.current }) }}
     </template>
     <template v-slot:footer>
-      <ModalButton ref="loadOk" @click="confirmLoad(false)">{{ $t('message.topBar.load') }}</ModalButton>
-      <ModalButton @click="confirmLoad(true)">{{ $t('message.topBar.saveThenLoad') }}</ModalButton>
+      <ModalButton ref="loadOk" @click="confirmLoad(false)">{{ $t(pendingLoad.kind === 'create' ? 'message.topBar.create' : 'message.topBar.load') }}</ModalButton>
+      <ModalButton @click="confirmLoad(true)">{{ $t(pendingLoad.kind === 'create' ? 'message.topBar.saveThenCreate' : 'message.topBar.saveThenLoad') }}</ModalButton>
       <ModalButton @click="$refs.loadModal.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
     </template>
   </AccessibleModal>
@@ -83,6 +83,7 @@ import AppButton from "@/components/design/AppButton.vue";
 import {store} from "@/store";
 import {runCommand} from "@/util/sockets";
 import {clearUndo} from "@/util/undo";
+import {guardProfileChange, profileGuard} from "@/util/profileGuard";
 import {isDeviceMini} from "@/util/util";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -98,11 +99,26 @@ export default {
     return {
       lightingOpen: false,
       saveMenuOpen: false,
-      // The profile chosen in a picker, waiting for confirmation
-      pendingLoad: {name: "", mic: false, current: ""},
+      // The profile to load or create (from here or the Profiles page), waiting for confirmation
+      pendingLoad: {kind: "load", name: "", mic: false, current: "", action: () => {}},
     };
   },
   emits: ["toggle-visualiser"],
+
+  watch: {
+    "guard.request"(request) {
+      if (request === null) return;
+      this.pendingLoad = request;
+      profileGuard.request = null;
+      this.$refs.loadModal.openModal(this.$refs.loadOk, document.activeElement);
+    },
+  },
+
+  computed: {
+    guard() {
+      return profileGuard;
+    },
+  },
 
   props: {
     // The device zone of the open section: faders, effects, sampler, mic or none
@@ -183,29 +199,19 @@ export default {
     },
 
     askLoad(name, mic) {
-      // Nothing would be lost: load straight away
-      if (!this.isModified(!mic, mic)) {
-        if (mic) this.loadMicProfile(name); else this.loadProfile(name);
-        return;
-      }
-      const current = mic ? this.getActiveMicProfile() : this.getActiveProfile();
-      this.pendingLoad = {name, mic, current};
-      this.$refs.loadModal.openModal(this.$refs.loadOk);
+      guardProfileChange("load", mic, name, () => mic ? this.loadMicProfile(name) : this.loadProfile(name));
     },
 
-    // Optionally saves the current profile first, then loads the chosen one
+    // Optionally saves the current profile first, then loads (or creates) the chosen one
     async confirmLoad(saveFirst) {
-      const {name, mic} = this.pendingLoad;
+      const {mic, action} = this.pendingLoad;
       this.$refs.loadModal.closeModal();
       const serial = store.getActiveSerial();
       if (saveFirst) {
         if (!(await runCommand(serial, mic ? {SaveMicProfile: []} : {SaveProfile: []}))) return;
       }
-      if (mic) {
-        this.loadMicProfile(name);
-      } else {
-        this.loadProfile(name);
-      }
+      clearUndo();
+      action();
     },
 
     getActiveProfile() {

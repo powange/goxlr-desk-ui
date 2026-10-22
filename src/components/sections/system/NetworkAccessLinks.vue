@@ -18,7 +18,10 @@
         </li>
       </ul>
       <p v-if="access.urls.length === 0" class="hint">{{ $t('message.system.networkAccess.noAddress') }}</p>
-      <button type="button" class="small" @click="regenerate">{{ $t('message.system.networkAccess.regenerate') }}</button>
+      <!-- Every device and script using the current link loses access: a second click confirms -->
+      <button type="button" class="small" :class="{ confirm: confirmRegenerate }" @click="regenerate">
+        {{ confirmRegenerate ? $t('message.system.networkAccess.regenerateConfirm') : $t('message.system.networkAccess.regenerate') }}
+      </button>
     </template>
   </div>
 </template>
@@ -39,6 +42,9 @@ export default {
       copied: undefined,
       // The link whose QR code is shown
       qrUrl: undefined,
+      // A first click on "New link" asks for a second one
+      confirmRegenerate: false,
+      confirmTimer: undefined,
     }
   },
 
@@ -75,6 +81,13 @@ export default {
     },
 
     regenerate() {
+      if (!this.confirmRegenerate) {
+        this.confirmRegenerate = true;
+        clearTimeout(this.confirmTimer);
+        this.confirmTimer = setTimeout(() => this.confirmRegenerate = false, 5000);
+        return;
+      }
+      this.confirmRegenerate = false;
       websocket.send_daemon_command("RegenerateNetworkToken").then(() => this.refresh());
     },
   }
@@ -94,10 +107,7 @@ export default {
 
 .network-access {
   display: grid;
-  gap: 8px;
-  padding: 10px 12px;
-  border-left: 3px solid var(--c-accent);
-  background-color: var(--c-raised);
+  gap: 10px;
   color: var(--c-text);
 }
 
@@ -128,6 +138,11 @@ code {
   font-family: var(--f-mono);
   font-size: 12px;
   user-select: text;
+}
+
+.small.confirm {
+  border-color: var(--c-danger);
+  color: var(--c-danger);
 }
 
 .small {

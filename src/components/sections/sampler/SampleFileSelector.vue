@@ -267,8 +267,9 @@ export default {
         return undefined;
       }
 
+      // Encoded (# ? % + in a name), and fresh (the file may have just been edited)
       let url = getBaseHTTPAddress();
-      url = url + "files/samples/" + this.selectedSample;
+      url = url + "files/samples/" + encodeURIComponent(this.selectedSample) + "?v=" + Date.now();
 
       return url;
     },

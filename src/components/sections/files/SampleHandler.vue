@@ -29,7 +29,7 @@
   <div style="height: 340px; overflow-y: scroll">
     <SampleBrowser ref="browser" :multi="multi"
                    @rename-folder="renameFolder" @delete-folder="deleteFolder"
-                   @rename-sample="renameSample" @move-sample="moveSample" @move-samples="requestMove"
+                   @rename-sample="renameSample" @move-sample="moveSample" @move-many="moveMany" @move-samples="requestMove"
                    @edit-sample="editSample" @delete-samples="deleteSamples" @duplicate-sample="duplicateSample"
                    @import-files="importFiles" @end-multi="multi = false"/>
   </div>
@@ -102,7 +102,7 @@
             </span>
           </div>
           <button @click="send({ RestoreSampleTrash: item.id })">{{ $t('message.sampleManager.restore') }}</button>
-          <button @click="send({ EmptySampleTrash: item.id })">{{ $t('message.sampleManager.deleteForever') }}</button>
+          <button @click="deleteForever(item.id)">{{ confirmDelete === item.id ? $t('message.sampleManager.deleteForeverConfirm') : $t('message.sampleManager.deleteForever') }}</button>
         </li>
       </ul>
       <p class="hint">{{ $t('message.sampleManager.trashRetention') }}</p>
@@ -155,6 +155,8 @@ export default {
       deleteProfiles: [],
 
       confirmEmpty: false,
+      // The trash item a second click deletes for good
+      confirmDelete: null,
       errorMessage: '',
     }
   },
@@ -252,10 +254,15 @@ export default {
 
     confirmMove() {
       this.$refs.moveModal.closeModal();
-      for (let path of this.movePaths) {
+      this.moveMany(this.movePaths.map((path) => {
         let name = this.nameOf(path);
-        this.moveSample(path, this.moveTarget.length > 0 ? `${this.moveTarget}/${name}` : name);
-      }
+        return [path, this.moveTarget.length > 0 ? `${this.moveTarget}/${name}` : name];
+      }));
+    },
+
+    // Several moves, one after the other, with all their errors shown together
+    moveMany(moves) {
+      this.sendAll(moves.filter(([from, to]) => from !== to).map(([from, to]) => ({MoveSamplePath: [from, to]})));
     },
 
     moveSample(from, to) {
@@ -333,7 +340,18 @@ export default {
 
     openTrash() {
       this.confirmEmpty = false;
+      this.confirmDelete = null;
       this.$refs.trashModal.openModal(this.$refs.trashClose, this.$refs.trashButton);
+    },
+
+    // Can't be undone either: a second click confirms
+    deleteForever(id) {
+      if (this.confirmDelete !== id) {
+        this.confirmDelete = id;
+        return;
+      }
+      this.confirmDelete = null;
+      this.send({EmptySampleTrash: id});
     },
 
     emptyTrash() {

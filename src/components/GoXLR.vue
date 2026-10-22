@@ -26,6 +26,8 @@
           <div class="device-status">
             <span class="device-name"><span class="dot" aria-hidden="true"></span>{{ getDeviceName() }}</span>
             <span class="device-detail">{{ getSerial() }}</span>
+            <!-- The utility's version, under the device (below the page it made a scroll bar) -->
+            <VersionCheck @firmware-click="onFirmwareClicked" />
           </div>
         </template>
         <template #header>
@@ -84,7 +86,6 @@
         </Tab>
       </Tabs>
     </template>
-    <VersionCheck @firmware-click="onFirmwareClicked" />
     <Language v-if="!utilitySupportsLanguages()" />
     <A11yNotifications/>
     <AppToasts/>

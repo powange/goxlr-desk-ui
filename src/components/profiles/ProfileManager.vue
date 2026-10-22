@@ -17,7 +17,7 @@
   </ProfileButtonList>
   <div class="buttonColumns">
     <button ref="save" :title="$t('message.profileManager.saveProfileName', {profileName: activeProfile} )"
-            class="actionButton" @click="$refs.saveModal.openModal($refs.focusOk, $refs.save)">
+            class="actionButton" @click="saveActiveProfile">
       <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
     </button>
     <button ref="new" :title="$t('message.profileManager.createProfile')" class="actionButton"
@@ -33,15 +33,6 @@
       menu_id="profile_menu"
   >
   </DropMenu>
-
-  <AccessibleModal ref="saveModal" id="saveProfile" :show_close=false>
-    <template v-slot:title>{{$t('message.profileManager.overwriteTitle')}}</template>
-    <template v-slot:default>{{ $t('message.profileManager.overwriteQuestion', { activeProfile: activeProfile }) }}</template>
-    <template v-slot:footer>
-      <ModalButton ref="focusOk" @click="saveActiveProfile(); $refs.saveModal.closeModal()">{{ $t('message.profileManager.overwriteYes') }}</ModalButton>
-      <ModalButton @click="$refs.saveModal.closeModal()">{{ $t('message.profileManager.overwriteNo') }}</ModalButton>
-    </template>
-  </AccessibleModal>
 
   <AccessibleModal ref="newModal" id="newProfile">
     <template v-slot:title>{{$t('message.profileManager.newTitle')}}</template>

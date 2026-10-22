@@ -134,7 +134,7 @@ const EFFECT_COMPONENTS = {
 const ENABLE_COMMANDS = {megaphone: "SetMegaphoneEnabled", robot: "SetRobotEnabled", hard_tune: "SetHardTuneEnabled"};
 const TITLE_KEYS = {reverb: "reverb", echo: "echo", pitch: "pitch", gender: "gender", megaphone: "megaphone", robot: "robot", hard_tune: "hardTune"};
 import {store} from "@/store";
-import {websocket} from "@/util/sockets";
+import {runCommand, websocket} from "@/util/sockets";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ScrollingRadioList from "@/components/lists/ScrollingRadioList.vue";
@@ -336,11 +336,9 @@ export default {
     saveActivePreset() {
       let name = store.getActiveDevice().effects.preset_names[store.getActiveDevice().effects.active_preset];
 
-      websocket.send_command(store.getActiveSerial(), {"SaveActivePreset": []});
-      store.setAccessibilityNotification(
-          "polite",
-          this.$t("message.effects.preset.accessibilityPresetSaved", { name: name })
-      );
+      // Announced (and shown) once the daemon has saved it, as for profiles
+      runCommand(store.getActiveSerial(), {"SaveActivePreset": []},
+          {ok: this.$t("message.effects.preset.accessibilityPresetSaved", { name: name })});
     },
 
   }

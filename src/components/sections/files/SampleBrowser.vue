@@ -104,7 +104,7 @@ export default {
   components: {RadioList},
 
   // Paths are relative to the samples folder, '/' separated.
-  emits: ['rename-folder', 'delete-folder', 'rename-sample', 'move-sample', 'move-samples', 'edit-sample',
+  emits: ['rename-folder', 'delete-folder', 'rename-sample', 'move-sample', 'move-many', 'move-samples', 'edit-sample',
     'delete-samples', 'duplicate-sample', 'import-files', 'end-multi'],
 
   props: {
@@ -380,7 +380,8 @@ export default {
       this.stopPlayback();
       let path = this.pathOf(id);
       this.previewing = path;
-      this.audio_player.src = getBaseHTTPAddress() + "files/samples/" + encodeURIComponent(this.nameOf(path));
+      // Always the file as it is now (it may just have been edited in place)
+      this.audio_player.src = getBaseHTTPAddress() + "files/samples/" + encodeURIComponent(this.nameOf(path)) + "?v=" + Date.now();
       this.audio_player.play();
     },
 
@@ -444,12 +445,17 @@ export default {
 
       let paths = this.dragging;
       this.onSampleDragEnd();
+      // All the moves at once, so their errors are reported together
+      let moves = [];
       for (let path of paths) {
         let name = this.nameOf(path);
         let to = folder.length > 0 ? `${folder}/${name}` : name;
         if (to !== path) {
-          this.$emit('move-sample', path, to);
+          moves.push([path, to]);
         }
+      }
+      if (moves.length > 0) {
+        this.$emit('move-many', moves);
       }
     },
 

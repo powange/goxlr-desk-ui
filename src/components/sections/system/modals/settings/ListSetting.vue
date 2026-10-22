@@ -1,5 +1,10 @@
 <script>
+import SettingRow from "@/components/sections/system/settings/SettingRow.vue";
+
+let next = 0;
+
 export default {
+  components: {SettingRow},
   emits: ['change'],
 
   name: "ListSetting",
@@ -8,6 +13,12 @@ export default {
     description: {type: String, required: true},
     options: {type: Array, required: true},
     value: {type: String, required: true},
+    help: {type: String, default: ""},
+    restart: {type: Boolean, default: false},
+  },
+
+  data() {
+    return {id: `list-setting-${next++}`};
   },
 
   methods: {
@@ -19,56 +30,30 @@ export default {
 </script>
 
 <template>
-  <div class="setting">
-    <span class="label">{{ label }}</span>
-    <div class="input">
-      <select @change="onChange">
-        <option v-for="option of options" :key="option.key" :value="option.key" :selected="option.key === value">
-          {{ option.value }}
-        </option>
-      </select>
-    </div>
-  </div>
+  <SettingRow :label="label" :help="help" :restart="restart" :for-id="id">
+    <select :id="id" class="setting-field" :aria-description="description" @change="onChange">
+      <option v-for="option of options" :key="option.key" :value="option.key" :selected="option.key === value">
+        {{ option.value }}
+      </option>
+    </select>
+    <slot></slot>
+  </SettingRow>
 </template>
 
 <style scoped>
-.setting {
-  display: flex;
-  height: 20px;
-  padding: 10px;
-  color: var(--c-text-soft);
-}
-
-.setting:focus-within {
+.setting-field {
+  min-width: 220px;
+  padding: 7px 10px;
+  border: 1px solid var(--c-field-border);
+  border-radius: 6px;
+  background-color: var(--c-bg);
   color: var(--c-text);
-}
-
-.label {
-  margin: auto;
-  width: 100%;
-}
-
-.input {
-  max-width: fit-content;
-  font-size: 20px;
-  margin: auto;
-}
-
-.input select {
-  text-align: right;
-  border: 0;
-  background-color: transparent;
   font-family: var(--f-body);
-  color: var(--c-text-soft);
-}
-
-.input select:hover {
-  color: var(--c-text);
+  font-size: 13px;
   cursor: pointer;
 }
 
-.input select option {
+.setting-field option {
   background-color: var(--c-panel);
-  text-align: left;
 }
 </style>

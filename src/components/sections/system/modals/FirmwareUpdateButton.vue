@@ -7,8 +7,58 @@
       <font-awesome-icon icon="fa-solid fa-download" />
     </BigButton>
     <AccessibleModal :inline="inline" id="firmware_update_modal" ref="firmware_update_modal" width="620px" :show_footer=false>
-      <template v-slot:title>{{ updateButtonTitle || $t('message.system.menu.firmware') }}</template>
+      <template v-slot:title>{{ inline ? $t('message.system.menu.firmware') : updateButtonTitle }}</template>
 
+      <!-- As a page (System menu): the state, what's new, then the actions -->
+      <div v-if="inline" class="settings-page">
+        <p class="page-intro">{{ $t('message.system.pages.firmware.intro') }}</p>
+
+        <SettingsCard>
+          <div class="fw-status">
+            <span class="fw-icon" :class="firmwareState()" aria-hidden="true">
+              <font-awesome-icon :icon="firmwareState() === 'outdated' ? 'fa-solid fa-arrow-up' : (firmwareState() === 'unknown' ? 'fa-solid fa-question' : 'fa-solid fa-check')"/>
+            </span>
+            <div>
+              <div class="fw-headline">{{ $t(`message.system.pages.firmware.state.${firmwareState()}`) }}</div>
+              <div class="fw-sub">{{ $t(isDeviceMini() ? 'message.system.pages.firmware.mini' : 'message.system.pages.firmware.full') }}</div>
+            </div>
+          </div>
+          <dl class="fw-versions">
+            <div><dt>{{ $t('message.system.pages.firmware.installed') }}</dt><dd>{{ getCurrentFirmwareVersion() }}</dd></div>
+            <div><dt>{{ $t('message.system.pages.firmware.latest') }}</dt><dd>{{ isLatestFirmwareAvailable() ? getLatestFirmwareInfo().version.join('.') : '—' }}</dd></div>
+            <div><dt>{{ $t('message.system.pages.firmware.channel') }}</dt><dd>{{ isBetaUpdateSite() ? $t('message.system.settings.firmwareSources.beta') : $t('message.system.settings.firmwareSources.live') }}</dd></div>
+          </dl>
+        </SettingsCard>
+
+        <SettingsCard v-if="isLatestFirmwareAvailable() && getLatestFirmwareInfo().change_log"
+                      :title="$t('message.system.firmwareUpdate.changelog', {version: getLatestFirmwareInfo().version.join('.')})">
+          <p class="fw-changelog">{{ changelogBody() }}</p>
+        </SettingsCard>
+
+        <p class="fw-warning" role="note">
+          <font-awesome-icon icon="fa-solid fa-triangle-exclamation" aria-hidden="true"/>
+          <span>
+            {{ $t('message.system.firmwareUpdate.warning') }}
+            <a href="https://github.com/GoXLR-on-Linux/goxlr-utility/wiki/Firmware-Updating" target="_blank" rel="noopener">{{ $t('message.system.firmwareUpdate.warningInfo') }}</a>
+            <template v-if="isBetaUpdateSite()"><br>{{ $t('message.system.firmwareUpdate.betaWarning') }}</template>
+          </span>
+        </p>
+
+        <SettingsCard>
+          <div class="fw-actions">
+            <span class="fw-hint">{{ $t({outdated: 'message.system.pages.firmware.hintUpdate', newer: 'message.system.pages.firmware.hintDowngrade'}[firmwareState()] || 'message.system.pages.firmware.hintReinstall') }}</span>
+            <button type="button" class="settings-action" @click="confirmFlash(true)">{{ $t('message.system.firmwareUpdate.customButton') }}</button>
+            <button v-if="isLatestFirmwareAvailable() && compareCurrentFirmwareToLatest() < 0" type="button" class="settings-action primary" @click="confirmFlash(false)">
+              {{ $t('message.system.firmwareUpdate.updateTo', { version: getLatestFirmwareInfo().version.join('.') }) }}
+            </button>
+            <button v-else-if="isLatestFirmwareAvailable()" type="button" class="settings-action" @click="confirmFlash(false)">
+              {{ $t(firmwareState() === 'newer' ? 'message.system.firmwareUpdate.downgradeTo' : 'message.system.firmwareUpdate.reinstall', { version: getLatestFirmwareInfo().version.join('.') }) }}
+            </button>
+          </div>
+        </SettingsCard>
+      </div>
+
+      <template v-else>
       <p class="firmwareWarning">
         {{ $t('message.system.firmwareUpdate.warning') }}
         <a
@@ -47,26 +97,18 @@
         </p>
       </p>
 
-      <!-- As a page (System menu): explicit actions, each confirmed before flashing -->
-      <div v-if="inline" class="modalButtonBox">
-        <button v-if="isLatestFirmwareAvailable() && compareCurrentFirmwareToLatest() < 0" class="primary" @click="confirmFlash(false)">
-          {{ $t('message.system.firmwareUpdate.updateTo', { version: getLatestFirmwareInfo().version.join('.') }) }}
-        </button>
-        <button v-else-if="isLatestFirmwareAvailable()" @click="confirmFlash(false)">
-          {{ $t('message.system.firmwareUpdate.reinstall', { version: getLatestFirmwareInfo().version.join('.') }) }}
-        </button>
-        <button @click="confirmFlash(true)">{{ $t('message.system.firmwareUpdate.customButton') }}</button>
-      </div>
-      <div v-else class="modalButtonBox">
+      <div class="modalButtonBox">
         <button @click="startFirmwareUpdate">{{$t('message.modalButtons.continue')}}</button>
         <button class="cancel" @click="$refs.firmware_update_modal.closeModal()">{{$t('message.modalButtons.cancel')}}</button>
       </div>
+      </template>
     </AccessibleModal>
 
     <AccessibleModal v-if="inline" ref="flashConfirm" id="firmware_flash_confirm" :show_close="false">
       <template v-slot:title>{{ $t('message.system.firmwareUpdate.confirmTitle') }}</template>
       <template v-slot:default>
         <p>{{ customFirmware ? $t('message.system.firmwareUpdate.confirmCustom') : $t('message.system.firmwareUpdate.confirmText') }}</p>
+        <p v-if="!customFirmware && firmwareState() === 'newer'">{{ $t('message.system.firmwareUpdate.confirmDowngrade', { current: getCurrentFirmwareVersion(), version: getLatestFirmwareInfo().version.join('.') }) }}</p>
       </template>
       <template v-slot:footer>
         <ModalButton ref="flashOk" @click="$refs.flashConfirm.closeModal(); startFirmwareUpdate()">{{ $t('message.modalButtons.continue') }}</ModalButton>
@@ -83,6 +125,7 @@ import {uploadFirmwareBlob, websocket} from "@/util/sockets";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
+import SettingsCard from "@/components/sections/system/settings/SettingsCard.vue";
 
 export default {
   props: {
@@ -90,7 +133,7 @@ export default {
     inline: {type: Boolean, default: false},
   },
   name: "FirmwareUpdateButton",
-  components: {ModalButton, BigButton, AccessibleModal},
+  components: {SettingsCard, ModalButton, BigButton, AccessibleModal},
 
   data() {
     return {
@@ -131,6 +174,27 @@ export default {
       };
 
       this.updateButtonTitle = this.getNewUpdateButtonTitle();
+    },
+
+    isDeviceMini,
+
+    // The change log, without its first line when it only repeats the version ("1.4.3.110:")
+    changelogBody() {
+      const lines = this.getLatestFirmwareInfo().change_log.trim().split("\n");
+      const version = this.getLatestFirmwareInfo().version.join('.');
+      if (lines.length > 1 && lines[0].trim().replace(/:$/, "") === version) {
+        lines.shift();
+      }
+      return lines.join("\n").trim();
+    },
+
+    // up to date, an update to install, or nothing known (no update information)
+    firmwareState() {
+      if (!this.isLatestFirmwareAvailable()) return "unknown";
+      const order = this.compareCurrentFirmwareToLatest();
+      if (order < 0) return "outdated";
+      if (order > 0) return "newer";
+      return "current";
     },
 
     isBetaUpdateSite() {
@@ -240,7 +304,12 @@ export default {
         this.selectFirmwareFile()
             .then(result => {
               this.$refs.firmware_update_modal.closeModal();
-              uploadFirmwareBlob(result, store.getActiveDevice().hardware.serial_number);
+              // The daemon answers {"Error": ..} when it refuses the file (too big, unknown device)
+              uploadFirmwareBlob(result, store.getActiveDevice().hardware.serial_number)
+                  .then(data => {
+                    if (data && data.Error !== undefined) store.addToast("error", data.Error);
+                  })
+                  .catch(error => store.addToast("error", String(error)));
             })
             .catch(() => this.$refs.firmware_update_modal.closeModal());
       }
@@ -273,6 +342,115 @@ export default {
 </script>
 
 <style scoped>
+.fw-status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+}
+
+.fw-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 50%;
+  background-color: color-mix(in srgb, var(--c-ok) 18%, transparent);
+  color: var(--c-ok);
+  font-size: 18px;
+}
+
+.fw-icon.outdated {
+  background-color: var(--c-accent-dim);
+  color: var(--c-accent-light);
+}
+
+.fw-icon.unknown {
+  background-color: var(--c-raised);
+  color: var(--c-muted);
+}
+
+.fw-headline {
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--c-text);
+}
+
+.fw-sub {
+  color: var(--c-muted);
+}
+
+.fw-versions {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin: 0;
+}
+
+.fw-versions div {
+  padding: 14px 20px;
+  border-left: 1px solid var(--c-line);
+}
+
+.fw-versions div:first-child {
+  border-left: none;
+}
+
+.fw-versions dt {
+  font-size: 12px;
+  color: var(--c-muted);
+}
+
+.fw-versions dd {
+  margin: 0;
+  font-family: var(--f-mono);
+  font-size: 15px;
+  color: var(--c-text);
+}
+
+.fw-changelog {
+  margin: 0;
+  padding: 4px 20px 18px;
+  white-space: pre-line;
+  color: var(--c-text-soft);
+}
+
+.fw-warning {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 14px 16px;
+  border: 1px solid color-mix(in srgb, var(--c-warn) 40%, transparent);
+  border-radius: 8px;
+  background-color: color-mix(in srgb, var(--c-warn) 10%, transparent);
+  color: var(--c-text-soft);
+  font-size: 13px;
+}
+
+.fw-warning svg {
+  margin-top: 2px;
+  color: var(--c-warn);
+}
+
+.fw-warning a {
+  color: var(--c-accent);
+}
+
+.fw-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+}
+
+.fw-hint {
+  flex: 1 1 260px;
+  color: var(--c-muted);
+  font-size: 12.5px;
+}
+
 .modalButtonBox {
   display: flex;
   flex-direction: row;

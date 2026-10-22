@@ -178,15 +178,13 @@ export default {
           this.activeSample,
         ],
       });
+      // Deselected first: the index now points at the next sample
+      const deleted = {sampleName: this.sampleName, activeButton: this.activeButton, bank: this.activeBank};
+      this.$emit("deselect-sample");
       store.setAccessibilityNotification(
           "polite",
-          $t('message.sampler.samples.waveform.sampleDeleted', {
-            sampleName: this.sampleName,
-            activeButton: this.activeButton,
-            bank: this.activeBank
-          })
+          this.$t('message.sampler.samples.waveform.sampleDeleted', deleted)
       );
-      this.$emit("deselect-sample");
     },
 
     mouseDownLeft(event) {
@@ -501,7 +499,7 @@ export default {
         }
         store.setAccessibilityNotification(
             "polite",
-            $t('message.sampler.samples.waveform.zoomLevel', {level: this.stepper})
+            this.$t('message.sampler.samples.waveform.zoomLevel', {level: this.stepper})
         );
         return;
       }
@@ -513,7 +511,7 @@ export default {
         }
         store.setAccessibilityNotification(
             "polite",
-            $t('message.sampler.samples.waveform.zoomLevel', {level: this.stepper})
+            this.$t('message.sampler.samples.waveform.zoomLevel', {level: this.stepper})
         );
       }
     },
@@ -572,8 +570,9 @@ export default {
         return;
       }
 
+      // Encoded (# ? % + in a name), and fresh (the file may have just been edited)
       let url = getBaseHTTPAddress();
-      url = url + "files/samples/" + this.sampleName;
+      url = url + "files/samples/" + encodeURIComponent(this.sampleName) + "?v=" + Date.now();
 
       this.wavesurfer.load(url);
     },

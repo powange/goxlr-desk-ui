@@ -17,91 +17,80 @@
     >
       <template v-slot:title>{{ $t('message.system.settingsButton') }}</template>
 
-      <div class="settingList" role="region" :aria-label="$t('message.system.settings.settingsRegionAccessibility')">
-        <ListSetting :value="getCurrentLanguage()" :options="getLanguageKeys()"
-                     :description="$t('message.system.settings.language')"
-                     :label="$t('message.system.settings.language')" @change="setUILanguage"/>
+      <div class="settings-page" role="region" :aria-label="$t('message.system.settings.settingsRegionAccessibility')">
+        <p class="page-intro">{{ $t('message.system.pages.settings.intro') }}</p>
 
-        <ListSetting :value="getUIHandler()" :options="getUIHandlerKeys()"
-                     :description="$t('message.system.settings.uiHandler')"
-                     :label="$t('message.system.settings.uiHandler')" @change="setUIHandler"/>
+        <SettingsCard :title="$t('message.system.pages.settings.startup')">
+          <BooleanSetting :label="$t('message.system.settings.autoStart')" :enabled="isAutostart()"
+                          :help="$t('message.system.pages.settings.autoStartHelp')"
+                          @change="setAutoStart" :description="$t('message.system.settings.autoStartAccessibility')"/>
+          <BooleanSetting :label="$t('message.system.settings.showOnLaunch')" :enabled="isShowUi()"
+                          :help="$t('message.system.pages.settings.showOnLaunchHelp')"
+                          @change="setShowUi" :description="$t('message.system.settings.showOnLaunchAccessibility')"/>
+          <BooleanSetting :label="$t('message.system.pages.settings.showTray')" :enabled="isShowIcon()" restart
+                          :help="$t('message.system.pages.settings.showTrayHelp')"
+                          @change="setShowIcon" :description="$t('message.system.settings.showTrayAccessibility')"/>
+          <ListSetting :value="getUIHandler()" :options="getUIHandlerKeys()"
+                       :help="$t('message.system.pages.settings.uiHandlerHelp')"
+                       :description="$t('message.system.settings.uiHandler')"
+                       :label="$t('message.system.settings.uiHandler')" @change="setUIHandler"/>
+          <ListSetting :value="getCurrentLanguage()" :options="getLanguageKeys()"
+                       :description="$t('message.system.settings.language')"
+                       :label="$t('message.system.settings.language')" @change="setUILanguage"/>
+          <BooleanSetting v-if="is_macos()" :label="$t('message.system.settings.macosAggregateManagement')" :enabled="get_macos_aggregate_management()"
+                          @change="set_macos_aggregate_management"
+                          :description="$t('message.system.settings.macosAggregateManagementAccessibility')"/>
+        </SettingsCard>
 
-        <ListSetting :value="getLogLevel()" :options="getLogKeys()" :description="$t('message.system.settings.logLevel')"
-                     :label="$t('message.system.settings.logLevel')" @change="setLogLevel"/>
+        <SettingsCard v-if="isTTSAvailable()" :title="$t('message.system.pages.settings.accessibility')">
+          <BooleanSetting :label="$t('message.system.settings.ttsOnButton')"
+                          :help="$t('message.system.pages.settings.ttsHelp')"
+                          :enabled="isTTSEnabled()" @change="setTTSEnabled"
+                          :description="$t('message.system.settings.ttsOnButtonAccessibility')"/>
+        </SettingsCard>
 
-        <ListSetting :value="getFirmwareSource()" :options="getFirmwareSourceKeys()" :description="$t('message.system.settings.firmwareSource')"
-                     :label="$t('message.system.settings.firmwareSource')" @change="setFirmwareSource"/>
-
-        <BooleanSetting v-if="is_macos()" :label="$t('message.system.settings.macosAggregateManagement')" :enabled="get_macos_aggregate_management()"
-                        @change="set_macos_aggregate_management"
-                        :description="$t('message.system.settings.macosAggregateManagementAccessibility')"/>
-
-        <BooleanSetting :label="$t('message.system.settings.allowNetworkAccess')" :enabled="get_allow_network_access()"
-                        @change="set_allow_network_access"
-                        :description="$t('message.system.settings.allowNetworkAccessAccessibility')"/>
-        <NetworkAccessLinks v-if="get_allow_network_access()" :key="String(get_allow_network_access())"/>
-
-        <BooleanSetting :label="$t('message.system.settings.autoStart')" :enabled="isAutostart()"
-                        @change="setAutoStart" :description="$t('message.system.settings.autoStartAccessibility')"/>
-
-        <BooleanSetting :label="$t('message.system.settings.showOnLaunch')" :enabled="isShowUi()"
-                        @change="setShowUi" :description="$t('message.system.settings.showOnLaunchAccessibility')"/>
-
-        <BooleanSetting :label="$t('message.system.settings.showTray')" :enabled="isShowIcon()"
-                        @change="setShowIcon" :description="$t('message.system.settings.showTrayAccessibility')"/>
-
-        <BooleanSetting v-if="isTTSAvailable()" :label="$t('message.system.settings.ttsOnButton')"
-                        :enabled="isTTSEnabled()" @change="setTTSEnabled"
-                        :description="$t('message.system.settings.ttsOnButtonAccessibility')"/>
-
+        <SettingsCard :title="$t('message.system.pages.settings.updates')">
+          <ListSetting :value="getFirmwareSource()" :options="getFirmwareSourceKeys()"
+                       :help="$t('message.system.pages.settings.firmwareSourceHelp')"
+                       :description="$t('message.system.settings.firmwareSource')"
+                       :label="$t('message.system.settings.firmwareSource')" @change="setFirmwareSource"/>
+          <ListSetting :value="getLogLevel()" :options="getLogKeys()" restart
+                       :help="$t('message.system.pages.settings.logLevelHelp')"
+                       :description="$t('message.system.settings.logLevel')"
+                       :label="$t('message.system.pages.settings.logLevel')" @change="setLogLevel">
+            <button type="button" class="settings-action" @click="openLogs()">{{ $t('message.system.pages.settings.openLogs') }}</button>
+          </ListSetting>
+        </SettingsCard>
 
         <!-- The whole configuration in one file, to move to another computer or keep aside -->
-        <div class="recoverDefaults" role="group" :aria-label="$t('message.system.backup.title')">
-          <div class="label">{{ $t('message.system.backup.title') }}</div>
-          <div class="backup">
-            <label class="backup-samples">
-              <input type="checkbox" v-model="backupSamples"/>
-              <span>{{ $t('message.system.backup.withSamples') }}</span>
-            </label>
-            <a class="backup-link" :href="backupUrl()" download>{{ $t('message.system.backup.download') }}</a>
+        <SettingsCard :title="$t('message.system.backup.title')">
+          <SettingRow :label="$t('message.system.backup.download')" :help="$t('message.system.pages.settings.downloadHelp')">
+            <span class="settings-inline-toggle">
+              <Toggle v-model="backupSamples" :label="$t('message.system.backup.withSamples')"/>
+              <span aria-hidden="true" @click="backupSamples = !backupSamples">{{ $t('message.system.backup.withSamples') }}</span>
+            </span>
+            <a class="settings-action primary" :href="backupUrl()" download>{{ $t('message.system.pages.settings.downloadButton') }}</a>
+          </SettingRow>
+          <SettingRow :label="$t('message.system.backup.restore')" :help="$t('message.system.pages.settings.restoreHelp')">
             <input ref="restoreInput" type="file" accept=".zip" hidden @change="onRestoreChosen"/>
-            <button ref="restoreButton" type="button" @click="$refs.restoreInput.click()">{{ $t('message.system.backup.restore') }}</button>
-          </div>
-        </div>
+            <button ref="restoreButton" type="button" class="settings-action" @click="$refs.restoreInput.click()">{{ $t('message.system.pages.settings.restoreButton') }}</button>
+          </SettingRow>
+          <SettingRow :label="$t('message.system.pages.settings.history')" :help="$t('message.system.pages.settings.historyHelp')">
+            <button type="button" class="settings-action" @click="openBackups()">{{ $t('message.system.backup.openFolder') }}</button>
+          </SettingRow>
+        </SettingsCard>
 
-        <div class="recoverDefaults" role="group" :aria-label="$t('message.system.settings.recoverDefaults')">
-          <div class="label">{{ $t('message.system.settings.recoverDefaults') }}</div>
-          <div class="buttons">
-            <div>
-              <button :ref="'recoverProfiles'" @click="askRecover('Profiles')">
-                {{ $t('message.system.settings.recoverOptions.profiles') }}
-              </button>
-            </div>
-            <div>
-              <button :ref="'recoverMicProfiles'" @click="askRecover('MicProfiles')">
-                {{ $t('message.system.settings.recoverOptions.micProfiles') }}
-              </button>
-            </div>
-            <div>
-              <button :ref="'recoverIcons'" @click="askRecover('Icons')">
-                {{ $t('message.system.settings.recoverOptions.icons') }}
-              </button>
-            </div>
-            <div>
-              <button :ref="'recoverPresets'" @click="askRecover('Presets')">
-                {{ $t('message.system.settings.recoverOptions.presets') }}
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="shutdownButton">
-          <div style="text-align: right">
-            <button ref="shutdownButton" class="shutdown" @click="shutdown_util()">
-              {{ $t('message.system.settings.shutdownUtility') }}
-            </button>
-          </div>
-        </div>
+        <SettingsCard danger :title="$t('message.system.pages.settings.reset')">
+          <SettingRow :label="$t('message.system.settings.recoverDefaults')" :help="$t('message.system.pages.settings.recoverHelp')">
+            <button type="button" class="settings-action" :ref="'recoverProfiles'" @click="askRecover('Profiles')">{{ $t('message.system.settings.recoverOptions.profiles') }}</button>
+            <button type="button" class="settings-action" :ref="'recoverMicProfiles'" @click="askRecover('MicProfiles')">{{ $t('message.system.settings.recoverOptions.micProfiles') }}</button>
+            <button type="button" class="settings-action" :ref="'recoverPresets'" @click="askRecover('Presets')">{{ $t('message.system.settings.recoverOptions.presets') }}</button>
+            <button type="button" class="settings-action" :ref="'recoverIcons'" @click="askRecover('Icons')">{{ $t('message.system.settings.recoverOptions.icons') }}</button>
+          </SettingRow>
+          <SettingRow :label="$t('message.system.settings.shutdownUtility')" :help="$t('message.system.pages.settings.shutdownHelp')">
+            <button type="button" class="settings-action danger" ref="shutdownButton" @click="shutdown_util()">{{ $t('message.system.settings.shutdownUtility') }}</button>
+          </SettingRow>
+        </SettingsCard>
       </div>
     </AccessibleModal>
     <!-- Restoring only adds the default files that are missing, it never replaces a file -->
@@ -134,11 +123,13 @@
 
 <script>
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
-import NetworkAccessLinks from "@/components/sections/system/NetworkAccessLinks.vue";
 import BigButton from "@/components/buttons/BigButton.vue";
 import {store} from "@/store";
 import {errorMessage, getBaseHTTPAddress, websocket} from "@/util/sockets";
 import {languages} from "@/lang/config";
+import Toggle from "@/components/design/Toggle.vue";
+import SettingsCard from "@/components/sections/system/settings/SettingsCard.vue";
+import SettingRow from "@/components/sections/system/settings/SettingRow.vue";
 import BooleanSetting from "@/components/sections/system/modals/settings/BooleanSetting.vue";
 import ListSetting from "@/components/sections/system/modals/settings/ListSetting.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
@@ -157,7 +148,7 @@ export default {
       return store
     }
   },
-  components: {NetworkAccessLinks, ModalButton, ListSetting, BooleanSetting, BigButton, AccessibleModal},
+  components: {Toggle, SettingsCard, SettingRow, ModalButton, ListSetting, BooleanSetting, BigButton, AccessibleModal},
 
   data() {
     return {
@@ -373,17 +364,6 @@ export default {
       websocket.open_path("Logs");
     },
 
-    get_allow_network_access() {
-      if (store.getConfig() === undefined) {
-        return false;
-      }
-      return store.getConfig().allow_network_access;
-    },
-
-    set_allow_network_access(value) {
-      websocket.send_daemon_command({"SetAllowNetworkAccess": value});
-    },
-
     get_macos_aggregate_management() {
       if (store.getConfig() === undefined) {
         return true;
@@ -447,6 +427,9 @@ export default {
       websocket.send_daemon_command({"SetTTSEnabled": value});
     },
 
+    openBackups() {
+      websocket.open_path("Backups");
+    },
     backupUrl() {
       return `${getBaseHTTPAddress()}files/backup${this.backupSamples ? "?samples=1" : ""}`;
     },
@@ -525,81 +508,4 @@ export default {
 </script>
 
 <style scoped>
-.backup {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 10px;
-  padding: 6px 0;
-  font-size: 13px;
-}
-
-.backup-samples {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.backup-link {
-  color: var(--c-accent);
-}
-
-.settingList > :nth-child(odd) {
-  background-color: var(--c-raised);
-}
-
-.settingList > :nth-child(even) {
-  background-color: var(--c-bg);
-}
-
-.recoverDefaults {
-  display: flex;
-  height: 20px;
-  padding: 10px;
-}
-
-.recoverDefaults .label {
-  margin: auto;
-  width: 100%;
-  color: var(--c-text-soft);
-}
-
-.recoverDefaults .buttons {
-  display: flex;
-  gap: 10px;
-}
-
-.recoverDefaults .buttons div button {
-  white-space: nowrap;
-  border: 1px solid var(--c-line-strong);
-  background-color: transparent;
-  color: var(--c-text-soft);
-  padding: 3px 8px;
-  cursor: pointer;
-}
-
-.recoverDefaults .buttons div button:hover {
-  border: 1px solid var(--c-text);
-  color: var(--c-text);
-}
-
-.shutdownButton {
-  margin: auto;
-  padding: 5px;
-}
-
-.shutdownButton .shutdown {
-  color: var(--c-text-soft);
-  border: 1px solid var(--c-danger);
-  background-color: transparent;
-  padding: 4px;
-}
-
-.shutdownButton .shutdown:hover {
-  cursor: pointer;
-  color: var(--c-text);
-  border: 1px solid var(--c-danger);
-}
-
-
 </style>

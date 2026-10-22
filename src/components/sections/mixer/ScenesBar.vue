@@ -5,11 +5,11 @@
     <span class="scenes-label">{{ $t('message.scenes.title') }}</span>
     <div v-for="name in sceneNames()" :key="name" class="scene">
       <button type="button" class="scene-run" @click="run(name)" :title="$t('message.scenes.runHint', {name})">{{ name }}</button>
-      <button type="button" class="scene-update" @click="capture(name)"
+      <button type="button" class="scene-update" @click="ask('update', name, $event)"
               :aria-label="$t('message.scenes.update', {name})" :title="$t('message.scenes.update', {name})">
         <font-awesome-icon icon="fa-solid fa-floppy-disk"/>
       </button>
-      <button type="button" class="scene-delete" @click="remove(name)"
+      <button type="button" class="scene-delete" @click="ask('delete', name, $event)"
               :aria-label="$t('message.scenes.delete', {name})" :title="$t('message.scenes.delete', {name})">
         <font-awesome-icon icon="fa-solid fa-xmark"/>
       </button>
@@ -22,11 +22,24 @@
 
   <NameDialog ref="nameDialog" id="sceneName" :title="$t('message.scenes.newTitle')" :ok-label="$t('message.scenes.create')"
               :taken="sceneNames()" @submit="capture"/>
+
+  <!-- Replacing or deleting a scene can't be undone: the buttons are small and next to the
+       scene's own, so a missed click asks first -->
+  <AccessibleModal ref="confirmModal" id="sceneConfirm" :show_close="false">
+    <template v-slot:title>{{ $t(pending.action === 'delete' ? 'message.scenes.deleteTitle' : 'message.scenes.updateTitle', {name: pending.name}) }}</template>
+    <template v-slot:default>{{ $t(pending.action === 'delete' ? 'message.scenes.deleteQuestion' : 'message.scenes.updateQuestion', {name: pending.name}) }}</template>
+    <template v-slot:footer>
+      <ModalButton @click="confirm">{{ $t(pending.action === 'delete' ? 'message.scenes.deleteYes' : 'message.scenes.updateYes') }}</ModalButton>
+      <ModalButton ref="cancel" @click="$refs.confirmModal.closeModal()">{{ $t('message.sampleManager.cancel') }}</ModalButton>
+    </template>
+  </AccessibleModal>
 </template>
 
 <script>
 import AppButton from "@/components/design/AppButton.vue";
 import NameDialog from "@/components/profiles/NameDialog.vue";
+import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
+import ModalButton from "@/components/design/modal/ModalButton.vue";
 import {store} from "@/store";
 import {runCommand} from "@/util/sockets";
 import {isDeviceMini} from "@/util/util";
@@ -34,7 +47,14 @@ import {InputRouting, OutputRouting} from "@/util/mixerMapping";
 
 export default {
   name: "ScenesBar",
-  components: {AppButton, NameDialog},
+  components: {AppButton, NameDialog, AccessibleModal, ModalButton},
+
+  data() {
+    return {
+      // The replace or delete waiting for confirmation
+      pending: {action: "", name: ""},
+    };
+  },
 
   methods: {
     sceneNames() {
@@ -79,6 +99,17 @@ export default {
 
     run(name) {
       runCommand(store.getActiveSerial(), {RunScene: name}, {a11y: this.$t('message.scenes.ran', {name})});
+    },
+
+    ask(action, name, event) {
+      this.pending = {action, name};
+      this.$refs.confirmModal.openModal(this.$refs.cancel, event.currentTarget);
+    },
+
+    confirm() {
+      const {action, name} = this.pending;
+      this.$refs.confirmModal.closeModal();
+      if (action === "delete") this.remove(name); else this.capture(name);
     },
 
     remove(name) {

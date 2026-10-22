@@ -32,6 +32,7 @@
  */
 import {store} from "@/store";
 import {recordForUndo} from "@/util/undo";
+import {recordApiCommand} from "@/util/apiRecorder";
 
 // The text of an error from the daemon (websocket {Error: ".."}, or a string from HTTP).
 export function errorMessage(error) {
@@ -179,6 +180,7 @@ export class Websocket {
 
     send_command(serial, command) {
         recordForUndo(serial, command);
+        recordApiCommand(serial, command);
         let request = {
             "Command": [
                 serial,
@@ -275,6 +277,7 @@ export function runWebsocket() {
  * errors, so we'll handle fulfill or reject here based on what comes back.
  */
 export function sendHttpCommand(serial, command) {
+    recordApiCommand(serial, command);
     let request = {
         "Command": [
             serial,

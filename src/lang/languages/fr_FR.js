@@ -35,6 +35,12 @@ export default {
             saved: "Scène {name} enregistrée",
             ran: "Scène {name} appliquée",
             deleted: "Scène {name} supprimée",
+            updateTitle: "Remplacer {name} ?",
+            updateQuestion: "La scène {name} prendra les volumes, mutes, routage et effets actuels à la place des siens.",
+            updateYes: "Remplacer",
+            deleteTitle: "Supprimer {name} ?",
+            deleteQuestion: "La scène {name} sera supprimée. Ce n'est pas annulable.",
+            deleteYes: "Supprimer",
         },
         integrations: {
             title: "Intégrations",
@@ -46,12 +52,21 @@ export default {
             examples: "Exemples pour cet appareil",
             copyCurl: "Copier curl",
             copyJson: "Copier le JSON",
-            more: "Depuis un autre ordinateur, l'accès réseau doit être activé et le lien doit porter le jeton d'accès (voir Paramètres de l'utilitaire).",
+            more: "Depuis un autre ordinateur, l'accès réseau doit être activé et le lien doit porter le jeton d'accès (voir Accès réseau ci-dessus).",
+            networkTitle: "Accès réseau",
             exampleMicMute: "Couper le micro",
             exampleVolume: "Mettre le volume Musique à moitié",
             exampleProfile: "Charger le profil {name}",
             exampleScene: "Appliquer la scène {name}",
             copyFailed: "Impossible de copier dans le presse-papiers",
+            recordTitle: "N'importe quel contrôle en commande API",
+            recordIntro: "Activez l'enregistrement, puis utilisez le contrôle voulu (un fader, un bouton, un effet) : la commande qu'il a envoyée apparaît ici, prête à copier. L'enregistrement s'arrête à la fermeture de l'interface.",
+            record: "Enregistrer les commandes envoyées par cette interface",
+            recordEmpty: "Rien pour l'instant : modifiez quelque chose dans l'interface.",
+            clear: "Effacer",
+            schemaTitle: "Schéma",
+            schemaIntro: "Toutes les commandes et leurs arguments, en JSON Schema (pour les éditeurs et les générateurs de code).",
+            schemaUrl: "JSON Schema des requêtes",
         },
         setupWizard: {
             menu: "Assistant de configuration",
@@ -374,7 +389,7 @@ export default {
 
                 accessibilityOpenPresetDirectory: "Ouvrir le répertoire des préréglages",
                 accessibilityPresetLoaded: "Préréglage {name} chargé dans {bank}",
-                accessibilityPresetSaved: "Préréglage {name} Enregistrer sous Library",
+                accessibilityPresetSaved: "Préréglage {name} enregistré dans la bibliothèque",
             },
             reverb: {
                 title: "Réverbération",
@@ -832,14 +847,106 @@ export default {
         },
 
         system: {
+            // The System pages: intros, card titles, and the help under each setting
+            pages: {
+                settings: {
+                    intro: "Comment l'utilitaire démarre, s'affiche et se met à jour. Ces réglages valent pour tous les appareils.",
+                    startup: "Démarrage et affichage",
+                    accessibility: "Accessibilité",
+                    updates: "Mises à jour et diagnostic",
+                    reset: "Réinitialisation",
+                    autoStartHelp: "L'utilitaire se lance à l'ouverture de session.",
+                    showOnLaunchHelp: "Sinon, l'utilitaire démarre discrètement dans la barre d'état.",
+                    showTray: "Icône dans la barre d'état",
+                    showTrayHelp: "Accès rapide aux profils, à la sourdine du micro et à l'interface.",
+                    uiHandlerHelp: "L'application de bureau, ou le navigateur par défaut.",
+                    ttsHelp: "Une voix lit l'action quand on appuie sur un bouton de la GoXLR.",
+                    firmwareSourceHelp: "Stable pour tout le monde, Bêta pour essayer les nouveautés.",
+                    logLevel: "Niveau des journaux",
+                    logLevelHelp: "Plus détaillé aide à diagnostiquer un problème.",
+                    openLogs: "Ouvrir les journaux",
+                    downloadHelp: "Réglages, profils, profils micro, préréglages et icônes, dans un .zip.",
+                    downloadButton: "Télécharger",
+                    restoreHelp: "Les fichiers remplacés sont d'abord mis de côté ; les dossiers et l'accès réseau de cet ordinateur sont conservés.",
+                    restoreButton: "Choisir un .zip…",
+                    history: "Historique des profils",
+                    historyHelp: "Chaque profil enregistré garde ses 20 dernières versions dans le dossier des sauvegardes.",
+                    recoverHelp: "Remet ceux fournis avec l'utilitaire qui manquent. Vos fichiers ne sont pas modifiés.",
+                    shutdownHelp: "La GoXLR garde son état actuel jusqu'au prochain démarrage."
+                },
+                device: {
+                    intro: "Comment cette GoXLR réagit aux boutons et au sampler. Enregistré pour cet appareil ({serial}).",
+                    mute: "Sourdine",
+                    mic: "Micro",
+                    sampler: "Sampler",
+                    hold: "Maintien pour tout couper",
+                    holdHelp: "Garder un bouton de sourdine appuyé aussi longtemps coupe le canal partout.",
+                    voiceDeafen: "Couper le chat vocal coupe aussi le micro vers le chat",
+                    voiceDeafenHelp: "Pour ne pas être entendu pendant qu'on n'écoute pas.",
+                    lockFaders: "Bloquer les faders pendant une sourdine générale",
+                    lockFadersHelp: "Les faders motorisés ne bougent plus tant que tout est coupé.",
+                    monitorWithFx: "Retour micro avec les effets",
+                    monitorWithFxHelp: "Le retour au casque fait entendre la voix avec les effets appliqués.",
+                    preRecord: "Pré-enregistrement",
+                    preRecordHelp: "Un enregistrement commence ce nombre de secondes avant l'appui. 0 pour désactiver.",
+                    fade: "Durée du fondu",
+                    fadeHelp: "Pour les modes de lecture avec fondu.",
+                    resetOnClear: "Remettre le mode de lecture par défaut quand on vide un bouton",
+                    resetOnClearHelp: "Sinon, le bouton garde son mode et son ordre de lecture.",
+                    vodLabel: "Comportement de {channel}",
+                    vodDescription: "Définit ce que transporte le canal {channel}",
+                    vodRoutable: "Routable",
+                    vodStreamNoMusic: "Stream Mix (sans musique)",
+                },
+                power: {
+                    intro: "Ce que l'utilitaire fait tout seul quand il s'arrête, quand l'ordinateur se met en veille et quand il se réveille. La liste à droite ne s'active que si l'action est cochée."
+                },
+                firmware: {
+                    intro: "Le logiciel interne de la GoXLR. Le canal (Stable ou Bêta) se choisit dans les paramètres de l'utilitaire.",
+                    state: {
+                        current: "Votre firmware est à jour",
+                        outdated: "Une mise à jour est disponible",
+                        newer: "Votre firmware est plus récent que la dernière version publiée",
+                        unknown: "Pas d'information de mise à jour pour l'instant"
+                    },
+                    full: "GoXLR",
+                    mini: "GoXLR Mini",
+                    installed: "Installé",
+                    latest: "Dernière version",
+                    channel: "Canal",
+                    hintUpdate: "Ne débranchez pas la GoXLR pendant la mise à jour.",
+                    hintDowngrade: "Cette GoXLR a une version plus récente que la dernière publiée : l'installer revient à une version plus ancienne.",
+                    hintReinstall: "Rien à installer. Vous pouvez réinstaller la même version si l'appareil se comporte mal."
+                },
+                integrations: {
+                    allowNetwork: "Autoriser les autres appareils",
+                    managedHere: "Se gère depuis l'ordinateur où tourne l'utilitaire : ouvrez cette page là-bas pour activer, désactiver ou changer le lien.",
+                    allowNetworkHelp: "Une tablette, un téléphone ou un autre PC de votre réseau.",
+                    api: "L'API"
+                },
+                about: {
+                    intro: "Les versions à donner quand on demande de l'aide.",
+                    device: "Appareil",
+                    software: "Logiciel",
+                    utility: "Utilitaire",
+                    driver: "Pilote",
+                    shareHint: "Ces informations en un clic, pour un rapport de bug ou une demande d'aide.",
+                    copy: "Copier les versions"
+                },
+                licences: {
+                    intro: "L'utilitaire et les éléments qu'il utilise, avec leur licence. Cliquez pour lire le texte complet."
+                }
+            },
             backup: {
                 title: "Sauvegarde",
                 withSamples: "Inclure les sons",
                 download: "Télécharger une sauvegarde",
                 restore: "Restaurer une sauvegarde",
                 confirmTitle: "Restaurer cette sauvegarde ?",
-                confirmMessage: "Les profils, profils micro, préréglages, icônes et sons de {name} seront ajoutés. Les fichiers qui seraient remplacés sont d'abord copiés dans le dossier des sauvegardes.",
+                confirmMessage: "Les réglages, profils, profils micro, préréglages, icônes et sons de {name} seront restaurés. Les fichiers qui seraient remplacés sont d'abord copiés dans le dossier des sauvegardes ; les dossiers et l'accès réseau de cet ordinateur sont conservés.",
                 restored: "Sauvegarde restaurée : {added} ajoutés, {replaced} remplacés, {unchanged} inchangés",
+                openFolder: "Ouvrir le dossier des sauvegardes",
+                history: "Chaque profil enregistré garde ses 20 dernières versions dans le dossier des sauvegardes (history).",
             },
             firmwareUpdateButton: {
                 update: "Mettre à jour le firmware",
@@ -859,6 +966,7 @@ export default {
                 copy: "Copier",
                 copied: "Copié",
                 regenerate: "Nouveau lien (les liens précédents ne marchent plus)",
+                regenerateConfirm: "Cliquer encore : les liens actuels ne marcheront plus",
             },
             firmwareUpdate: {
                 newVersionAvailable: "Une version plus récente du firmware ({latestVersion}) est disponible pour votre appareil.\nVoulez-vous mettre à jour l'appareil maintenant ?",
@@ -890,6 +998,8 @@ export default {
                 seeLogs: "Les journaux de l'utilitaire donnent le détail (Système, Paramètres de l'Utilitaire, Ouvrir les journaux).",
                 noInfo: "Les serveurs de mise à jour n'ont pas répondu : la dernière version n'est pas connue. Cette GoXLR est en {currentVersion}.",
                 updateTo: "Mettre à jour vers {version}",
+                downgradeTo: "Revenir à {version}",
+                confirmDowngrade: "{current} est installée : {version} est une version plus ancienne.",
                 reinstall: "Réinstaller {version}",
                 customButton: "Firmware personnalisé…",
                 confirmTitle: "Flasher le firmware ?",
@@ -903,25 +1013,26 @@ export default {
 
             powerButton: "Actions d'alimentation",
             power: {
-                shutdownTitle: "Actions d'arrêt",
+                missing: "{name} (introuvable)",
+                shutdownTitle: "À l'arrêt de l'utilitaire",
                 shutdownDescription: "Ces actions seront exécutées lorsque l'utilitaire GoXLR sera arrêté en toute sécurité.",
 
-                sleepTitle: "Actions de mise en veille.",
+                sleepTitle: "À la mise en veille",
                 sleepDescription: "Ces actions seront exécutées lorsque votre système va entrer en mode veille.",
 
-                wakeTitle: "Actions de réveil.",
+                wakeTitle: "Au réveil",
                 wakeDescription: "Ces actions seront exécutées lorsque votre système se réveille de la mise en veille.",
 
                 settingsError: "La configuration semble avoir été modifiée manuellement. Pour éviter tout dommage, l'interface utilisateur ici ne fonctionnera pas. Pour réinitialiser complètement les actions d'arrêt, appuyez sur le bouton ci-dessous.",
-                settingsReset: "Réinitialiser les actions d'arrêt.",
+                settingsReset: "Réinitialiser ces actions",
 
                 power_options: {
-                    reload: "Recharger les paramètres.",
-                    saveProfile: "Enregistrer le profil.",
-                    loadProfile: "Charger le profil complet.",
-                    loadColourProfile: "Charger le profil de couleur.",
-                    saveMicProfile: "Sauvegarder le profil du microphone.",
-                    loadMicProfile: "Charger le profil du microphone",
+                    reload: "Recharger les réglages",
+                    saveProfile: "Enregistrer le profil",
+                    loadProfile: "Charger un profil",
+                    loadColourProfile: "Charger les couleurs d'un profil",
+                    saveMicProfile: "Enregistrer le profil micro",
+                    loadMicProfile: "Charger un profil micro",
                 }
             },
 
@@ -950,6 +1061,7 @@ export default {
 
             settingsButton: "Paramètres de l'Utilitaire",
             settings: {
+                restartPill: "redémarrage",
                 firmwareSource: "Canal de mise à jour du firmware",
                 firmwareSources: {
                     live: "Stable",
@@ -1004,9 +1116,9 @@ export default {
 
                 recoverDefaults: "Restaurer les paramètres par défaut",
                 recoverOptions: {
-                    profiles: "Profiles",
+                    profiles: "Profils",
                     micProfiles: "Profils microphone",
-                    icons: "icônes",
+                    icons: "Icônes",
                     presets: "Préréglages"
                 },
 
@@ -1051,6 +1163,9 @@ export default {
             loadMicQuestion: "Les réglages du profil micro {current} qui n'ont pas été enregistrés seront perdus.",
             load: "Charger",
             saveThenLoad: "Enregistrer, puis charger",
+            createTitle: "Créer {name} ?",
+            create: "Créer",
+            saveThenCreate: "Enregistrer, puis créer",
             lighting: "Éclairage global",
             lightingTitle: "Éclairage global",
             profile: "Profil",
@@ -1152,6 +1267,7 @@ export default {
             folderCount: "{count} son(s)",
             restore: "Restaurer",
             deleteForever: "Supprimer",
+            deleteForeverConfirm: "Cliquez encore pour supprimer",
             trashRetention: "Les éléments sont supprimés définitivement après 30 jours.",
             emptyTrash: "Vider la corbeille",
             emptyTrashConfirm: "Cliquez encore pour tout supprimer",

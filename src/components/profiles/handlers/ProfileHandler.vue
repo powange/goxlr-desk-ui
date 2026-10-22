@@ -59,6 +59,7 @@ import ProfileManager from "@/components/profiles/ProfileManager.vue";
 import AccessibleModal from "@/components/design/modal/AccessibleModal.vue";
 import ModalButton from "@/components/design/modal/ModalButton.vue";
 import NameDialog from "@/components/profiles/NameDialog.vue";
+import {guardProfileChange} from "@/util/profileGuard";
 
 export default {
   name: "ProfileHandler",
@@ -147,12 +148,8 @@ export default {
     },
 
     loadProfile: function (label) {
-      let command = {
-        LoadProfile: [label, true],
-      };
-
-      runCommand(store.getActiveSerial(), command,
-          {a11y: this.$t('message.profileManager.accessibilityLoadedProfile', { profileName: label })});
+      guardProfileChange("load", false, label, () => runCommand(store.getActiveSerial(), {LoadProfile: [label, true]},
+          {a11y: this.$t('message.profileManager.accessibilityLoadedProfile', { profileName: label })}));
     },
 
     loadProfileColours: function (label) {
@@ -161,8 +158,8 @@ export default {
     },
 
     newProfile(name) {
-      runCommand(store.getActiveSerial(), { NewProfile: name },
-          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })});
+      guardProfileChange("create", false, name, () => runCommand(store.getActiveSerial(), { NewProfile: name },
+          {ok: this.$t('message.profileManager.accessibilityCreatedProfile', { profileName: name })}));
     },
 
     saveProfile() {
