@@ -23,6 +23,9 @@
 
 export default {
     message: {
+        brand: {
+            unofficial: "non officiel",
+        },
         scenes: {
             title: "Scènes",
             runHint: "Appliquer la scène {name} (volumes, mutes, routage, effets)",
@@ -44,11 +47,11 @@ export default {
         },
         integrations: {
             title: "Intégrations",
-            intro: "Stream Deck, OBS, Touch Portal ou vos propres scripts peuvent piloter la GoXLR par l'API HTTP de l'utilitaire, celle qu'utilise cette interface.",
+            intro: "Stream Deck, OBS, Touch Portal ou vos propres scripts peuvent piloter la GoXLR par l'API HTTP de l'application, celle qu'utilise cette interface.",
             commandUrl: "Envoyer une commande",
             statusUrl: "Lire l'état complet",
             websocketUrl: "Suivre les changements (WebSocket)",
-            format: "Une commande est un objet JSON dont l'entrée « Command » contient le numéro de série de l'appareil et la commande, comme dans les exemples ci-dessous. Les noms et arguments sont ceux de GoXLRCommand dans le code de l'utilitaire (ipc/src/lib.rs).",
+            format: "Une commande est un objet JSON dont l'entrée « Command » contient le numéro de série de l'appareil et la commande, comme dans les exemples ci-dessous. Les noms et arguments sont ceux de GoXLRCommand dans le code de l'application (ipc/src/lib.rs).",
             examples: "Exemples pour cet appareil",
             copyCurl: "Copier curl",
             copyJson: "Copier le JSON",
@@ -130,12 +133,12 @@ export default {
             helpCable: "Vérifiez que la GoXLR est allumée et que son câble USB est branché (essayez un autre port USB, de préférence à l'arrière de l'ordinateur).",
             helpLinux: "Sous Linux, les règles udev (50-goxlr.rules) doivent être installées dans /etc/udev/rules.d ; rechargez-les (udevadm control --reload) puis débranchez et rebranchez la GoXLR.",
             helpWindows: "Sous Windows, le pilote GoXLR de TC-Helicon doit être installé ; redémarrez l'ordinateur après l'installation.",
-            helpMacos: "Sous macOS, branchez la GoXLR directement plutôt que sur un hub, et autorisez l'utilitaire si le système le demande.",
+            helpMacos: "Sous macOS, branchez la GoXLR directement plutôt que sur un hub, et autorisez l'application si le système le demande.",
             title: "Sélectionner un appareil",
-            connecting: "Connexion à l'utilitaire GoXLR en cours…",
-            disconnected: "Impossible de se connecter à l'utilitaire GoXLR, vérifiez qu'il est bien lancé.\n\nCette page tentera de se reconnecter automatiquement…",
+            connecting: "Connexion à GoXLR Desk en cours…",
+            disconnected: "Impossible de se connecter à GoXLR Desk, vérifiez qu'il est bien lancé.\n\nCette page tentera de se reconnecter automatiquement…",
             noDevices: "Aucun appareil GoXLR trouvé",
-            reconnecting: "Connexion au GoXLR Utility perdue, reconnexion…",
+            reconnecting: "Connexion à GoXLR Desk perdue, reconnexion…",
         },
         // For these, the keys map directly to their GoXLR Channel Names
         channels: {
@@ -850,13 +853,13 @@ export default {
             // The System pages: intros, card titles, and the help under each setting
             pages: {
                 settings: {
-                    intro: "Comment l'utilitaire démarre, s'affiche et se met à jour. Ces réglages valent pour tous les appareils.",
+                    intro: "Comment l'application démarre, s'affiche et se met à jour. Ces réglages valent pour tous les appareils.",
                     startup: "Démarrage et affichage",
                     accessibility: "Accessibilité",
                     updates: "Mises à jour et diagnostic",
                     reset: "Réinitialisation",
-                    autoStartHelp: "L'utilitaire se lance à l'ouverture de session.",
-                    showOnLaunchHelp: "Sinon, l'utilitaire démarre discrètement dans la barre d'état.",
+                    autoStartHelp: "L'application se lance à l'ouverture de session.",
+                    showOnLaunchHelp: "Sinon, l'application démarre discrètement dans la barre d'état.",
                     showTray: "Icône dans la barre d'état",
                     showTrayHelp: "Accès rapide aux profils, à la sourdine du micro et à l'interface.",
                     uiHandlerHelp: "L'application de bureau, ou le navigateur par défaut.",
@@ -871,7 +874,7 @@ export default {
                     restoreButton: "Choisir un .zip…",
                     history: "Historique des profils",
                     historyHelp: "Chaque profil enregistré garde ses 20 dernières versions dans le dossier des sauvegardes.",
-                    recoverHelp: "Remet ceux fournis avec l'utilitaire qui manquent. Vos fichiers ne sont pas modifiés.",
+                    recoverHelp: "Remet ceux fournis avec l'application qui manquent. Vos fichiers ne sont pas modifiés.",
                     shutdownHelp: "La GoXLR garde son état actuel jusqu'au prochain démarrage."
                 },
                 device: {
@@ -899,10 +902,10 @@ export default {
                     vodStreamNoMusic: "Stream Mix (sans musique)",
                 },
                 power: {
-                    intro: "Ce que l'utilitaire fait tout seul quand il s'arrête, quand l'ordinateur se met en veille et quand il se réveille. La liste à droite ne s'active que si l'action est cochée."
+                    intro: "Ce que l'application fait toute seule quand elle s'arrête, quand l'ordinateur se met en veille et quand il se réveille. La liste à droite ne s'active que si l'action est cochée."
                 },
                 firmware: {
-                    intro: "Le logiciel interne de la GoXLR. Le canal (Stable ou Bêta) se choisit dans les paramètres de l'utilitaire.",
+                    intro: "Le logiciel interne de la GoXLR. Le canal (Stable ou Bêta) se choisit dans les paramètres de l'application.",
                     state: {
                         current: "Votre firmware est à jour",
                         outdated: "Une mise à jour est disponible",
@@ -920,7 +923,7 @@ export default {
                 },
                 integrations: {
                     allowNetwork: "Autoriser les autres appareils",
-                    managedHere: "Se gère depuis l'ordinateur où tourne l'utilitaire : ouvrez cette page là-bas pour activer, désactiver ou changer le lien.",
+                    managedHere: "Se gère depuis l'ordinateur où tourne l'application : ouvrez cette page là-bas pour activer, désactiver ou changer le lien.",
                     allowNetworkHelp: "Une tablette, un téléphone ou un autre PC de votre réseau.",
                     api: "L'API"
                 },
@@ -928,13 +931,14 @@ export default {
                     intro: "Les versions à donner quand on demande de l'aide.",
                     device: "Appareil",
                     software: "Logiciel",
-                    utility: "Utilitaire",
+                    origin: "Libre et non officiel, dérivé de GoXLR Utility (GoXLR-on-Linux), sous licence MIT. Non affilié à TC-Helicon.",
+                    utility: "GoXLR Desk",
                     driver: "Pilote",
                     shareHint: "Ces informations en un clic, pour un rapport de bug ou une demande d'aide.",
                     copy: "Copier les versions"
                 },
                 licences: {
-                    intro: "L'utilitaire et les éléments qu'il utilise, avec leur licence. Cliquez pour lire le texte complet."
+                    intro: "L'application et les éléments qu'elle utilise, avec leur licence. Cliquez pour lire le texte complet."
                 }
             },
             backup: {
@@ -955,13 +959,13 @@ export default {
                 custom: "Firmware personnalisé",
             },
             networkAccess: {
-                restartNow: "Redémarrer l'utilitaire maintenant",
-                restarting: "L'utilitaire redémarre, l'interface se reconnecte d'elle-même.",
+                restartNow: "Redémarrer l'application maintenant",
+                restarting: "L'application redémarre, l'interface se reconnecte d'elle-même.",
                 qr: "QR code",
                 qrAlt: "QR code pour ouvrir {url}",
                 title: "Accès depuis le réseau",
                 explain: "Sur un autre appareil de votre réseau (tablette, téléphone, ordinateur), ouvrez une fois l'un de ces liens. L'accès est ensuite mémorisé.",
-                restart: "Redémarrez GoXLR Utility pour y accéder depuis votre réseau. Les liens s'afficheront alors ici.",
+                restart: "Redémarrez GoXLR Desk pour y accéder depuis votre réseau. Les liens s'afficheront alors ici.",
                 noAddress: "Aucune adresse réseau n'a été trouvée pour cet ordinateur.",
                 copy: "Copier",
                 copied: "Copié",
@@ -973,7 +977,7 @@ export default {
                 currentVersionIsNewer: "Votre version actuelle du firmware ({currentVersion}) est plus récente que la dernière version disponible ({latestVersion}) pour votre appareil.\nVoulez-vous rétrograder vers la dernière version du firmware ?",
                 currentIsUpToDate: "Votre firmware est déjà à jour.\nVoulez-vous réinstaller la version actuelle du firmware ?",
                 customFirmware: "Vous êtes sur le point d'installer un firmware personnalisé.\nCe n'est pas recommandé, sauf si vous savez ce que vous faites.\nÊtes-vous sûr de vouloir continuer ?",
-                warning: "Vous êtes sur le point de flasher une nouvelle version du firmware sur votre appareil.\nLes développeurs de l'utilitaire GoXLR ne sont pas responsables des dommages pouvant résulter de cette opération. ",
+                warning: "Vous êtes sur le point de flasher une nouvelle version du firmware sur votre appareil.\nLes développeurs de GoXLR Desk ne sont pas responsables des dommages pouvant résulter de cette opération. ",
                 warningInfo: "En savoir plus",
                 betaWarning: "Vous êtes sur le point d'installer une version bêta du firmware.\nCette version ne bénéficie d'aucun support officiel et peut contenir des bugs ou des problèmes que nous ne pouvons pas corriger.",
                 updatePaused: "Vous êtes sur le point d'installer la version {version} du firmware. Êtes-vous sûr de vouloir continuer ?",
@@ -995,7 +999,7 @@ export default {
                     complete: "Mise à jour terminée",
                     failed: "Échec de la mise à jour du firmware",
                 },
-                seeLogs: "Les journaux de l'utilitaire donnent le détail (Système, Paramètres de l'Utilitaire, Ouvrir les journaux).",
+                seeLogs: "Les journaux de l'application donnent le détail (Système, Paramètres de l'application, Ouvrir les journaux).",
                 noInfo: "Les serveurs de mise à jour n'ont pas répondu : la dernière version n'est pas connue. Cette GoXLR est en {currentVersion}.",
                 updateTo: "Mettre à jour vers {version}",
                 downgradeTo: "Revenir à {version}",
@@ -1003,7 +1007,7 @@ export default {
                 reinstall: "Réinstaller {version}",
                 customButton: "Firmware personnalisé…",
                 confirmTitle: "Flasher le firmware ?",
-                confirmText: "La GoXLR redémarre pendant la mise à jour. Ne la débranchez pas et ne fermez pas l'utilitaire avant la fin.",
+                confirmText: "La GoXLR redémarre pendant la mise à jour. Ne la débranchez pas et ne fermez pas l'application avant la fin.",
                 confirmCustom: "Vous allez choisir un fichier de firmware (.bin). N'utilisez qu'un fichier de confiance : un mauvais fichier peut rendre la GoXLR inutilisable. Ne la débranchez pas pendant la mise à jour.",
             },
             title: "Système",
@@ -1014,8 +1018,8 @@ export default {
             powerButton: "Actions d'alimentation",
             power: {
                 missing: "{name} (introuvable)",
-                shutdownTitle: "À l'arrêt de l'utilitaire",
-                shutdownDescription: "Ces actions seront exécutées lorsque l'utilitaire GoXLR sera arrêté en toute sécurité.",
+                shutdownTitle: "À l'arrêt de l'application",
+                shutdownDescription: "Ces actions seront exécutées lorsque GoXLR Desk sera arrêté en toute sécurité.",
 
                 sleepTitle: "À la mise en veille",
                 sleepDescription: "Ces actions seront exécutées lorsque votre système va entrer en mode veille.",
@@ -1059,7 +1063,7 @@ export default {
                 lockFadersAccessibility: "Empêche les curseurs de descendre lorsque la mise en sourdine générale est activée.",
             },
 
-            settingsButton: "Paramètres de l'Utilitaire",
+            settingsButton: "Paramètres de l'application",
             settings: {
                 restartPill: "redémarrage",
                 firmwareSource: "Canal de mise à jour du firmware",
@@ -1068,10 +1072,10 @@ export default {
                     beta: "Bêta",
                 },
                 shutdownConfirmTitle: "Êtes-vous sûr ?",
-                shutdownConfirmMessage: "Êtes-vous sûr de vouloir arrêter l'utilitaire GoXLR ?",
+                shutdownConfirmMessage: "Êtes-vous sûr de vouloir arrêter GoXLR Desk ?",
                 settingsRegionAccessibility: "paramètres",
                 macosAggregateManagement: "Désactiver la gestion des périphériques agrégés MacOS (redémarrage requis)",
-                macosAggregateManagementAccessibility: "Désactiver la gestion des périphériques agrégés par l'utilitaire sur MacOS (redémarrage requis)",
+                macosAggregateManagementAccessibility: "Désactiver la gestion des périphériques agrégés par l'application sur MacOS (redémarrage requis)",
                 recoverConfirmTitle: "Restaurer les fichiers par défaut ?",
                 recoverConfirmMessage: "Les {type} par défaut qui manquent seront ajoutés. Les fichiers existants ne sont pas modifiés.",
                 recoverConfirmOk: "Restaurer",
@@ -1103,13 +1107,13 @@ export default {
                 allowNetworkAccessAccessibility: "Autoriser l'accès à l'interface utilisateur depuis d'autres appareils sur le réseau",
 
                 autoStart: "Démarrage automatique à la connexion",
-                autoStartAccessibility: "Démarrer l'utilitaire GoXLR lorsque l'utilisateur se connecte",
+                autoStartAccessibility: "Démarrer GoXLR Desk lorsque l'utilisateur se connecte",
 
                 showOnLaunch: "Afficher l'interface utilisateur au lancement",
                 showOnLaunchAccessibility: "Lance automatiquement l'interface utilisateur au démarrage",
 
                 showTray: "Afficher l'icône dans la barre d'état système (nécessite un redémarrage)",
-                showTrayAccessibility: "Afficher l'icône de l'utilitaire GoXLR dans la zone de notification du système",
+                showTrayAccessibility: "Afficher l'icône de GoXLR Desk dans la zone de notification du système",
 
                 ttsOnButton: "Synthèse vocale lors de l'appui sur le bouton",
                 ttsOnButtonAccessibility: "Lire à voix haute l'état du bouton lorsqu'il est pressé, soit via un lecteur d'écran soit via la synthèse vocale du système",
@@ -1122,13 +1126,13 @@ export default {
                     presets: "Préréglages"
                 },
 
-                shutdownUtility: "Arrêter l'utilitaire GoXLR"
+                shutdownUtility: "Arrêter GoXLR Desk"
             },
 
             aboutButton: "À propos de GoXLR",
             about: {
                 serial: "Série",
-                utilityVersion: "Version Utilitaire",
+                utilityVersion: "Version de GoXLR Desk",
                 driverVersion: "Version du pilote",
                 hardwareVersion: "Version Matérielle",
 

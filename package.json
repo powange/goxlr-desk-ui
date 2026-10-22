@@ -1,6 +1,6 @@
 {
-  "name": "goxlr-ui",
-  "version": "0.3.0",
+  "name": "goxlr-desk-ui",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "dev": "vite",

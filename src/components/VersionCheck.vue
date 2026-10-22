@@ -1,6 +1,6 @@
 <template>
   <div v-if="hasVersion()" class="version">
-    GoXLR Utility v{{ getVersion() }}
+    GoXLR Desk v{{ getVersion() }}
     <span v-if="outdated()"> - <a :href="release_path" target="_blank">{{ $t('message.versionCheck.updateAvailable') }}</a></span>
     <span v-if="firmware_different()"> - <span class="click" @click="$emit('firmware-click')">{{ $t('message.versionCheck.firmwareDirectionAvailable', { direction: getFirmwareDirectionLabel() }) }}</span></span>
   </div>
@@ -149,7 +149,7 @@ export default {
     },
 
     getPath() {
-      return "https://api.github.com/repos/GoXLR-on-Linux/goxlr-utility/releases";
+      return "https://api.github.com/repos/powange/goxlr-desk/releases";
     },
 
     isOutdated(base_version, match_version) {

@@ -58,7 +58,7 @@ export default {
         {id: "about", icon: "fa-solid fa-circle-info", label: this.$t('message.system.aboutButton'), component: markRaw(AboutButton)},
         {id: "licenses", icon: "fa-solid fa-book-open", label: this.$t('message.system.licenses'), component: markRaw(LicenseButton)},
         {id: "wizard", icon: "fa-solid fa-wand-magic-sparkles", label: this.$t('message.setupWizard.menu'), action: () => window.dispatchEvent(new Event("open-setup-wizard"))},
-        {id: "help", icon: "fa-solid fa-circle-question", label: this.$t('message.system.help'), href: "https://discord.gg/BRBjkkbvmZ"},
+        {id: "help", icon: "fa-solid fa-circle-question", label: this.$t('message.system.help'), href: "https://github.com/powange/goxlr-desk/issues"},
       ];
       if (store.getDeviceCount() > 1) {
         items.splice(0, 0, {id: "switch", icon: "fa-solid fa-repeat", label: this.$t('message.common.switchDevice'), action: () => SwitchDeviceButton.methods.switchDevice()});
